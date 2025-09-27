@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { tmdb, omdb } from "@/lib/clients";
+import { tmdb, omdb, imdb } from "@/lib/clients";
 import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -7,56 +7,88 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     // 1) Fetch now playing in Israel
-    const nowPlaying = await tmdb.movies.nowPlaying({ language: "he-IL", region: "IL" });
+    const nowPlaying = await tmdb.movies.nowPlaying({
+      language: "he-IL",
+      region: "IL",
+    });
 
     const items = nowPlaying.results ?? [];
 
     // 2) Enrich with IMDB and upsert into DB
-    for (const m of items) {
+    for (const movie of items) {
       try {
-        const ext = await tmdb.movies.externalIds(m.id);
+        const ext = await tmdb.movies.externalIds(movie.id);
         const imdbId = ext.imdb_id ?? null;
 
-        let rating: number | null = null;
-        let votes: number | null = null;
+        let rating: number | undefined;
+        let votes: number | undefined;
         if (imdbId) {
-          const imdbData = await omdb.get({ id: imdbId });
-          rating = imdbData.imdbRating && imdbData.imdbRating !== "N/A" ? parseFloat(imdbData.imdbRating) : null;
-          votes = imdbData.imdbVotes && imdbData.imdbVotes !== "N/A" ? parseInt(imdbData.imdbVotes.replace(/,/g, ""), 10) : null;
+          const omdbMovieData = await omdb.title.getById({ i: imdbId });
+          const isImdbRatingInOmdb =
+            !!omdbMovieData.imdbRating && omdbMovieData.imdbRating !== "N/A";
+          const isImdbVotesInOmdb =
+            !!omdbMovieData.imdbVotes && omdbMovieData.imdbVotes !== "N/A";
+
+          if (isImdbRatingInOmdb && isImdbVotesInOmdb) {
+            rating = parseFloat(omdbMovieData.imdbRating as string);
+            votes = parseInt(omdbMovieData.imdbVotes!.replace(/,/g, ""), 10);
+          } else {
+            const imdbMovieData = await imdb.titles.imDbApiServiceGetTitle({
+              titleId: imdbId,
+            });
+
+            rating = imdbMovieData.rating?.aggregateRating;
+            votes = imdbMovieData.rating?.voteCount;
+          }
         }
 
-        const genres = (m.genre_ids as number[] | undefined) ?? [];
+        const genres = (movie.genre_ids as number[] | undefined) ?? [];
         // Fetch genre names lazily not necessary for MVP; store ids as strings
         const genreStrings = genres.map((g) => String(g));
 
-        const imdbKey = imdbId ?? `tmdb-${m.id}`; // Fallback id if no IMDB
-        const title = m.title ?? m.original_title ?? "";
+        const imdbKey = imdbId ?? `tmdb-${movie.id}`; // Fallback id if no IMDB
+        const title = movie.title ?? movie.original_title ?? "";
         await prisma.movie.upsert({
           where: { id: imdbKey },
           create: {
             id: imdbKey,
             title,
-            posterUrl: m.poster_path ? `https://image.tmdb.org/t/p/w300${m.poster_path}` : null,
+            posterUrl: movie.poster_path
+              ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+              : null,
             genres: genreStrings,
-            rating: rating ?? undefined,
-            votes: votes ?? undefined,
-            releaseDate: m.release_date ? new Date(m.release_date) : undefined,
+            rating,
+            votes,
+            releaseDate: movie.release_date
+              ? new Date(movie.release_date)
+              : undefined,
           },
           update: {
             title,
-            posterUrl: m.poster_path ? `https://image.tmdb.org/t/p/w300${m.poster_path}` : null,
+            posterUrl: movie.poster_path
+              ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+              : null,
             genres: genreStrings,
-            rating: rating ?? undefined,
-            votes: votes ?? undefined,
-            releaseDate: m.release_date ? new Date(m.release_date) : undefined,
+            rating,
+            votes,
+            releaseDate: movie.release_date
+              ? new Date(movie.release_date)
+              : undefined,
           },
         });
 
         // 3) Notify users who subscribed and haven't been notified for this movie
         if (rating != null) {
-          const subs = await prisma.subscription.findMany({ where: { threshold: { lte: rating } } });
+          const subs = await prisma.subscription.findMany({
+            where: { threshold: { lte: rating } },
+          });
           for (const sub of subs) {
-            const existing = await prisma.notification.findFirst({ where: { userId: sub.userId, movieId: imdbKey } });
+            const existing = await prisma.notification.findFirst({
+              where: {
+                userId: sub.userId,
+                movieId: imdbKey,
+              },
+            });
             if (existing) continue;
 
             // Placeholder notify by email/sms
@@ -64,12 +96,13 @@ export async function GET() {
             // const { notifyUser } = await import("@/lib/notify");
             // await notifyUser({ userId: sub.userId, method: sub.notifyBy, movie: { id: imdbKey, title, rating } });
 
-            await prisma.notification.create({ data: { userId: sub.userId, movieId: imdbKey } });
+            await prisma.notification.create({
+              data: { userId: sub.userId, movieId: imdbKey },
+            });
           }
         }
       } catch (e) {
         console.error("cron item error", e);
-        continue;
       }
     }
 
