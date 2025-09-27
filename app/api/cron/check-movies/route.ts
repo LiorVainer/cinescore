@@ -58,7 +58,6 @@ export async function GET() {
 
         const genreIds = (movie.genre_ids as number[] | undefined) ?? [];
         // Back-compat legacy string ids array
-        const genreStrings = genreIds.map((g) => String(g));
 
         // Ensure all movie genres exist in DB (in case TMDB list missed any id for the locale)
         for (const gid of genreIds) {
@@ -80,7 +79,6 @@ export async function GET() {
             posterUrl: movie.poster_path
               ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
               : null,
-            genresIds: genreStrings,
             rating,
             votes,
             releaseDate: movie.release_date
@@ -94,7 +92,6 @@ export async function GET() {
             posterUrl: movie.poster_path
               ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
               : null,
-            genresIds: genreStrings,
             rating,
             votes,
             releaseDate: movie.release_date
