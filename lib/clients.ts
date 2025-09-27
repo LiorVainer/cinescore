@@ -24,3 +24,4 @@ export const omdb = new OmdbApi(
     })
 
 export const imdb = new ImdbApi()
+

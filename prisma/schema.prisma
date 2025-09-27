@@ -75,43 +75,68 @@ model Verification {
 // Application-specific models
 // --------------------------
 
-model Subscription {
-  id        String   @id @default(cuid())
-  userId    String
-  threshold Float
-  genre     String?
-  notifyBy  String   // "email" | "sms"
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("subscription")
+enum NotifyMethod {
+  email
+  sms
 }
 
 model Movie {
-  id          String   @id // imdbID
-  title       String
-  posterUrl   String?
-  genres      String[]
-  rating      Float?
-  votes       Int?
-  releaseDate DateTime?
-  updatedAt   DateTime @updatedAt
+  id             String    @id // imdbID or fallback
+  title          String
+  posterUrl      String?
+  legacyGenreIds String[] // legacy field, consider dropping later
+  rating         Float?
+  votes          Int?
+  releaseDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
 
   notifications Notification[]
+  genres        Genre[] // many-to-many with Genre
 
+  @@index([rating])
+  @@index([releaseDate])
   @@map("movie")
 }
 
+model Genre {
+  id        Int      @id
+  name      String   @unique
+  movies    Movie[]
+  language  String   @default("he-IL")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("genre")
+}
+
+model Subscription {
+  id        String         @id @default(cuid())
+  userId    String
+  threshold Float
+  genre     String?
+  notifyBy  NotifyMethod[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @default(now()) @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([threshold])
+  @@map("subscription")
+}
+
 model Notification {
-  id      String   @id @default(cuid())
-  userId  String
-  movieId String
-  sentAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  movieId   String
+  sentAt    DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
+  @@index([sentAt])
   @@map("notification")
 }

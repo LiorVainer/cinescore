@@ -1,6 +1,7 @@
 "use server";
 
-import { tmdb, omdb } from "@/lib/clients";
+import { omdb, tmdb } from "@/lib/clients";
+import { prisma } from "@/lib/prisma";
 
 export type SearchedMovie = {
   id: number;
@@ -32,7 +33,7 @@ export async function searchMovies(query: string): Promise<SearchedMovie[]> {
         const imdbId: string | null = external.imdb_id ?? null;
 
         if (imdbId) {
-          const imdbData = await omdb.get({ id: imdbId });
+          const imdbData = await omdb.title.getById({ i: imdbId });
           imdbRating =
             imdbData.imdbRating && imdbData.imdbRating !== "N/A"
               ? parseFloat(imdbData.imdbRating)
@@ -49,7 +50,9 @@ export async function searchMovies(query: string): Promise<SearchedMovie[]> {
           originalTitle: m.original_title,
           overview: m.overview,
           releaseDate: m.release_date,
-          poster: m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : null,
+          poster: m.poster_path
+            ? `https://image.tmdb.org/t/p/w200${m.poster_path}`
+            : null,
           imdbId,
           imdbRating,
           imdbVotes,
@@ -61,12 +64,23 @@ export async function searchMovies(query: string): Promise<SearchedMovie[]> {
           originalTitle: m.original_title,
           overview: m.overview,
           releaseDate: m.release_date,
-          poster: m.poster_path ? `https://image.tmdb.org/t/p/w200${m.poster_path}` : null,
+          poster: m.poster_path
+            ? `https://image.tmdb.org/t/p/w200${m.poster_path}`
+            : null,
           imdbId: null,
           imdbRating: null,
           imdbVotes: null,
         } satisfies SearchedMovie;
       }
-    })
+    }),
   );
 }
+
+export const searchMoviesInDB = async (query: string) => {
+  if (!query || query.trim().length < 2) return [];
+  return await prisma.movie.findMany({
+    include: {
+      genres: true,
+    },
+  });
+};

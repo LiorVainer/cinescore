@@ -1,11 +1,26 @@
 import { NextResponse } from "next/server";
 import { tmdb, omdb, imdb } from "@/lib/clients";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+    // Preload TMDB genres (id + localized name) and ensure they exist in DB
+    const tmdbGenres = await tmdb.genres.movies({ language: "he-IL" });
+    const genreNameById = new Map<number, string>(
+      tmdbGenres.genres.map((g) => [g.id, g.name]),
+    );
+
+    // Upsert all TMDB genres into the DB to guarantee connect works later
+    for (const genre of tmdbGenres.genres) {
+      await prisma.genre.upsert({
+        where: { id: genre.id },
+        create: { id: genre.id, name: genre.name },
+        update: { name: genre.name },
+      });
+    }
+
     // 1) Fetch now playing in Israel
     const nowPlaying = await tmdb.movies.nowPlaying({
       language: "he-IL",
@@ -36,15 +51,24 @@ export async function GET() {
             const imdbMovieData = await imdb.titles.imDbApiServiceGetTitle({
               titleId: imdbId,
             });
-
-            rating = imdbMovieData.rating?.aggregateRating;
-            votes = imdbMovieData.rating?.voteCount;
+            rating = imdbMovieData.rating?.aggregateRating ?? undefined;
+            votes = imdbMovieData.rating?.voteCount ?? undefined;
           }
         }
 
-        const genres = (movie.genre_ids as number[] | undefined) ?? [];
-        // Fetch genre names lazily not necessary for MVP; store ids as strings
-        const genreStrings = genres.map((g) => String(g));
+        const genreIds = (movie.genre_ids as number[] | undefined) ?? [];
+        // Back-compat legacy string ids array
+        const genreStrings = genreIds.map((g) => String(g));
+
+        // Ensure all movie genres exist in DB (in case TMDB list missed any id for the locale)
+        for (const gid of genreIds) {
+          const name = genreNameById.get(gid) ?? String(gid);
+          await prisma.genre.upsert({
+            where: { id: gid },
+            create: { id: gid, name },
+            update: { name },
+          });
+        }
 
         const imdbKey = imdbId ?? `tmdb-${movie.id}`; // Fallback id if no IMDB
         const title = movie.title ?? movie.original_title ?? "";
@@ -56,24 +80,28 @@ export async function GET() {
             posterUrl: movie.poster_path
               ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
               : null,
-            genres: genreStrings,
+            genresIds: genreStrings,
             rating,
             votes,
             releaseDate: movie.release_date
               ? new Date(movie.release_date)
               : undefined,
+            // Link genres by id
+            genres: { connect: genreIds.map((id) => ({ id })) },
           },
           update: {
             title,
             posterUrl: movie.poster_path
               ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
               : null,
-            genres: genreStrings,
+            genresIds: genreStrings,
             rating,
             votes,
             releaseDate: movie.release_date
               ? new Date(movie.release_date)
               : undefined,
+            // Replace genre links to match current TMDB ids
+            genres: { set: genreIds.map((id) => ({ id })) },
           },
         });
 
@@ -92,7 +120,6 @@ export async function GET() {
             if (existing) continue;
 
             // Placeholder notify by email/sms
-            // We'll import lazily to avoid static import cycles
             // const { notifyUser } = await import("@/lib/notify");
             // await notifyUser({ userId: sub.userId, method: sub.notifyBy, movie: { id: imdbKey, title, rating } });
 
