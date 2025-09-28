@@ -2,11 +2,12 @@
 
 import {motion} from "motion/react";
 import type {MovieWithGenres} from "@/models/movies.model";
+import {ImdbLogo} from "./imdb-logo";
+import {MovieGenres} from "@/components/movie/movie-genres";
+import {Star, Users} from "lucide-react";
 
 export type CollapsedMovieCardProps = {
-    // movie is not used in the collapsed view; omit to keep props minimal
-    title: string;
-    description: string;
+    movie: MovieWithGenres;
     imgSrc: string;
     idSuffix: string; // from useId()
     ctaText: string;
@@ -15,62 +16,74 @@ export type CollapsedMovieCardProps = {
 };
 
 export default function CollapsedMovieCard({
-                                               title,
-                                               description,
                                                imgSrc,
                                                idSuffix,
-                                               ctaText,
+                                               movie,
                                                className,
                                                onClickAction,
                                            }: CollapsedMovieCardProps) {
+    const {title, releaseDate, rating, votes} = movie;
+
+    const year = releaseDate ? new Date(releaseDate).getFullYear() : undefined;
+    const ratingText = rating != null ? rating.toFixed(1) : "N/A";
+    const votesText = votes != null ? Intl.NumberFormat().format(votes) : undefined;
+
     return (
         <motion.div
             layoutId={`card-${title}-${idSuffix}`}
             key={`card-${title}-${idSuffix}`}
             onClick={onClickAction}
             className={[
-                `p-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer`,
+                "p-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer",
                 className,
             ]
                 .filter(Boolean)
                 .join(" ")}
         >
-            <div
-                className={`flex gap-4  w-full`}
-            >
+            <div className="flex gap-4 flex-col w-full">
                 <motion.div layoutId={`image-${title}-${idSuffix}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        width={100}
-                        height={100}
                         src={imgSrc}
                         alt={title}
-                        className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top"
+                        className="w-full max-h-60 rounded-lg object-cover object-top"
                     />
                 </motion.div>
+
                 <div className="flex-1 min-w-0">
                     <motion.h3
                         layoutId={`title-${title}-${idSuffix}`}
-                        className={`font-medium text-neutral-800 dark:text-neutral-200  truncate`}
+                        className="font-medium text-neutral-800 dark:text-neutral-200 truncate"
                         title={title}
                     >
-                        {title}
+                        {title} {year && `(${year})`}
                     </motion.h3>
-                    <motion.p
-                        layoutId={`description-${description}-${idSuffix}`}
-                        className={`text-neutral-600 dark:text-neutral-400  truncate`}
-                        title={description}
+
+                    <MovieGenres genres={movie.genres} idSuffix={idSuffix}/>
+
+                    <motion.div
+                        layoutId={`description-${idSuffix}`}
+                        className="text-neutral-600 dark:text-neutral-400 truncate mt-2"
                     >
-                        {description}
-                    </motion.p>
+                        <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex items-center gap-2">
+                                <span className="sr-only">IMDb rating</span>
+                                <ImdbLogo className="w-8 h-6" height={30} width={30}/>
+                                <Star className="w-3 h-3 text-yellow-400" fill="currentColor"/>
+                                <span>{ratingText}</span>
+                            </div>
+
+                            {votesText && (
+                                <div className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+                                    <Users className="w-4 h-4"/>
+                                    <span className="sr-only">Votes</span>
+                                    <span>{votesText}</span>
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
                 </div>
             </div>
-            <motion.button
-                layoutId={`button-${title}-${idSuffix}`}
-                className="px-4 py-2 text-sm rounded-full font-bold bg-gray-100 hover:bg-green-500 hover:text-white text-black mt-4 md:mt-0"
-            >
-                {ctaText}
-            </motion.button>
         </motion.div>
     );
 }

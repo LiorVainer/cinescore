@@ -6,7 +6,6 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 import type { MovieWithGenres } from "@/models/movies.model";
 import CollapsedMovieCard from "./movie-card-collapsed";
 import ExpandedMovieCard from "./movie-card-expanded";
-import { buildSubtitle } from "./movie-card-utils";
 
 export type MovieCardProps = {
   movie: MovieWithGenres;
@@ -14,8 +13,6 @@ export type MovieCardProps = {
   ctaText?: string;
   ctaHref?: string;
   className?: string;
-  // Direction for RTL/LTR layout
-  dir?: "rtl" | "ltr";
 };
 
 export default function MovieCard({
@@ -23,12 +20,10 @@ export default function MovieCard({
   ctaText = "Details",
   ctaHref,
   className,
-  dir = "ltr",
 }: MovieCardProps) {
   const [active, setActive] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
-  const isRTL = dir === "rtl";
 
   const imgSrc = movie.posterUrl || "/window.svg"; // fallback asset from public/
   const imdbUrl =
@@ -36,8 +31,6 @@ export default function MovieCard({
     (movie.id?.startsWith("tt")
       ? `https://www.imdb.com/title/${movie.id}/`
       : undefined);
-  const title = movie.title;
-  const description = buildSubtitle(movie);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -76,12 +69,8 @@ export default function MovieCard({
           <ExpandedMovieCard
             ref={ref}
             movie={movie}
-            title={title}
-            description={description}
             imgSrc={imgSrc}
             idSuffix={id}
-            isRTL={isRTL}
-            dir={dir}
             ctaText={ctaText}
             imdbUrl={imdbUrl}
             onClose={() => setActive(false)}
@@ -90,11 +79,9 @@ export default function MovieCard({
       </AnimatePresence>
 
       <CollapsedMovieCard
-        title={title}
-        description={description}
+        movie={movie}
         imgSrc={imgSrc}
         idSuffix={id}
-        ctaText={ctaText}
         className={className}
         onClickAction={() => setActive(true)}
       />

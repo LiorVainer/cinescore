@@ -17,13 +17,13 @@ export default async function page() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex max-h-screen flex-col">
       {/* Navigation */}
       <header className="border-b">
         <div className="container  flex h-16 items-center justify-between">
           <div className="flex items-center ">
             {/* <Lock size={24} className="text-primary" /> */}
-            <span className="font-bold text-xl">Better-Auth</span>
+            <span className="font-bold text-xl">סינמדד</span>
           </div>
           <nav className="flex items-center gap-6">
             <div className="flex items-center gap-2">
@@ -38,11 +38,11 @@ export default async function page() {
                 <>
                   <Link href="/login">
                     <Button variant="outline" size="sm">
-                      Log in
+                      התחבר
                     </Button>
                   </Link>
                   <Link href="/signup">
-                    <Button size="sm">Sign up</Button>
+                    <Button size="sm">הירשם</Button>
                   </Link>
                 </>
               )}
@@ -52,9 +52,11 @@ export default async function page() {
       </header>
 
       {/* Search section */}
-      <section className="py-6">
+      <section className="py-6 flex-grow">
         <div className="container">
-          <h2 className="text-xl font-semibold mb-2">חיפוש סרטים (TMDB + IMDb)</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            חיפוש סרטים (TMDB + IMDb)
+          </h2>
           <MovieSearch />
         </div>
       </section>
@@ -64,7 +66,7 @@ export default async function page() {
         <div className="container flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
             <IconLockSquareRoundedFilled size={20} className="text-primary" />
-            <span className="font-bold">Auth Starter Kit</span>
+            <span className="font-bold">סינמדד</span>
           </div>
           <div className="flex gap-8">
             <a
@@ -90,7 +92,7 @@ export default async function page() {
             </a>
           </div>
           <div className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Achour Meguenni
+            © {new Date().getFullYear()} Lior Vainer
           </div>
         </div>
       </footer>

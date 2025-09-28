@@ -1,5 +1,6 @@
 import type { MovieWithGenres } from "@/models/movies.model";
 import { motion } from "motion/react";
+import { ImdbLogo } from "@/components/imdb-logo";
 
 export function buildSubtitle(movie: MovieWithGenres) {
   const year = movie.releaseDate
@@ -9,13 +10,21 @@ export function buildSubtitle(movie: MovieWithGenres) {
   const votes =
     movie.votes != null ? Intl.NumberFormat().format(movie.votes) : undefined;
 
-  const parts = [
-    year ? String(year) : undefined,
-    rating ? `★${rating}` : undefined,
-    votes ? `${votes} הצבעות` : undefined,
-  ].filter(Boolean);
+  const parts = {
+    year: year ? String(year) : undefined,
+    rating: rating ? `★${rating}` : undefined,
+    votes: votes ? `${votes}` : undefined,
+  };
 
-  return parts.join(" • ") || "";
+  return (
+    <div className="flex flex-col gap-1">
+      {parts.year && <p>{parts.year}</p>}
+      <div className="flex gap-2">
+        <ImdbLogo className={"1/1 "} height={30} width={30} /> {parts.rating}
+      </div>
+      {parts.votes && <p>{parts.votes}</p>}
+    </div>
+  );
 }
 
 export function RenderDetails({ movie }: { movie: MovieWithGenres }) {

@@ -16,7 +16,7 @@ export default function MovieSearch() {
   });
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4 p-4 h-full">
       <input
         type="text"
         value={query}
@@ -28,7 +28,7 @@ export default function MovieSearch() {
       {isFetching && <p>מחפש...</p>}
 
       {data && data.length > 0 && (
-        <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto max-h-full">
           {data.map((movie) => (
             <MovieCard ctaText={"פרטים"} key={movie.id} movie={movie} />
           ))}
