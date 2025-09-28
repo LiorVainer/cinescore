@@ -76,6 +76,7 @@ export async function GET() {
           create: {
             id: imdbKey,
             title,
+            description: movie.overview ?? "",
             posterUrl: movie.poster_path
               ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
               : null,

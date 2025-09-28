@@ -77,10 +77,14 @@ export async function searchMovies(query: string): Promise<SearchedMovie[]> {
 }
 
 export const searchMoviesInDB = async (query: string) => {
-  if (!query || query.trim().length < 2) return [];
   return await prisma.movie.findMany({
+    where: {
+      title: { contains: query },
+    },
     include: {
       genres: true,
     },
+    orderBy: [{ rating: "desc" }, { votes: "desc" }],
+    take: 50,
   });
 };
