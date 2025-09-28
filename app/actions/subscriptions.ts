@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
@@ -29,7 +29,10 @@ export async function getSubscriptions() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user?.id) throw new Error("Unauthorized");
 
-  return prisma.subscription.findMany({ where: { userId: session.user.id }, orderBy: { createdAt: "desc" } });
+  return prisma.subscription.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: "desc" },
+  });
 }
 
 export async function removeSubscription(id: string) {
@@ -42,4 +45,3 @@ export async function removeSubscription(id: string) {
   await prisma.subscription.delete({ where: { id } });
   return { ok: true };
 }
-
