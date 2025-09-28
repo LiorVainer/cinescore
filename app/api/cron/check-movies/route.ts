@@ -4,7 +4,13 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const fromVercel = req.headers.get("x-vercel-cron");
+
+  if (!fromVercel) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
   try {
     // Preload TMDB genres (id + localized name) and ensure they exist in DB
     const tmdbGenres = await tmdb.genres.movies({ language: "he-IL" });
