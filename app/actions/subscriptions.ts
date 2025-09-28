@@ -19,7 +19,7 @@ export async function addSubscription(input: SubscriptionInput) {
       userId: session.user.id,
       threshold: input.threshold,
       genre: input.genre ?? undefined,
-      notifyBy: input.notifyBy,
+      notifyBy: [input.notifyBy],
     },
   });
   return sub;
