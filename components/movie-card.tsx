@@ -78,7 +78,7 @@ export default function MovieCard({
         ) : null}
       </AnimatePresence>
 
-      <CollapsedMovieCard
+      <CollapsedMovfieCard
         movie={movie}
         imgSrc={imgSrc}
         idSuffix={id}

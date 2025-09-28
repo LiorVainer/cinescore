@@ -10,7 +10,6 @@ export type CollapsedMovieCardProps = {
     movie: MovieWithGenres;
     imgSrc: string;
     idSuffix: string; // from useId()
-    ctaText: string;
     className?: string;
     onClickAction: () => void; // open handler (renamed for Next.js client props rule)
 };
