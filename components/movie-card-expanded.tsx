@@ -79,7 +79,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                     {movie.description}
                                 </motion.p>
 
-                                <div className="mt-3 flex flex-wrap items-center gap-4">
+                                <div className="mt-2 flex flex-wrap items-center gap-4">
                                     <div className="flex items-center gap-2">
                                         <ImdbLogo className="w-6 h-6" height={30} width={30}/>
                                         <span className="sr-only">IMDb rating</span>
