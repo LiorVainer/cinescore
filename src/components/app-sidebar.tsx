@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
     IconCamera,
     IconChartBar,
@@ -20,12 +20,12 @@ import {
     IconSettings,
     IconUserCircle,
     IconUsers,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
-import {NavDocuments} from "@/components/nav-documents";
-import {NavMain} from "@/components/nav-main";
-import {NavSecondary} from "@/components/nav-secondary";
-import {NavUser} from "@/components/nav-user";
+import { NavDocuments } from '@/components/nav-documents';
+import { NavMain } from '@/components/nav-main';
+import { NavSecondary } from '@/components/nav-secondary';
+import { NavUser } from '@/components/nav-user';
 import {
     Sidebar,
     SidebarContent,
@@ -34,24 +34,24 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import {User} from "@prisma/client";
+} from '@/components/ui/sidebar';
+import { User } from '@prisma/client';
 
 const data = {
     navMain: [
         {
-            title: "Dashboard",
-            url: "/dashboard",
+            title: 'Dashboard',
+            url: '/dashboard',
             icon: IconDashboard,
         },
         {
-            title: "Account",
-            url: "/dashboard/account",
+            title: 'Account',
+            url: '/dashboard/account',
             icon: IconUserCircle,
         },
         {
-            title: "Setting",
-            url: "/dashboard/setting",
+            title: 'Setting',
+            url: '/dashboard/setting',
             icon: IconSettings,
         },
         // {
@@ -77,61 +77,61 @@ const data = {
     ],
     navClouds: [
         {
-            title: "Capture",
+            title: 'Capture',
             icon: IconCamera,
             isActive: true,
-            url: "#",
+            url: '#',
             items: [
                 {
-                    title: "Active Proposals",
-                    url: "#",
+                    title: 'Active Proposals',
+                    url: '#',
                 },
                 {
-                    title: "Archived",
-                    url: "#",
+                    title: 'Archived',
+                    url: '#',
                 },
             ],
         },
         {
-            title: "Proposal",
+            title: 'Proposal',
             icon: IconFileDescription,
-            url: "#",
+            url: '#',
             items: [
                 {
-                    title: "Active Proposals",
-                    url: "#",
+                    title: 'Active Proposals',
+                    url: '#',
                 },
                 {
-                    title: "Archived",
-                    url: "#",
+                    title: 'Archived',
+                    url: '#',
                 },
             ],
         },
         {
-            title: "Prompts",
+            title: 'Prompts',
             icon: IconFileAi,
-            url: "#",
+            url: '#',
             items: [
                 {
-                    title: "Active Proposals",
-                    url: "#",
+                    title: 'Active Proposals',
+                    url: '#',
                 },
                 {
-                    title: "Archived",
-                    url: "#",
+                    title: 'Archived',
+                    url: '#',
                 },
             ],
         },
     ],
     navSecondary: [
         {
-            title: "Home",
-            url: "/",
+            title: 'Home',
+            url: '/',
             icon: IconHome,
         },
         {
-            title: "Clone Repository",
-            url: "https://github.com/Achour/nextjs-better-auth",
+            title: 'Clone Repository',
+            url: 'https://github.com/Achour/nextjs-better-auth',
             icon: IconCopy,
         },
     ],
@@ -158,34 +158,31 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     user: User;
 }
 
-export function AppSidebar({user, ...props}: AppSidebarProps) {
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
     if (!user) {
-        throw new Error("AppSidebar requires a user but received undefined.");
+        throw new Error('AppSidebar requires a user but received undefined.');
     }
     return (
-        <Sidebar collapsible="offcanvas" {...props}>
+        <Sidebar collapsible='offcanvas' {...props}>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton
-                            asChild
-                            className="data-[slot=sidebar-menu-button]:!p-1.5"
-                        >
-                            <a href="#">
-                                <IconInnerShadowTop className="!size-5"/>
-                                <span className="text-base font-semibold">Dashboard</span>
+                        <SidebarMenuButton asChild className='data-[slot=sidebar-menu-button]:!p-1.5'>
+                            <a href='#'>
+                                <IconInnerShadowTop className='!size-5' />
+                                <span className='text-base font-semibold'>Dashboard</span>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain}/>
+                <NavMain items={data.navMain} />
                 {/* <NavDocuments items={data.documents} /> */}
-                <NavSecondary items={data.navSecondary} className="mt-auto"/>
+                <NavSecondary items={data.navSecondary} className='mt-auto' />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={user}/>
+                <NavUser user={user} />
             </SidebarFooter>
         </Sidebar>
     );

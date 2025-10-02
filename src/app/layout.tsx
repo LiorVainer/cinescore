@@ -1,11 +1,11 @@
-import {Geist, Geist_Mono} from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import {Suspense} from 'react';
-import {AppProviders} from './providers';
-import {Metadata} from 'next';
+import { Suspense } from 'react';
+import { AppProviders } from './providers';
+import { Metadata } from 'next';
 
-const geistSans = Geist({variable: '--font-geist-sans', subsets: ['latin']});
-const geistMono = Geist_Mono({variable: '--font-geist-mono', subsets: ['latin']});
+const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
+const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
 const VERSION = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 8) ?? Date.now().toString();
 
@@ -50,14 +50,14 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export default function RootLayout({children}: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang='en' dir='rtl'>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}>
-        <Suspense fallback={null}>
-            <AppProviders>{children}</AppProviders>
-        </Suspense>
-        </body>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}>
+                <Suspense fallback={null}>
+                    <AppProviders>{children}</AppProviders>
+                </Suspense>
+            </body>
         </html>
     );
 }

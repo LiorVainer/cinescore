@@ -1,23 +1,23 @@
-import {NextResponse} from "next/server";
-import {tmdb, omdb, imdb} from "@/lib/clients";
-import {prisma} from "@/lib/prisma";
-import {seedNowPlayingMovies} from "../../../../../prisma/seed";
+import { NextResponse } from 'next/server';
+import { tmdb, omdb, imdb } from '@/lib/clients';
+import { prisma } from '@/lib/prisma';
+import { seedNowPlayingMovies } from '../../../../../prisma/seed';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
-    const fromVercel = req.headers.get("x-vercel-cron");
+    const fromVercel = req.headers.get('x-vercel-cron');
 
     if (!fromVercel) {
-        return new NextResponse("Unauthorized", {status: 401});
+        return new NextResponse('Unauthorized', { status: 401 });
     }
 
     try {
         const nowPlayingAmount = seedNowPlayingMovies();
 
-        return NextResponse.json({ok: true, count: nowPlayingAmount});
+        return NextResponse.json({ ok: true, count: nowPlayingAmount });
     } catch (e) {
         console.error(e);
-        return NextResponse.json({ok: false, error: "failed"}, {status: 500});
+        return NextResponse.json({ ok: false, error: 'failed' }, { status: 500 });
     }
 }

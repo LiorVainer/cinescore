@@ -1,17 +1,17 @@
 'use client';
 
-import {NuqsAdapter} from 'nuqs/adapters/next/app';
-import {ThemeProvider} from '@/components/theme-provider';
-import {authClient} from '@/lib/auth-client';
-import {AuthUIProvider} from "@daveyplate/better-auth-ui"
-import Link from "next/link"
-import {useRouter} from "next/navigation";
-import {useState} from "react";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {HebrewAuthLocalization} from "@/constants/auth.const";
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { ThemeProvider } from '@/components/theme-provider';
+import { authClient } from '@/lib/auth-client';
+import { AuthUIProvider } from '@daveyplate/better-auth-ui';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HebrewAuthLocalization } from '@/constants/auth.const';
 
-export function AppProviders({children}: { children: React.ReactNode }) {
-    const router = useRouter()
+export function AppProviders({ children }: { children: React.ReactNode }) {
+    const router = useRouter();
     const [client] = useState(() => new QueryClient());
 
     return (
@@ -22,7 +22,7 @@ export function AppProviders({children}: { children: React.ReactNode }) {
                 replace={router.replace}
                 onSessionChange={() => {
                     // Clear router cache (protected routes)
-                    router.refresh()
+                    router.refresh();
                 }}
                 localization={HebrewAuthLocalization}
                 Link={Link}
@@ -31,9 +31,7 @@ export function AppProviders({children}: { children: React.ReactNode }) {
                 }}
             >
                 <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-                    <NuqsAdapter>
-                        {children}
-                    </NuqsAdapter>
+                    <NuqsAdapter>{children}</NuqsAdapter>
                 </ThemeProvider>
             </AuthUIProvider>
         </QueryClientProvider>

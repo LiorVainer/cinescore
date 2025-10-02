@@ -1,32 +1,28 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState } from 'react';
 
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 export default function LogoutButton() {
-  const router = useRouter();
+    const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-  async function handleLogOut() {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login"); // redirect to login page
-        },
-        onRequest: (ctx) => {
-          setLoading(true);
-        },
-        onResponse: (ctx) => {
-          setLoading(false);
-        },
-      },
-    });
-  }
-  return (
-    <button onClick={() => handleLogOut()}>
-      {loading ? "Logging out..." : "Log out"}
-    </button>
-  );
+    async function handleLogOut() {
+        await authClient.signOut({
+            fetchOptions: {
+                onSuccess: () => {
+                    router.push('/login'); // redirect to login page
+                },
+                onRequest: (ctx) => {
+                    setLoading(true);
+                },
+                onResponse: (ctx) => {
+                    setLoading(false);
+                },
+            },
+        });
+    }
+    return <button onClick={() => handleLogOut()}>{loading ? 'Logging out...' : 'Log out'}</button>;
 }

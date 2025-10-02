@@ -77,6 +77,8 @@ export default defineConfig([
             'unicorn/prefer-global-this': 'off',
             '@typescript-eslint/ban-ts-comment': 'warn',
             'react/no-unescaped-entities': 'off',
+            'promise/catch-or-return': 'warn',
+            'promise/always-return': 'warn',
         },
         settings: {
             react: { version: 'detect' },
