@@ -1,48 +1,68 @@
-import {prisma} from '../src/lib/prisma';
-import {imdb, omdb, tmdb} from "@/lib/clients";
+import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import { imdb, omdb, tmdb } from '@/lib/clients';
 
 export async function seedNowPlayingMovies() {
     // Preload TMDB genres (id + localized name) and ensure they exist in DB
-    const tmdbGenres = await tmdb.genres.movies({language: "he-IL"});
-    const genreNameById = new Map<number, string>(
-        tmdbGenres.genres.map((g) => [g.id, g.name]),
-    );
+    const tmdbGenres = await tmdb.genres.movies({ language: 'he-IL' });
+    const genreNameById = new Map<number, string>(tmdbGenres.genres.map((g) => [g.id, g.name]));
 
     // Upsert all TMDB genres into the DB to guarantee connect works later
     for (const genre of tmdbGenres.genres) {
         await prisma.genre.upsert({
-            where: {id: genre.id},
-            create: {id: genre.id, name: genre.name},
-            update: {name: genre.name},
+            where: { id: genre.id },
+            create: { id: genre.id, name: genre.name },
+            update: { name: genre.name },
         });
     }
 
     const nowPlaying = await tmdb.movies.nowPlaying({
-        language: "he-IL",
-        region: "IL",
+        language: 'he-IL',
+        region: 'IL',
     });
 
     const items = nowPlaying.results ?? [];
-
 
     // 2) Enrich with IMDB and upsert into DB
     for (const movie of items) {
         try {
             const ext = await tmdb.movies.externalIds(movie.id);
+            const engVideos = await tmdb.movies.videos(movie.id);
+            const hebVideos = await tmdb.movies.videos(movie.id, { language: 'he-IL' });
+
+            const engTrailers = engVideos.results?.filter((v) => v.type === 'Trailer' && v.site === 'YouTube') ?? [];
+            const hebTrailers = hebVideos.results?.filter((v) => v.type === 'Trailer' && v.site === 'YouTube') ?? [];
+
+            const dbHebTrailers: Prisma.TrailerCreateManyInput[] = hebTrailers.map((trailer) => ({
+                movieId: ext.imdb_id ?? `tmdb-${movie.id}`,
+                title: trailer.name,
+                url: `https://www.youtube.com/watch?v=${trailer.key}`,
+                language: 'he_IL',
+                youtubeId: trailer.key,
+            }));
+
+            const dbEngTrailers: Prisma.TrailerCreateManyInput[] = engTrailers.map((trailer) => ({
+                movieId: ext.imdb_id ?? `tmdb-${movie.id}`,
+                title: trailer.name,
+                url: `https://www.youtube.com/watch?v=${trailer.key}`,
+                language: 'en_US',
+                youtubeId: trailer.key,
+            }));
+
+            const allDbTrailers = [...dbEngTrailers, ...dbHebTrailers];
+
             const imdbId = ext.imdb_id ?? null;
 
             let rating: number | undefined;
             let votes: number | undefined;
             if (imdbId) {
-                const omdbMovieData = await omdb.title.getById({i: imdbId});
-                const isImdbRatingInOmdb =
-                    !!omdbMovieData.imdbRating && omdbMovieData.imdbRating !== "N/A";
-                const isImdbVotesInOmdb =
-                    !!omdbMovieData.imdbVotes && omdbMovieData.imdbVotes !== "N/A";
+                const omdbMovieData = await omdb.title.getById({ i: imdbId });
+                const isImdbRatingInOmdb = !!omdbMovieData.imdbRating && omdbMovieData.imdbRating !== 'N/A';
+                const isImdbVotesInOmdb = !!omdbMovieData.imdbVotes && omdbMovieData.imdbVotes !== 'N/A';
 
                 if (isImdbRatingInOmdb && isImdbVotesInOmdb) {
                     rating = parseFloat(omdbMovieData.imdbRating as string);
-                    votes = parseInt(omdbMovieData.imdbVotes!.replace(/,/g, ""), 10);
+                    votes = parseInt(omdbMovieData.imdbVotes!.replace(/,/g, ''), 10);
                 } else {
                     const imdbMovieData = await imdb.titles.imDbApiServiceGetTitle({
                         titleId: imdbId,
@@ -59,50 +79,60 @@ export async function seedNowPlayingMovies() {
             for (const gid of genreIds) {
                 const name = genreNameById.get(gid) ?? String(gid);
                 await prisma.genre.upsert({
-                    where: {id: gid},
-                    create: {id: gid, name},
-                    update: {name},
+                    where: { id: gid },
+                    create: { id: gid, name },
+                    update: { name },
                 });
             }
 
             const imdbKey = imdbId ?? `tmdb-${movie.id}`; // Fallback id if no IMDB
-            const title = movie.title ?? movie.original_title ?? "";
+            const title = movie.title ?? movie.original_title ?? '';
             await prisma.movie.upsert({
-                where: {id: imdbKey},
+                where: { id: imdbKey },
                 create: {
                     id: imdbKey,
                     title,
-                    description: movie.overview ?? "",
-                    posterUrl: movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-                        : null,
+                    description: movie.overview ?? '',
+                    posterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : null,
                     rating,
                     votes,
-                    releaseDate: movie.release_date
-                        ? new Date(movie.release_date)
-                        : undefined,
+                    releaseDate: movie.release_date ? new Date(movie.release_date) : undefined,
                     // Link genres by id
-                    genres: {connect: genreIds.map((id) => ({id}))},
+                    genres: { connect: genreIds.map((id) => ({ id })) },
                 },
                 update: {
                     title,
-                    posterUrl: movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-                        : null,
+                    posterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : null,
                     rating,
                     votes,
-                    releaseDate: movie.release_date
-                        ? new Date(movie.release_date)
-                        : undefined,
+                    releaseDate: movie.release_date ? new Date(movie.release_date) : undefined,
                     // Replace genre links to match current TMDB ids
-                    genres: {set: genreIds.map((id) => ({id}))},
+                    genres: { set: genreIds.map((id) => ({ id })) },
                 },
             });
 
+            await Promise.all(
+                allDbTrailers.map((trailer) =>
+                    prisma.trailer.upsert({
+                        where: {
+                            movieId_url: {
+                                movieId: trailer.movieId,
+                                url: trailer.url,
+                            },
+                        },
+                        update: {
+                            title: trailer.title,
+                            language: trailer.language,
+                            youtubeId: trailer.youtubeId,
+                        },
+                        create: trailer,
+                    }),
+                ),
+            );
             // 3) Notify users who subscribed and haven't been notified for this movie
             if (rating != null) {
                 const subs = await prisma.subscription.findMany({
-                    where: {threshold: {lte: rating}},
+                    where: { threshold: { lte: rating } },
                 });
                 for (const sub of subs) {
                     const existing = await prisma.notification.findFirst({
@@ -118,12 +148,12 @@ export async function seedNowPlayingMovies() {
                     // await notifyUser({ userId: sub.userId, method: sub.notifyBy, movie: { id: imdbKey, title, rating } });
 
                     await prisma.notification.create({
-                        data: {userId: sub.userId, movieId: imdbKey},
+                        data: { userId: sub.userId, movieId: imdbKey },
                     });
                 }
             }
         } catch (e) {
-            console.error("cron item error", e);
+            console.error('cron item error', e);
         }
     }
     console.log(`Seeded ${items.length} now playing movies.`);
@@ -131,6 +161,7 @@ export async function seedNowPlayingMovies() {
     return items.length;
 }
 
+// eslint-disable-next-line promise/catch-or-return
 seedNowPlayingMovies()
     .then(() => console.log('Database seeded'))
     .catch((e) => console.error(e))

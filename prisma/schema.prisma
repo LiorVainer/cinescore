@@ -94,17 +94,39 @@ model Movie {
 
   notifications Notification[]
   genres        Genre[] // many-to-many with Genre
+  trailers      Trailer[]
 
   @@index([rating])
   @@index([releaseDate])
   @@map("movie")
 }
 
+enum Language {
+  en_US
+  he_IL
+}
+
+model Trailer {
+  id        String   @id @default(cuid())
+  movieId   String
+  youtubeId  String?
+  url       String
+  language  Language
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, url])
+  @@map("trailer")
+}
+
 model Genre {
   id        Int      @id
   name      String   @unique
   movies    Movie[]
-  language  String   @default("he-IL")
+  language  Language @default(he_IL)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
