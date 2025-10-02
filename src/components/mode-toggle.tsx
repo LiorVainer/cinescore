@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import {
     DropdownMenu,
@@ -17,16 +17,22 @@ export function ModeToggle() {
     return (
         <DropdownMenu dir={'rtl'}>
             <DropdownMenuTrigger asChild>
-                <Button className='relative flex items-center gap-2' variant='ghost'>
+                <Button className='relative flex items-center gap-2 rounded-full' variant='ghost'>
                     <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
                     <Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
                     <span className='sr-only'>Toggle theme</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-                <DropdownMenuItem onClick={() => setTheme('light')}>בהיר</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>חשוך</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>מערכת הפעלה</DropdownMenuItem>
+            <DropdownMenuContent align='end' className='bg-background/80 mt-3'>
+                <DropdownMenuItem onClick={() => setTheme('light')}>
+                    <Sun />
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                    <Moon />
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('system')}>
+                    <Monitor />
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
