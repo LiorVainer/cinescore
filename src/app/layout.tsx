@@ -3,6 +3,7 @@ import './globals.css';
 import { Suspense } from 'react';
 import { AppProviders } from './providers';
 import { Metadata } from 'next';
+import { AppNavbar } from '@/components/layout/app-navbar';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -55,7 +56,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang='en' dir='rtl'>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}>
                 <Suspense fallback={null}>
-                    <AppProviders>{children}</AppProviders>
+                    <AppProviders>
+                        <AppNavbar />
+                        <div className='mt-15'>{children}</div>
+                    </AppProviders>
                 </Suspense>
             </body>
         </html>
