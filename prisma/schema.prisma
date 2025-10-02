@@ -82,8 +82,10 @@ enum NotifyMethod {
 }
 
 model Movie {
-  id          String    @id // imdbID or fallback
+  id          String    @id
   title       String
+  originalTitle String?
+  originalLanguage    String?
   description String?
   posterUrl   String?
   rating      Float?
@@ -93,7 +95,7 @@ model Movie {
   updatedAt   DateTime  @default(now()) @updatedAt
 
   notifications Notification[]
-  genres        Genre[] // many-to-many with Genre
+  genres        Genre[]
   trailers      Trailer[]
 
   @@index([rating])
@@ -109,7 +111,7 @@ enum Language {
 model Trailer {
   id        String   @id @default(cuid())
   movieId   String
-  youtubeId  String?
+  youtubeId  String
   url       String
   language  Language
   title     String

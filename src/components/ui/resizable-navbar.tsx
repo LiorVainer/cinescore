@@ -2,8 +2,10 @@
 import {cn} from "@/lib/utils";
 import {IconMenu2, IconX} from "@tabler/icons-react";
 import {AnimatePresence, motion, useMotionValueEvent, useScroll,} from "motion/react";
+import {usePathname} from "next/navigation";
 
 import React, {useEffect, useRef, useState} from "react";
+import Link from "next/link";
 
 
 interface NavbarProps {
@@ -260,19 +262,34 @@ export const MobileNavToggle = ({
   );
 };
 
+export const NavbarLogoContent = () => (
+    <>
+        <img
+            src="https://assets.aceternity.com/logo-dark.png"
+            alt="logo"
+            width={30}
+            height={30}
+        />
+        <span className="font-medium text-black dark:text-white">סינמדד</span>
+    </>
+)
+
 export const NavbarLogo = () => {
+  const pathname = usePathname();
+
+  const isHome = pathname === '/';
+  const className = 'relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black'
+
+  if (!isHome) {
+    return <Link href="/" className={className}><NavbarLogoContent/></Link>;
+  }
+
   return (
     <a
       href="#"
-      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
+      className={className}
     >
-      <img
-        src="https://assets.aceternity.com/logo-dark.png"
-        alt="logo"
-        width={30}
-        height={30}
-      />
-      <span className="font-medium text-black dark:text-white">סינמדד</span>
+      <NavbarLogoContent/>
     </a>
   );
 };

@@ -18,7 +18,7 @@ export const AppNavbar = () => {
     return (
         <Navbar position='fixed'>
             {!isMobile ? (
-                <NavBody className='container  flex h-16 items-center justify-between'>
+                <NavBody className='container flex h-16 items-center justify-between'>
                     <NavbarLogo />
                     <NavbarContent />
                 </NavBody>
@@ -41,6 +41,7 @@ export const NavbarContent = () => {
                 <ModeToggle />
                 <SignedIn>
                     <UserButton
+                        className='rounded-full'
                         variant='ghost'
                         classNames={{
                             content: {

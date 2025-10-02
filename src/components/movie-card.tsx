@@ -9,7 +9,6 @@ import ExpandedMovieCard from './movie-card-expanded';
 
 export type MovieCardProps = {
     movie: PopulatedMovie;
-    // Optional CTA override. If not provided and movie.id looks like an IMDb id (ttXXXX), we link to IMDb.
     ctaText?: string;
     ctaHref?: string;
     className?: string;
@@ -62,8 +61,6 @@ export default function MovieCard({ movie, ctaText = 'Details', ctaHref, classNa
                         movie={movie}
                         imgSrc={imgSrc}
                         idSuffix={id}
-                        ctaText={ctaText}
-                        imdbUrl={imdbUrl}
                         onClose={() => setActive(false)}
                     />
                 ) : null}

@@ -9,9 +9,7 @@ export default async function page() {
     });
 
     return (
-        <div className='flex h-screen flex-col'>
-            {/* Navigation */}
-            {/* Search section */}
+        <div className='flex h-screen flex-col px-4'>
             <section className='py-6 flex-grow'>
                 <div className='container'>
                     <h2 className='text-xl font-semibold mb-2'>חיפוש סרטים</h2>

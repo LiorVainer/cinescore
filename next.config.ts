@@ -13,7 +13,13 @@ const nextConfig: NextConfig = {
                 port: '',
                 pathname: '/vi/**',
             },
-        ], // 👈 add this
+            {
+                protocol: 'https',
+                hostname: 'image.tmdb.org',
+                port: '',
+                pathname: '/t/p/**', // TMDB poster/backdrop paths
+            },
+        ],
     },
 };
 

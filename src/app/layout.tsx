@@ -12,7 +12,7 @@ const VERSION = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 8) ?? Date.now().toS
 
 export async function generateMetadata(): Promise<Metadata> {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sitewave.app';
-    const title = 'Sitewave';
+    const title = 'CineScore';
     const description = 'Discover, organize, and manage websites bookmarks with AI-powered suggestions';
     const ogImage = `/og.png?v=${VERSION}`;
 
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
             url: siteUrl,
             title,
             description,
-            siteName: 'Sitewave',
+            siteName: title,
             locale: 'en_US',
             images: [
                 {

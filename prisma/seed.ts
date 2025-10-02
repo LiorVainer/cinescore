@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { imdb, omdb, tmdb } from '@/lib/clients';
+import { Movie } from '@/lib/omdbapi';
 
 export async function seedNowPlayingMovies() {
     // Preload TMDB genres (id + localized name) and ensure they exist in DB
@@ -55,8 +56,10 @@ export async function seedNowPlayingMovies() {
 
             let rating: number | undefined;
             let votes: number | undefined;
+            let omdbMovieData: Movie = {} as Movie;
+
             if (imdbId) {
-                const omdbMovieData = await omdb.title.getById({ i: imdbId });
+                omdbMovieData = await omdb.title.getById({ i: imdbId });
                 const isImdbRatingInOmdb = !!omdbMovieData.imdbRating && omdbMovieData.imdbRating !== 'N/A';
                 const isImdbVotesInOmdb = !!omdbMovieData.imdbVotes && omdbMovieData.imdbVotes !== 'N/A';
 
@@ -87,12 +90,15 @@ export async function seedNowPlayingMovies() {
 
             const imdbKey = imdbId ?? `tmdb-${movie.id}`; // Fallback id if no IMDB
             const title = movie.title ?? movie.original_title ?? '';
+
             await prisma.movie.upsert({
                 where: { id: imdbKey },
                 create: {
                     id: imdbKey,
                     title,
                     description: movie.overview ?? '',
+                    originalTitle: movie.original_title,
+                    originalLanguage: movie.original_language,
                     posterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : null,
                     rating,
                     votes,
@@ -103,6 +109,8 @@ export async function seedNowPlayingMovies() {
                 update: {
                     title,
                     posterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : null,
+                    originalTitle: movie.original_title,
+                    originalLanguage: movie.original_language,
                     rating,
                     votes,
                     releaseDate: movie.release_date ? new Date(movie.release_date) : undefined,

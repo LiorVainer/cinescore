@@ -6,6 +6,8 @@ import { ImdbLogo } from './imdb-logo';
 import { MovieGenres } from '@/components/movie/movie-genres';
 import { Star, Users } from 'lucide-react';
 import React from 'react';
+import Image from 'next/image';
+import { formatSinceDate } from '@/lib/date.utils';
 
 export type CollapsedMovieCardProps = {
     movie: PopulatedMovie;
@@ -24,9 +26,16 @@ export default function CollapsedMovieCard({
 }: CollapsedMovieCardProps) {
     const { title, releaseDate, rating, votes } = movie;
 
-    const date = releaseDate ? new Date(releaseDate).toLocaleDateString() : undefined;
+    const date = releaseDate
+        ? new Date(releaseDate).toLocaleDateString('he-IL', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+          })
+        : undefined;
     const ratingText = rating != null ? rating.toFixed(1) : 'לא דורג עדיין';
     const votesText = votes != null ? Intl.NumberFormat().format(votes) : undefined;
+    const sinceLabel = formatSinceDate(releaseDate);
 
     return (
         <motion.div
@@ -42,7 +51,13 @@ export default function CollapsedMovieCard({
         >
             <div className='flex gap-4 flex-col w-full'>
                 <motion.div layoutId={`image-${title}-${idSuffix}`}>
-                    <img src={imgSrc} alt={title} className='w-full max-h-60 rounded-t-lg object-cover object-top' />
+                    <Image
+                        height={200}
+                        width={300}
+                        src={imgSrc}
+                        alt={title}
+                        className='w-full max-h-40 md:max-h-60 rounded-t-lg object-cover object-top'
+                    />
                 </motion.div>
 
                 <div className='flex-1 min-w-0 pb-4 px-4'>
@@ -50,24 +65,18 @@ export default function CollapsedMovieCard({
                         <div className='flex justify-between items-center'>
                             <motion.h3
                                 layoutId={`title-${title}-${idSuffix}`}
-                                className={`font-bold text-neutral-700 dark:text-neutral-200 truncate`}
+                                className={`font-bold text-lg text-neutral-700 dark:text-neutral-200 truncate`}
                                 title={title}
                             >
                                 {title}
                             </motion.h3>
-                            <motion.p
-                                layoutId={`year-${title}-${idSuffix}`}
-                                className={`text-sm text-neutral-500 dark:text-neutral-400`}
-                            >
-                                {date}
-                            </motion.p>
                         </div>
                         <MovieGenres genres={movie.genres} idSuffix={idSuffix} />
                     </div>
 
                     <motion.div
                         layoutId={`description-${idSuffix}`}
-                        className='text-neutral-600 dark:text-neutral-400 truncate mt-2'
+                        className='flex justify-between  items-center  truncate mt-2'
                     >
                         <div className='flex flex-wrap items-center gap-4'>
                             <div className='flex items-center gap-2'>
@@ -85,6 +94,15 @@ export default function CollapsedMovieCard({
                                 </div>
                             )}
                         </div>
+
+                        {sinceLabel && (
+                            <motion.p
+                                layoutId={`since-${title}-${idSuffix}`}
+                                className={`text-sm text-neutral-500 dark:text-neutral-400`}
+                            >
+                                {sinceLabel}
+                            </motion.p>
+                        )}
                     </motion.div>
                 </div>
             </div>

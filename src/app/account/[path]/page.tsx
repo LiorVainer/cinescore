@@ -1,8 +1,5 @@
 import { AccountView } from '@daveyplate/better-auth-ui';
 import { accountViewPaths } from '@daveyplate/better-auth-ui/server';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Home } from 'lucide-react';
 
 export const dynamicParams = false;
 
@@ -18,15 +15,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
     const { path } = await params;
 
     return (
-        <main className='container h-screen p-4 md:p-6'>
-            <div className='mb-4'>
-                <Button asChild variant='outline' size='sm'>
-                    <Link href='/' aria-label='Go to main screen' className='flex items-center gap-2'>
-                        <Home className='size-4' />
-                        <p> חזור למסך ראשי</p>
-                    </Link>
-                </Button>
-            </div>
+        <main className='container h-screen p-4 md:p-12'>
             <AccountView path={path} />
         </main>
     );

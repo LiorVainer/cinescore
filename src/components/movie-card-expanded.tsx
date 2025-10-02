@@ -8,23 +8,32 @@ import { MovieGenres } from '@/components/movie/movie-genres';
 import ThumbnailButton from '@/components/thumbnail-button-video-player';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { Star, Users } from 'lucide-react';
+import { formatSinceDate } from '@/lib/date.utils';
+import { getLanguageLabel } from '@/constants/languages.const';
+import { Button } from '@/components/ui/button';
 
 export type ExpandedMovieCardProps = {
     movie: PopulatedMovie;
     imgSrc: string;
     idSuffix: string; // from useId()
-    ctaText: string;
-    imdbUrl?: string;
     onClose: () => void;
 };
 
 const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProps>(
-    ({ movie, imgSrc, idSuffix, ctaText, imdbUrl, onClose }, ref) => {
-        const { title, releaseDate, rating, votes, genres } = movie;
+    ({ movie, imgSrc, idSuffix, onClose }, ref) => {
+        const { title, originalTitle, originalLanguage, releaseDate, rating, votes, genres } = movie;
 
-        const date = releaseDate ? new Date(releaseDate).toLocaleDateString() : undefined;
+        const date = releaseDate
+            ? new Date(releaseDate).toLocaleDateString('he-IL', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+              })
+            : undefined;
+        const sinceLabel = formatSinceDate(releaseDate);
         const ratingText = rating != null ? rating.toFixed(1) : 'לא דורג עדיין';
         const votesText = votes != null ? Intl.NumberFormat().format(votes) : undefined;
+        const originalLangLabel = getLanguageLabel(originalLanguage) ?? originalLanguage ?? undefined;
 
         return (
             <div className='fixed inset-0 grid place-items-center z-[100] scrollable'>
@@ -56,36 +65,47 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                         />
                     </motion.div>
 
-                    <div className='p-4 flex flex-col gap-4'>
+                    <div className='p-4 flex flex-col gap-8'>
                         <div className={`flex justify-between items-start gap-4`}>
                             <div className='flex-1 flex flex-col min-w-0 gap-4'>
-                                <div className='flex flex-col gap-4'>
-                                    <div>
-                                        <motion.h3
-                                            layoutId={`title-${title}-${idSuffix}`}
-                                            className={`font-bold text-neutral-700 dark:text-neutral-200 truncate`}
-                                            title={title}
-                                        >
-                                            {title}
-                                        </motion.h3>
-                                        <motion.p
-                                            layoutId={`year-${title}-${idSuffix}`}
-                                            className={`text-sm text-neutral-500 dark:text-neutral-400`}
-                                        >
-                                            {date}
-                                        </motion.p>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex justify-between gap-2'>
+                                        <div>
+                                            <motion.h1
+                                                layoutId={`title-${title}-${idSuffix}`}
+                                                className={`font-bold text-neutral-700 dark:text-neutral-200 truncate text-xl`}
+                                                title={title}
+                                            >
+                                                {title}
+                                            </motion.h1>
+                                            <motion.p
+                                                layoutId={`original-${title}-${idSuffix}`}
+                                                className={`text-neutral-500 dark:text-neutral-400`}
+                                            >
+                                                {originalTitle} ({originalLangLabel})
+                                            </motion.p>
+                                        </div>
+                                        <Button onClick={() => onClose()}>סגור</Button>
                                     </div>
-                                    <MovieGenres genres={genres} idSuffix={idSuffix} />
+                                    <div className='flex justify-between items-start gap-2'>
+                                        <MovieGenres genres={genres} idSuffix={idSuffix} />
+                                        <div className='flex flex-col items-end'>
+                                            <motion.p
+                                                layoutId={`date-${title}-${idSuffix}`}
+                                                className={`text-sm text-neutral-500 dark:text-neutral-400`}
+                                            >
+                                                {date}
+                                            </motion.p>
+                                            <motion.p
+                                                layoutId={`since-${title}-${idSuffix}`}
+                                                className={`text-sm text-neutral-500 dark:text-neutral-400`}
+                                            >
+                                                {sinceLabel}
+                                            </motion.p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <motion.button
-                                layoutId={`button-${title}-${idSuffix}`}
-                                className='px-4 py-3 text-sm rounded-full font-bold bg-gray-100 text-black whitespace-nowrap'
-                                onClick={onClose}
-                            >
-                                סגור
-                            </motion.button>
                         </div>
 
                         <div>
@@ -105,7 +125,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                 </div>
 
                                 {votesText && (
-                                    <div className='flex items-center gap-2 text-neutral-500 dark:text-neutral-400'>
+                                    <div className='flex items-center gap-2 '>
                                         <Users className='w-4 h-4' />
                                         <span className='sr-only'>Votes</span>
                                         <span>{votesText}</span>

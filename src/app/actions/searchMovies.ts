@@ -71,9 +71,15 @@ export async function searchMovies(query: string): Promise<SearchedMovie[]> {
 }
 
 export const searchMoviesInDB = async (query: string) => {
+    const q = query.trim();
+    if (!q) return [];
+
     return await prisma.movie.findMany({
         where: {
-            title: { contains: query },
+            OR: [
+                { title: { contains: q, mode: 'insensitive' } },
+                { originalTitle: { contains: q, mode: 'insensitive' } },
+            ],
         },
         include: {
             genres: true,
@@ -82,4 +88,67 @@ export const searchMoviesInDB = async (query: string) => {
         orderBy: [{ rating: 'desc' }, { votes: 'desc' }],
         take: 50,
     });
+};
+
+export type MovieFilters = {
+    search?: string;
+    sort?: 'rating:desc' | 'rating:asc' | 'votes:desc' | 'releaseDate:desc' | 'releaseDate:asc';
+    selectedGenres?: number[];
+    page?: number;
+    pageSize?: number;
+};
+
+export const searchMoviesFiltered = async (filters: MovieFilters) => {
+    const { search = '', sort = 'rating:desc', selectedGenres = [], page = 1, pageSize = 24 } = filters ?? {};
+
+    const q = search.trim();
+
+    // Build where
+    const where: any = {};
+
+    if (q.length > 0) {
+        where.OR = [
+            { title: { contains: q, mode: 'insensitive' } },
+            { originalTitle: { contains: q, mode: 'insensitive' } },
+        ];
+    }
+
+    if (selectedGenres.length > 0) {
+        where.genres = {
+            some: { id: { in: selectedGenres } },
+        };
+    }
+
+    // Build orderBy
+    const [field, direction] = (sort || 'rating:desc').split(':') as [
+        'rating' | 'votes' | 'releaseDate',
+        'asc' | 'desc',
+    ];
+    const orderBy = { [field]: direction } as unknown as Record<string, 'asc' | 'desc'>;
+
+    const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
+    const take = Math.max(1, Math.min(100, pageSize));
+
+    const [items, total] = await Promise.all([
+        prisma.movie.findMany({
+            where,
+            include: { genres: true, trailers: true },
+            orderBy,
+            skip,
+            take,
+        }),
+        prisma.movie.count({ where }),
+    ]);
+
+    return {
+        items,
+        total,
+        page,
+        pageSize: take,
+        totalPages: Math.ceil(total / take) || 1,
+    };
+};
+
+export const listGenres = async () => {
+    return prisma.genre.findMany({ orderBy: { name: 'asc' } });
 };
