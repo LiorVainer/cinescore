@@ -50,7 +50,7 @@ interface MobileNavMenuProps {
   isOpen: boolean;
 }
 
-export const Navbar = ({ children, className, hideAt = 800, condenseAt = 120, showNearTop = 80, jitterDelta = 2, position = 'sticky' }: NavbarProps) => {
+export const Navbar = ({ children, className, hideAt = 1000, condenseAt = 120, showNearTop = 80, jitterDelta = 2, position = 'sticky' }: NavbarProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   // condensed = apply blur/width changes (previously `visible`)
@@ -199,7 +199,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
       }}
       className={cn(
         "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden rounded-full",
-        visible && "bg-white/80 dark:bg-neutral-950/80",
+        visible && "bg-white/80 dark:bg-neutral-950/80 border-b",
         className,
       )}
     >
