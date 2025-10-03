@@ -2,15 +2,9 @@
 import { ModeToggle } from '@/components/mode-toggle';
 import { SignedIn, SignedOut, UserButton } from '@daveyplate/better-auth-ui';
 import Link from 'next/link';
-import {
-    MobileNav,
-    MobileNavHeader,
-    Navbar,
-    NavbarButton,
-    NavbarLogo,
-    NavBody,
-} from '@/components/ui/resizable-navbar';
+import { MobileNav, MobileNavHeader, Navbar, NavbarLogo, NavBody } from '@/components/ui/resizable-navbar';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
@@ -64,10 +58,9 @@ export const NavbarContent = () => {
 
                 <SignedOut>
                     <Link href='/auth/sign-in'>
-                        <NavbarButton>התחבר</NavbarButton>
-                    </Link>
-                    <Link href='/auth/sign-up'>
-                        <NavbarButton>הירשם</NavbarButton>
+                        <Button variant='outline' className='rounded-full'>
+                            התחבר
+                        </Button>
                     </Link>
                 </SignedOut>
             </div>

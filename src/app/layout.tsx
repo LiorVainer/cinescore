@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Suspense fallback={null}>
                     <AppProviders>
                         <AppNavbar />
-                        <div className='mt-15'>{children}</div>
+                        <div className='mt-15 h-[calc(100%-3.75rem)]'>{children}</div>
                     </AppProviders>
                 </Suspense>
             </body>
