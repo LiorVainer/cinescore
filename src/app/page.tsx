@@ -9,9 +9,9 @@ export default async function page() {
     });
 
     return (
-        <div className='flex h-screen flex-col px-4'>
-            <section className='py-6 flex-grow'>
-                <div className='container'>
+        <div className='flex h-screen w-screen flex-col px-4'>
+            <section className='py-6 flex-grow w-full flex flex-col justify-center'>
+                <div className='container lg:px-32'>
                     <h2 className='text-xl font-semibold mb-2'>חיפוש סרטים</h2>
                     <MovieSearch />
                 </div>

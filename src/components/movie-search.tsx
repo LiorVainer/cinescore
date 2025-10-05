@@ -94,13 +94,13 @@ export default function MovieSearch() {
             {isError && <div className='text-destructive'>שגיאה בטעינת הנתונים. נסה שוב.</div>}
 
             {isFetching && items.length === 0 ? (
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
                     {Array.from({ length: 9 }).map((_, i) => (
                         <CollapsedMovieCardSkeleton key={i} />
                     ))}
                 </div>
             ) : (
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-y-auto'>
+                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 overflow-y-auto'>
                     {items.map((movie) => (
                         <MovieCard ctaText={'פרטים'} key={movie.id} movie={movie} />
                     ))}

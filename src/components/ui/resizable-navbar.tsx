@@ -97,13 +97,13 @@ export const Navbar = ({ children, className, hideAt = 1000, condenseAt = 120, s
       // IMPORTANT: Change this to class of `fixed` if you want the navbar to be fixed
       className={cn(
         position === 'fixed' ? 'fixed inset-x-0 top-0 z-40 w-full' : 'sticky inset-x-0 top-0 z-40 w-full',
-        !condensed && 'border-b bg-white/95 dark:bg-neutral-950/95',
+        !condensed && 'border-b backdrop-blur-md dark:bg-neutral-950/95',
         className,
       )}
       initial={{ y: 0, opacity: 1 }}
       animate={{ y: showNav ? 0 : -100, opacity: showNav ? 1 : 0 }}
       transition={{ duration: 0.2 }}
-      style={{ willChange: 'transform, opacity' }}
+      // style={{ willChange: 'transform, opacity' }}
     >
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
@@ -199,7 +199,7 @@ export const MobileNav = ({ children, className, visible }: MobileNavProps) => {
       }}
       className={cn(
         "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden rounded-full",
-        visible && "bg-white/80 dark:bg-neutral-950/80 border-b",
+        visible && "bg-white/80 dark:bg-neutral-950/80",
         className,
       )}
     >

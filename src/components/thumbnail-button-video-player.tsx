@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Play, X } from 'lucide-react';
+import { Play, X, Youtube } from 'lucide-react';
 
 interface ThumbnailButtonProps {
     videoUrl?: string;
@@ -100,8 +100,11 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
 
                         {/* YouTube Badge */}
                         {isYouTube && (
-                            <div className='absolute bottom-2 right-2 bg-red-600 text-white text-[8px] font-bold px-1 py-0.5 rounded'>
-                                YT
+                            <div
+                                className='absolute bottom-2 right-2 bg-red-600/90 text-white p-0.5 rounded-full shadow-sm border border-white/10'
+                                aria-label='YouTube'
+                            >
+                                <Youtube className='w-3 h-3' />
                             </div>
                         )}
                     </div>
