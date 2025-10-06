@@ -84,13 +84,15 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                             </motion.p>
                                         )}
                                     </div>
-                                    <Button
-                                        className='shrink-0 inline-flex cursor-pointer'
-                                        onClick={() => onClose()}
-                                        size={'sm'}
-                                    >
-                                        <span className='text-xs'>סגור</span>
-                                    </Button>
+                                    {variant === 'modal' && (
+                                        <Button
+                                            className='shrink-0 inline-flex cursor-pointer'
+                                            onClick={() => onClose()}
+                                            size={'sm'}
+                                        >
+                                            <span className='text-xs'>סגור</span>
+                                        </Button>
+                                    )}
                                 </div>
                                 <div className='flex flex-col items-start gap-4'>
                                     <MovieGenres
