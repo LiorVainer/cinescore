@@ -37,7 +37,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                 ref={ref}
                 className={
                     variant === 'drawer'
-                        ? 'w-full max-h-[85vh] flex flex-col lg:flex-row items-stretch bg-white dark:bg-neutral-900 rounded-t-xl overflow-y-auto'
+                        ? 'w-full max-h-[85vh] flex flex-col lg:flex-row items-stretch bg-white dark:bg-neutral-900 rounded-t-xl overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
                         : 'w-full max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch bg-white dark:bg-neutral-900 rounded-xl scrollable'
                 }
             >
