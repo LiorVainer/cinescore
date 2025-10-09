@@ -1,17 +1,17 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
-import type { PopulatedMovie } from '@/models/movies.model';
-import { CloseIcon } from './movie-card-utils';
-import { MovieGenres } from '@/components/movie/movie-genres';
+import {motion} from 'motion/react';
+import type {PopulatedMovie} from '@/models/movies.model';
+import {CloseIcon} from './movie-card-utils';
+import {MovieGenres} from '@/components/movie/movie-genres';
 import ThumbnailButton from '@/components/thumbnail-button-video-player';
 import MovieStats from '@/components/movie/MovieStats';
 import MovieMeta from '@/components/movie/MovieMeta';
-import { getLanguageLabel } from '@/constants/languages.const';
-import { Button } from '@/components/ui/button';
+import {getLanguageLabel} from '@/constants/languages.const';
+import {Button} from '@/components/ui/button';
 import Image from 'next/image';
-import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
+import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 
 export type ExpandedMovieCardProps = {
     movie: PopulatedMovie;
@@ -22,8 +22,8 @@ export type ExpandedMovieCardProps = {
 };
 
 const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProps>(
-    ({ movie, imgSrc, idSuffix, onClose, variant = 'modal' }, ref) => {
-        const { title, originalTitle, originalLanguage, releaseDate, rating, votes, genres } = movie;
+    ({movie, imgSrc, idSuffix, onClose, variant = 'modal'}, ref) => {
+        const {title, originalTitle, originalLanguage, releaseDate, rating, votes, genres} = movie;
 
         // date/since are rendered via MovieMeta; rating/votes via MovieStats
         const originalLangLabel = getLanguageLabel(originalLanguage) ?? originalLanguage ?? undefined;
@@ -37,8 +37,8 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                 ref={ref}
                 className={
                     variant === 'drawer'
-                        ? 'w-full max-h-[85vh] flex flex-col lg:flex-row items-stretch bg-white dark:bg-neutral-900 rounded-t-xl overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
-                        : 'w-full max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch bg-white dark:bg-neutral-900 rounded-xl scrollable'
+                        ? 'w-full max-h-[85vh] flex flex-col lg:flex-row items-stretch rounded-t-xl overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
+                        : 'w-full max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl scrollable'
                 }
             >
                 <motion.div
@@ -123,7 +123,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                             {movie.description}
                         </motion.p>
 
-                        <MovieStats rating={rating} votes={votes} size='md' className='mt-2' />
+                        <MovieStats rating={rating} votes={votes} size='md' className='mt-2'/>
                     </div>
 
                     {movie.trailers.length > 0 && (
@@ -152,13 +152,13 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                 <motion.button
                     key={`button-${title}-${idSuffix}`}
                     layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0, transition: { duration: 0.05 } }}
+                    initial={{opacity: 0}}
+                    animate={{opacity: 1}}
+                    exit={{opacity: 0, transition: {duration: 0.05}}}
                     className={`flex absolute top-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6`}
                     onClick={onClose}
                 >
-                    <CloseIcon />
+                    <CloseIcon/>
                 </motion.button>
                 {Content}
             </div>

@@ -1,11 +1,11 @@
 'use client';
 
-import { motion } from 'motion/react';
-import type { PopulatedMovie } from '@/models/movies.model';
-import { MovieGenres } from '@/components/movie/movie-genres';
+import {motion} from 'motion/react';
+import type {PopulatedMovie} from '@/models/movies.model';
+import {MovieGenres} from '@/components/movie/movie-genres';
 import React from 'react';
 import Image from 'next/image';
-import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
+import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 import MovieStats from '@/components/movie/MovieStats';
 import MovieMeta from '@/components/movie/MovieMeta';
 
@@ -18,13 +18,13 @@ export type CollapsedMovieCardProps = {
 };
 
 export default function CollapsedMovieCard({
-    imgSrc,
-    idSuffix,
-    movie,
-    className,
-    onClickAction,
-}: CollapsedMovieCardProps) {
-    const { title, releaseDate, rating, votes } = movie;
+                                               imgSrc,
+                                               idSuffix,
+                                               movie,
+                                               className,
+                                               onClickAction,
+                                           }: CollapsedMovieCardProps) {
+    const {title, releaseDate, rating, votes} = movie;
 
     return (
         <motion.div
@@ -32,7 +32,7 @@ export default function CollapsedMovieCard({
             key={`card-${title}-${idSuffix}`}
             onClick={onClickAction}
             className={[
-                'flex justify-between items-stretch hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer border overflow-hidden',
+                'flex justify-between items-stretch hover:bg-muted  rounded-xl cursor-pointer border overflow-hidden',
                 className,
             ]
                 .filter(Boolean)
@@ -60,12 +60,12 @@ export default function CollapsedMovieCard({
                                 {title}
                             </motion.h3>
                         </div>
-                        <MovieGenres genres={movie.genres} idSuffix={idSuffix} />
-                        <MovieMeta title={title} idSuffix={idSuffix} releaseDate={releaseDate} />
+                        <MovieGenres genres={movie.genres} idSuffix={idSuffix}/>
+                        <MovieMeta title={title} idSuffix={idSuffix} releaseDate={releaseDate}/>
                     </div>
 
                     <motion.div layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.DESCRIPTION(idSuffix)}>
-                        <MovieStats rating={rating} votes={votes} size='sm' />
+                        <MovieStats rating={rating} votes={votes} size='sm'/>
                     </motion.div>
                 </div>
             </div>

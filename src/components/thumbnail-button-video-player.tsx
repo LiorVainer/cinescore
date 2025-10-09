@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
+import {AnimatePresence, motion} from 'framer-motion';
 
-import { Play, X, Youtube } from 'lucide-react';
+import {Play, X, Youtube} from 'lucide-react';
 
 interface ThumbnailButtonProps {
     videoUrl?: string;
@@ -23,12 +23,12 @@ const getYouTubeThumbnail = (id: string) => `https://img.youtube.com/vi/${id}/ma
 const getYouTubeEmbedUrl = (id: string) => `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
 
 const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
-    videoUrl,
-    youtubeId,
-    thumbnailUrl,
-    title = 'Play Video',
-    className = '',
-}) => {
+                                                             videoUrl,
+                                                             youtubeId,
+                                                             thumbnailUrl,
+                                                             title = 'Play Video',
+                                                             className = '',
+                                                         }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
 
@@ -73,11 +73,11 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
         <>
             <motion.button
                 ref={buttonRef}
-                initial={{ scale: 1 }}
-                whileTap={{ scale: 0.95 }}
+                initial={{scale: 1}}
+                whileTap={{scale: 0.95}}
                 onClick={handleOpenModal}
                 className={`
-          relative rounded-2xl bg-muted dark:bg-card 
+          relative rounded-2xl bg-muted
           shadow-sm hover:shadow-md transition-all duration-200
           group focus:outline-none focus:ring-2 focus:ring-ring/50
           w-max hover:cursor-pointer
@@ -89,12 +89,12 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                 <div className='flex items-end flex-col gap-2'>
                     {/* Thumbnail Image */}
                     <div className='relative w-[200px] h-[100px] rounded-lg overflow-hidden flex-shrink-0'>
-                        <Image src={finalThumbnail} alt='Video thumbnail' fill className='object-cover' sizes='70px' />
+                        <Image src={finalThumbnail} alt='Video thumbnail' fill className='object-cover' sizes='70px'/>
 
                         {/* Play Icon Overlay */}
                         <div className='absolute inset-0 flex items-center justify-center'>
                             <div className='p-1 rounded-full bg-background shadow-sm border border-border'>
-                                <Play size={10} className='fill-foreground text-foreground ml-0.5' />
+                                <Play size={10} className='fill-foreground text-foreground ml-0.5'/>
                             </div>
                         </div>
 
@@ -104,7 +104,7 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                                 className='absolute bottom-2 right-2 bg-red-600/90 text-white p-0.5 rounded-full shadow-sm border border-white/10'
                                 aria-label='YouTube'
                             >
-                                <Youtube className='w-3 h-3' />
+                                <Youtube className='w-3 h-3'/>
                             </div>
                         )}
                     </div>
@@ -120,21 +120,21 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                     <motion.div
                         className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm'
                         onClick={handleCloseModal}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
                         role='dialog'
                         aria-modal='true'
                         aria-label='Video Modal'
                     >
                         <motion.div
                             onClick={(e) => e.stopPropagation()}
-                            initial={{ opacity: 0, scale: 0.1 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.1 }}
-                            transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+                            initial={{opacity: 0, scale: 0.1}}
+                            animate={{opacity: 1, scale: 1}}
+                            exit={{opacity: 0, scale: 0.1}}
+                            transition={{duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94]}}
                             className='relative w-full max-w-4xl aspect-video bg-card rounded-2xl overflow-hidden shadow-2xl border border-border'
-                            style={{ transformOrigin: getTransformOrigin() }}
+                            style={{transformOrigin: getTransformOrigin()}}
                         >
                             {/* Close Button */}
                             <button
@@ -142,7 +142,7 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                                 className='absolute top-4 right-4 z-10 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white border border-white/20 backdrop-blur-sm transition-all duration-200 hover:cursor-pointer'
                                 aria-label='Close video'
                             >
-                                <X size={20} />
+                                <X size={20}/>
                             </button>
 
                             {/* Video or YouTube */}
@@ -155,7 +155,7 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                                     title={title}
                                 />
                             ) : (
-                                <video src={finalVideoUrl} controls autoPlay className='w-full h-full' />
+                                <video src={finalVideoUrl} controls autoPlay className='w-full h-full'/>
                             )}
                         </motion.div>
                     </motion.div>
