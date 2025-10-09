@@ -108,7 +108,7 @@ export const Navbar = ({
             // IMPORTANT: Change this to class of `fixed` if you want the navbar to be fixed
             className={cn(
                 position === 'fixed' ? 'fixed inset-x-0 top-0 z-40 w-full' : 'sticky inset-x-0 top-0 z-40 w-full',
-                !condensed && 'border-b backdrop-blur-md dark:bg-neutral-950/95',
+                !condensed && 'border-b backdrop-blur-md ',
                 className,
             )}
             initial={{y: 0, opacity: 1}}

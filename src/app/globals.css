@@ -2,6 +2,8 @@
 @import 'tw-animate-css';
 @import "@daveyplate/better-auth-ui/css";
 
+/*@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Bebas+Neue&display=swap');*/
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -42,6 +44,8 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+    --font-heading: 'Bebas Neue', 'Heebo', sans-serif;
+    --font-body: 'Heebo', system-ui, sans-serif;
 }
 
 :root {
