@@ -123,7 +123,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                             {movie.description}
                         </motion.p>
 
-                        <MovieStats rating={rating} votes={votes} size='md' className='mt-2'/>
+                        <MovieStats rating={rating} votes={votes} size='sm' className='mt-2'/>
                     </div>
 
                     {movie.trailers.length > 0 && (
