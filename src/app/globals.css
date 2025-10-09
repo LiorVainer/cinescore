@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=IBM+Plex+Sans+Hebrew:wght@100;200;300;400;500;600;700&display=swap');
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
@@ -76,7 +76,7 @@
     --sidebar-ring: var(--ring);
 
     /* === Fonts === */
-    --font-heading: 'Bebas Neue', 'Assistant', sans-serif;
+    --font-heading: 'IBM Plex Sans Hebrew', 'Assistant', sans-serif;
     --font-body: 'Assistant', system-ui, sans-serif;
 
     /* Scrollbars + shadows */
