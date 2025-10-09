@@ -51,7 +51,7 @@
     --muted: oklch(93% 0.015 280);
     --muted-foreground: oklch(55% 0.02 280);
 
-    --accent: oklch(96% 0.015 280); /* subtle accent for UI highlights */
+    --accent: oklch(90% 0.015 280); /* subtle accent for UI highlights */
     --accent-foreground: oklch(25% 0.03 280);
 
     --destructive: oklch(60% 0.15 25); /* warm red for errors */
