@@ -65,7 +65,7 @@ export async function processMovieData(movie: MovieProcessInput, dal: DAL): Prom
         const imdbId = ext.imdb_id ?? `tmdb-${movie.id}`;
 
         // Create base movie using Prisma input type
-        const movieCreateInput: Prisma.MovieCreateInput = {
+        const movieCreateInput: Prisma.MovieCreateInput & { imdbId: string } = {
             id: imdbId,
             imdbId,
             tmdbId: movie.id,

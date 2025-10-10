@@ -3,10 +3,9 @@
 import {omdb, tmdb} from '@/lib/clients';
 import {prisma} from '@/lib/prisma';
 import {MoviesDAL} from '@/dal';
-import {Language} from '@prisma/client';
+import {Language, Prisma} from '@prisma/client';
 import {MovieWithLanguageTranslation} from '@/models/movies.model';
-// Import official types from tmdb-ts and omdbapi
-import type {MovieSearchResult, ExternalIds} from 'tmdb-ts';
+import type {ExternalIds} from 'tmdb-ts';
 import type {Movie as OmdbMovie} from '@/lib/omdbapi';
 
 export type SearchedMovie = {
@@ -32,7 +31,7 @@ export async function searchMovies(query: string): Promise<SearchedMovie[]> {
     });
 
     return Promise.all(
-        results.results.map(async (tmdbMovie: MovieSearchResult) => {
+        results.results.map(async (tmdbMovie) => {
             try {
                 const external = await tmdb.movies.externalIds(tmdbMovie.id) as ExternalIds;
 
@@ -150,7 +149,7 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
             'rating' | 'votes' | 'releaseDate',
             'asc' | 'desc',
     ];
-    const orderBy = {[field]: direction} as unknown as Record<string, 'asc' | 'desc'>;
+    const orderBy = [{[field]: direction}] as Prisma.MovieOrderByWithRelationInput[];
 
     const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
     const take = Math.max(1, Math.min(100, pageSize));
