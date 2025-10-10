@@ -38,7 +38,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                 className={
                     variant === 'drawer'
                         ? 'w-full flex flex-col lg:flex-row items-stretch rounded-t-xl'
-                        : 'w-full max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl scrollable bg-card'
+                        : 'w-full max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl scrollable bg-background'
                 }
             >
                 <motion.div
