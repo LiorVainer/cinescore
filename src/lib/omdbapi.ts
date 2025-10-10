@@ -156,78 +156,80 @@ export class HttpClient<SecurityDataType = unknown> {
                     ...axiosConfig
                 }: ApiConfig<SecurityDataType> = {}) {
         this.instance = axios.create({
-            ...axiosConfig,
             baseURL: axiosConfig.baseURL || "http://omdbapi.com",
+            ...axiosConfig,
         });
+
+        this.securityWorker = securityWorker;
         this.secure = secure;
         this.format = format;
-        this.securityWorker = securityWorker;
     }
 
     public setSecurityData = (data: SecurityDataType | null) => {
         this.securityData = data;
     };
 
+    /**
+     * ✅ Clean merging logic — no spreading of internal defaults
+     */
     protected mergeRequestParams(
         params1: AxiosRequestConfig,
-        params2?: AxiosRequestConfig,
+        params2?: AxiosRequestConfig
     ): AxiosRequestConfig {
-        const method = params1.method || (params2 && params2.method);
+        const method = (params2?.method || params1.method || "get").toLowerCase();
+
+        const defaultHeaders = {
+            ...(this.instance.defaults.headers?.common || {}),
+            ...(this.instance.defaults.headers?.[method as keyof HeadersDefaults] || {}),
+        };
 
         return {
-            ...this.instance.defaults,
+            // keep only explicit useful defaults
+            baseURL: this.instance.defaults.baseURL,
+            timeout: this.instance.defaults.timeout,
             ...params1,
-            ...(params2 || {}),
+            ...params2,
             headers: {
-                ...((method &&
-                        this.instance.defaults.headers[
-                            method.toLowerCase() as keyof HeadersDefaults
-                            ]) ||
-                    {}),
+                ...defaultHeaders,
                 ...(params1.headers || {}),
-                ...((params2 && params2.headers) || {}),
+                ...(params2?.headers || {}),
             },
         };
     }
 
-    protected stringifyFormItem(formItem: unknown) {
+    protected stringifyFormItem(formItem: unknown): string {
         if (typeof formItem === "object" && formItem !== null) {
             return JSON.stringify(formItem);
-        } else {
-            return `${formItem}`;
         }
+        return String(formItem);
     }
 
     protected createFormData(input: Record<string, unknown>): FormData {
-        if (input instanceof FormData) {
-            return input;
-        }
+        if (input instanceof FormData) return input;
+
         return Object.keys(input || {}).reduce((formData, key) => {
-            const property = input[key];
-            const propertyContent: any[] =
-                property instanceof Array ? property : [property];
-
-            for (const formItem of propertyContent) {
-                const isFileType = formItem instanceof Blob || formItem instanceof File;
-                formData.append(
-                    key,
-                    isFileType ? formItem : this.stringifyFormItem(formItem),
-                );
+            const value = input[key];
+            const items = Array.isArray(value) ? value : [value];
+            for (const item of items) {
+                const isFile = item instanceof Blob || item instanceof File;
+                formData.append(key, isFile ? item : this.stringifyFormItem(item));
             }
-
             return formData;
         }, new FormData());
     }
 
-    public request = async <T = any, _E = any>({
-                                                   secure,
-                                                   path,
-                                                   type,
-                                                   query,
-                                                   format,
-                                                   body,
-                                                   ...params
-                                               }: FullRequestParams): Promise<T> => {
+    /**
+     * ✅ Safe request builder for all types
+     */
+    public async request<T = any, _E = any>({
+                                                secure,
+                                                path,
+                                                type,
+                                                query,
+                                                format,
+                                                body,
+                                                ...params
+                                            }: FullRequestParams): Promise<T> {
         const secureParams =
             ((typeof secure === "boolean" ? secure : this.secure) &&
                 this.securityWorker &&
@@ -237,39 +239,41 @@ export class HttpClient<SecurityDataType = unknown> {
         const requestParams = this.mergeRequestParams(params, secureParams);
         const responseFormat = format || this.format || undefined;
 
-        if (
-            type === ContentType.FormData &&
-            body &&
-            body !== null &&
-            typeof body === "object"
-        ) {
-            body = this.createFormData(body as Record<string, unknown>);
-        }
+        // handle body type transformation
+        let requestBody = body;
+        let contentType: string | undefined;
 
-        if (
-            type === ContentType.Text &&
-            body &&
-            body !== null &&
-            typeof body !== "string"
-        ) {
-            body = JSON.stringify(body);
+        if (type === ContentType.FormData && body && typeof body === "object") {
+            requestBody = this.createFormData(body as Record<string, unknown>);
+            contentType = ContentType.FormData;
+        } else if (type === ContentType.Text && typeof body !== "string") {
+            requestBody = JSON.stringify(body);
+            contentType = ContentType.Text;
+        } else if (type === ContentType.Json && body) {
+            requestBody = body;
+            contentType = ContentType.Json;
         }
 
         return this.instance
             .request({
+                ...requestParams,
+                url: path,
+                method: requestParams.method || "GET",
+                params: {
+                    ...(requestParams.params || {}),
+                    ...(query || {}),
+                },
+                data: requestBody,
+                responseType: responseFormat,
                 headers: {
                     ...(requestParams.headers || {}),
-                    ...(type ? {"Content-Type": type} : {}),
+                    ...(contentType ? {"Content-Type": contentType} : {}),
                 },
-                params: query,
-                responseType: responseFormat,
-                data: body,
-                url: path,
-                ...requestParams,
             })
             .then((response) => response.data);
-    };
+    }
 }
+
 
 /**
  * @title OMDb API
@@ -298,7 +302,6 @@ export class OmdbApi<
          */
         getByParams: (query: GetTitleParams, params: RequestParams = {}) =>
             this.request<GetTitleData, void>({
-                path: `/?t`,
                 method: "GET",
                 query: query,
                 secure: true,
@@ -317,7 +320,6 @@ export class OmdbApi<
          */
         getById: (query: GetIdParams, params: RequestParams = {}) =>
             this.request<GetIdData, void>({
-                path: `/?i`,
                 method: "GET",
                 query: query,
                 secure: true,
@@ -338,7 +340,6 @@ export class OmdbApi<
          */
         titleSearch: (query: TitleSearchParams, params: RequestParams = {}) =>
             this.request<TitleSearchData, void>({
-                path: `/?s`,
                 method: "GET",
                 query: query,
                 secure: true,

@@ -1,9 +1,15 @@
 import {motion} from 'motion/react';
-import {Genre} from '@prisma/client';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 
+// Type for genres with translated names from MovieWithLanguageTranslation
+type GenreWithTranslation = {
+    id: string;
+    name: string;
+    tmdbId: number | null;
+};
+
 export type MovieGenresProps = {
-    genres: Genre[];
+    genres: GenreWithTranslation[]; // Now uses the translated genre type
     idSuffix: string;
     layoutIdEnabled?: boolean;
 };
