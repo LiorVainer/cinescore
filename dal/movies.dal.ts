@@ -21,7 +21,9 @@ export class MoviesDAL {
         return this.prisma.movie.findUnique({where: {tmdbId}});
     }
 
-    async upsertBase(data: Omit<Prisma.MovieCreateInput, "translations" | "genres" | "cast" | "trailers">) {
+    async upsertBase(data: Omit<Prisma.MovieCreateInput, "translations" | "genres" | "cast" | "trailers" | 'imdbId'> & {
+        imdbId: string
+    }) {
         return this.prisma.movie.upsert({
             where: {imdbId: data.imdbId},
             create: data,
