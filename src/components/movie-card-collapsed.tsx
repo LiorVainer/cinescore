@@ -1,7 +1,7 @@
 'use client';
 
 import {motion} from 'motion/react';
-import type {PopulatedMovie} from '@/models/movies.model';
+import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {MovieGenres} from '@/components/movie/movie-genres';
 import React from 'react';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import MovieStats from '@/components/movie/MovieStats';
 import MovieMeta from '@/components/movie/MovieMeta';
 
 export type CollapsedMovieCardProps = {
-    movie: PopulatedMovie;
+    movie: MovieWithLanguageTranslation;
     imgSrc: string;
     idSuffix: string; // from useId()
     className?: string;

@@ -1,29 +1,29 @@
 'use client';
 
-import React, { useEffect, useId, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { useOutsideClick } from '@/hooks/use-outside-click';
-import type { PopulatedMovie } from '@/models/movies.model';
+import React, {useEffect, useId, useRef, useState} from 'react';
+import {AnimatePresence, motion} from 'motion/react';
+import {useOutsideClick} from '@/hooks/use-outside-click';
+import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import CollapsedMovieCard from './movie-card-collapsed';
 import ExpandedMovieCard from './movie-card-expanded';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Drawer, DrawerContent } from '@/components/ui/drawer';
+import {useIsMobile} from '@/hooks/use-mobile';
+import {Drawer, DrawerContent} from '@/components/ui/drawer';
 
 export type MovieCardProps = {
-    movie: PopulatedMovie;
+    movie: MovieWithLanguageTranslation;
     ctaText?: string;
     ctaHref?: string;
     className?: string;
 };
 
-export default function MovieCard({ movie, ctaText = 'Details', ctaHref, className }: MovieCardProps) {
+export default function MovieCard({movie, ctaText = 'Details', ctaHref, className}: MovieCardProps) {
     const [active, setActive] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
     const isMobile = useIsMobile();
 
-    const imgSrc = movie.posterUrl || '/window.svg'; // fallback asset from public/
-    const imdbUrl = ctaHref ?? (movie.id?.startsWith('tt') ? `https://www.imdb.com/title/${movie.id}/` : undefined);
+    const imgSrc = movie.posterUrl || '/window.svg'; // Now uses posterUrl from translation
+    const imdbUrl = ctaHref ?? (movie.imdbId ? `https://www.imdb.com/title/${movie.imdbId}/` : undefined);
 
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
@@ -52,15 +52,17 @@ export default function MovieCard({ movie, ctaText = 'Details', ctaHref, classNa
             {/* Expanded view: Desktop modal; Mobile bottom drawer */}
             {isMobile ? (
                 <Drawer open={active} onOpenChange={setActive}>
-                    <DrawerContent className='p-0'>
-                        <ExpandedMovieCard
-                            ref={ref}
-                            movie={movie}
-                            imgSrc={imgSrc}
-                            idSuffix={id}
-                            onClose={() => setActive(false)}
-                            variant='drawer'
-                        />
+                    <DrawerContent className='p-0 max-h-[90vh] overflow-hidden'>
+                        <div className='overflow-y-auto max-h-full touch-pan-y'>
+                            <ExpandedMovieCard
+                                ref={ref}
+                                movie={movie}
+                                imgSrc={imgSrc}
+                                idSuffix={id}
+                                onClose={() => setActive(false)}
+                                variant='drawer'
+                            />
+                        </div>
                     </DrawerContent>
                 </Drawer>
             ) : (
@@ -68,9 +70,9 @@ export default function MovieCard({ movie, ctaText = 'Details', ctaHref, classNa
                     <AnimatePresence>
                         {active && (
                             <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
+                                initial={{opacity: 0}}
+                                animate={{opacity: 1}}
+                                exit={{opacity: 0}}
                                 className='fixed inset-0 bg-black/20 h-full w-full z-50 backdrop-blur-sm'
                             />
                         )}

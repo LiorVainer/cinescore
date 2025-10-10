@@ -2,19 +2,19 @@
 
 import React from 'react';
 import {motion} from 'motion/react';
-import type {PopulatedMovie} from '@/models/movies.model';
+import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {CloseIcon} from './movie-card-utils';
 import {MovieGenres} from '@/components/movie/movie-genres';
 import ThumbnailButton from '@/components/thumbnail-button-video-player';
 import MovieStats from '@/components/movie/MovieStats';
 import MovieMeta from '@/components/movie/MovieMeta';
-import {getLanguageLabel} from '@/constants/languages.const';
+import {getLanguageLabel, LANGUAGE_LABELS} from '@/constants/languages.const';
 import {Button} from '@/components/ui/button';
 import Image from 'next/image';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 
 export type ExpandedMovieCardProps = {
-    movie: PopulatedMovie;
+    movie: MovieWithLanguageTranslation;
     imgSrc: string;
     idSuffix: string; // from useId()
     onClose: () => void;
@@ -23,10 +23,10 @@ export type ExpandedMovieCardProps = {
 
 const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProps>(
     ({movie, imgSrc, idSuffix, onClose, variant = 'modal'}, ref) => {
-        const {title, originalTitle, originalLanguage, releaseDate, rating, votes, genres} = movie;
+        const {title, originalTitle, originalLanguage, releaseDate, rating, votes, genres, cast} = movie;
 
         // date/since are rendered via MovieMeta; rating/votes via MovieStats
-        const originalLangLabel = getLanguageLabel(originalLanguage) ?? originalLanguage ?? undefined;
+        const originalLangLabel = originalLanguage && LANGUAGE_LABELS[originalLanguage] ? LANGUAGE_LABELS[originalLanguage] : undefined;
 
         // Disable shared-element layout transitions inside the mobile drawer to avoid double animations
         const layoutIdEnabled = variant !== 'drawer';
@@ -37,8 +37,8 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                 ref={ref}
                 className={
                     variant === 'drawer'
-                        ? 'w-full max-h-[85vh] flex flex-col lg:flex-row items-stretch rounded-t-xl overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
-                        : 'w-full max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl scrollable'
+                        ? 'w-full flex flex-col lg:flex-row items-stretch rounded-t-xl'
+                        : 'w-full max-w-[80%] h-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl bg-background'
                 }
             >
                 <motion.div
@@ -54,7 +54,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                     />
                 </motion.div>
 
-                <div className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0'>
+                <div className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0 scrollable h-full'>
                     <div className={`flex justify-between items-start gap-2`}>
                         <div className='flex-1 flex flex-col min-w-0 gap-2'>
                             <div className='flex flex-col gap-2'>
@@ -124,10 +124,39 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                         </motion.p>
 
                         <MovieStats rating={rating} votes={votes} size='sm' className='mt-2'/>
+
+                        {/* Display cast information */}
+                        {cast && cast.length > 0 && (
+                            <div className='flex flex-col gap-2'>
+                                <h3 className='font-semibold text-sm'>שחקנים:</h3>
+                                <div className='flex flex-col gap-2'>
+                                    <div className='flex flex-wrap gap-2'>
+                                        {cast.slice(0, 5).map((castMember) => (
+                                            <div key={castMember.id}
+                                                 className='text-xs bg-muted p-1 rounded flex flex-col items-center gap-1 flex-1'>
+                                                <img src={castMember.actor.profileUrl ?? ''} alt={castMember.actor.name}
+                                                     className='w-full aspect-2/3 rounded object-cover object-center'/>
+                                                <span className='font-medium'>{castMember.actor.name}</span>
+                                                {/*{castMember.character && (*/}
+                                                {/*    <span className='text-muted-foreground'> כ{castMember.character}</span>*/}
+                                                {/*)}*/}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div>
+                                        {cast.length > 5 && (
+                                            <div className='text-xs text-muted-foreground'>
+                                                ועוד {cast.length - 5} שחקנים...
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {movie.trailers.length > 0 && (
-                        <div className='flex gap-4 mt-4 overflow-x-auto'>
+                        <div className='flex gap-4 mt-4'>
                             {movie.trailers.map((trailer) => (
                                 <ThumbnailButton
                                     key={trailer.id}
