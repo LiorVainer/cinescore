@@ -6,7 +6,11 @@ export type PopulatedMovie = Prisma.MovieGetPayload<{
 
 export type FullyPopulatedMovie = Prisma.MovieGetPayload<{
     include: {
-        genres: true;
+        genres: {
+            include: {
+                translations: true;
+            };
+        };
         trailers: true;
         translations: true;
         cast: {
