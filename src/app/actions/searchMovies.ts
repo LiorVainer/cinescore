@@ -164,7 +164,6 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
         moviesDAL.countMovies(where),
     ]);
 
-    console.dir({items}, {depth: Infinity});
 
     return {
         items,

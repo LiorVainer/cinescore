@@ -1,9 +1,11 @@
+import {$Enums} from "@prisma/client";
+
 export const LANGUAGE_LABELS = {
-    en: 'אנגלית',
-    ja: 'יפנית',
+    en_US: 'אנגלית',
+    he_IL: 'עברית',
     fr: 'צרפתית',
     hi: 'הינדית',
-} as const;
+} satisfies Record<string & $Enums.Language, string>
 
 export type LanguageCode = keyof typeof LANGUAGE_LABELS;
 
