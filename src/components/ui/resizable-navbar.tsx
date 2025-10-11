@@ -6,9 +6,8 @@ import {usePathname} from "next/navigation";
 
 import React, {useEffect, useRef, useState} from "react";
 import Link from "next/link";
-import Image from "next/image";
-import {Constants} from "@/constants/app.const";
 import Logo from "@/assets/logo.svg";
+import {useTranslations} from "next-intl";
 
 
 interface NavbarProps {
@@ -148,8 +147,8 @@ export const NavBody = ({children, className, visible}: NavBodyProps) => {
                 minWidth: "800px",
             }}
             className={cn(
-                "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 lg:flex dark:bg-transparent",
-                visible && "bg-background/80",
+                "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 pr-6 lg:flex",
+                visible && "bg-muted/80",
                 className,
             )}
         >
@@ -281,22 +280,21 @@ export const NavbarLogoContent = () => (
 )
 
 export const NavbarLogo = () => {
-    const pathname = usePathname();
-
-    const isHome = pathname === '/';
-    const className = 'relative z-20 flex items-center space-x-2 text-sm font-normal text-black'
-
-    if (!isHome) {
-        return <Link href="/" className={className}><NavbarLogoContent/></Link>;
-    }
-
+    const t = useTranslations("app");
     return (
-        <a
-            href="#"
-            className={className}
+        <Link
+            href="/"
+            className="relative z-20 flex flex-row items-center gap-2 text-lg font-bold text-black dark:text-white"
         >
-            <NavbarLogoContent/>
-        </a>
+            <Logo className="h-6 w-6"/>
+            <motion.span
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                className="whitespace-pre"
+            >
+                {t("title")}
+            </motion.span>
+        </Link>
     );
 };
 

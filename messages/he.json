@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "signIn": "התחבר",
+    "language": "שפה",
+    "details": "פרטים",
+    "title": "סטארין"
+  },
+  "app": {
+    "title": "סטארין",
+    "description": "אפליקציית ביקורות סרטים"
+  },
+  "search": {
+    "placeholder": "חפש סרטים...",
+    "loading": "מחפש...",
+    "noResults": "לא נמצאו תוצאות לפי הסינון הנוכחי.",
+    "errorLoading": "שגיאה בטעינת הנתונים. נסה שוב."
+  },
+  "rating": {
+    "votes": "{count} הצבעות"
+  },
+  "movie": {
+    "details": "פרטים",
+    "rating": "דירוג",
+    "releaseDate": "תאריך יציאה"
+  },
+  "filters": {
+    "sortBy": "מיין לפי",
+    "genre": "ז'אנר",
+    "clear": "נקה",
+    "clearAll": "נקה הכל"
+  },
+  "dates": {
+    "today": "היום",
+    "daysAgo": "לפני {count} {count, plural, one {יום} other {ימים}}",
+    "weeksAgo": "לפני {count} {count, plural, one {שבוע} other {שבועות}}",
+    "monthsAgo": "לפני {count} {count, plural, one {חודש} other {חודשים}}",
+    "yearsAgo": "לפני {count} {count, plural, one {שנה} other {שנים}}",
+    "inDays": "בעוד {count} {count, plural, one {יום} other {ימים}}",
+    "inWeeks": "בעוד {count} {count, plural, one {שבוע} other {שבועות}}",
+    "inMonths": "בעוד {count} {count, plural, one {חודש} other {חודשים}}",
+    "inYears": "בעוד {count} {count, plural, one {שנה} other {שנים}}"
+  }
+}
+

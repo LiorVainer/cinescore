@@ -1,0 +1,20 @@
+Task Category,Task Description,Status,Implementation Details,Files Modified,Priority
+Language Toggle,Add language toggle button to navbar,✅ Completed,"Implemented dropdown button with Globe icon, flag icons, and language names. Uses shadcn/ui DropdownMenu component.",src/components/layout/app-navbar.tsx,High
+Language Context,Create language context provider for global state,✅ Completed,"Created LanguageContext with useLanguage hook. Now syncs with URL locale instead of localStorage only.",src/contexts/LanguageContext.tsx,High
+Provider Integration,Integrate LanguageProvider into app providers,✅ Completed,Added LanguageProvider to the provider chain in AppProviders component.,src/app/providers.tsx,High
+Movie Search Language Support,Update movie search to fetch language-specific data,✅ Completed,"Modified movie search component to use language context and next-intl translations. Queries include language parameter.",src/components/movie-search.tsx,High
+Database Language Support,Ensure database queries use selected language,✅ Completed,"Updated searchMoviesFiltered and listGenres functions to accept language parameter. Uses Prisma Language enum (he_IL, en_US).",src/app/actions/searchMovies.ts,High
+Locale-Based Routing,Implement /[locale]/ routing structure,✅ Completed,"Created locale-based routing with /he/ and /en/ paths. Includes middleware for automatic locale detection.",src/app/[locale]/layout.tsx src/app/[locale]/page.tsx middleware.ts,High
+RTL/LTR Layout Switching,Transform layout based on language direction,✅ Completed,"Automatic dir='rtl' for Hebrew and dir='ltr' for English. Layout adapts text direction and alignment.",src/app/[locale]/layout.tsx,High
+Hebrew Font Integration,Add Hebrew fonts for proper text rendering,✅ Completed,"Integrated Rubik, Assistant, IBM Plex Sans Hebrew, and Heebo fonts. Automatic font switching based on locale.",src/app/globals.css tailwind.config.ts,High
+next-intl Setup,Configure next-intl for translations,✅ Completed,"Complete next-intl setup with plugin configuration, translation files, and type definitions.",next.config.ts src/i18n.ts src/types/messages.d.ts,High
+Translation Files,Create Hebrew and English translation files,✅ Completed,"Created comprehensive translation files for nav, search, and movie content in both languages.",messages/he.json messages/en.json,High
+Translation Integration,Replace hardcoded strings with translations,✅ Completed,"Updated all components to use useTranslations() hook instead of hardcoded Hebrew/English strings.",src/components/layout/app-navbar.tsx src/components/movie-search.tsx,Medium
+CSS RTL Support,Add CSS support for right-to-left text direction,✅ Completed,"Added RTL-specific CSS rules, direction-aware spacing, and component adjustments for Hebrew layout.",src/app/globals.css,Medium
+Middleware Configuration,Set up next-intl middleware for locale detection,✅ Completed,Configured middleware to handle locale routing and automatic detection based on user preference.,middleware.ts,Medium
+Type Safety,Add TypeScript types for translations,✅ Completed,Created type definitions for translation messages to ensure compile-time safety.,src/types/messages.d.ts,Medium
+Legacy Layout Cleanup,Update old layout to redirect to locale structure,✅ Completed,Modified old layout.tsx to redirect to new locale-based routing structure.,src/app/layout.tsx,Low
+Next.js Configuration,Update Next.js config for i18n support,✅ Completed,Added next-intl plugin to Next.js configuration with proper setup.,next.config.ts,Low
+Documentation Update,Update i18n setup documentation with RTL implementation,✅ Completed,Enhanced documentation with complete RTL/LTR implementation details and usage examples.,spec/i18n-setup-with-fonts.md,Low
+Tasks Tracking,Update CSV file with RTL/LTR implementation tasks,✅ Completed,Updated comprehensive task tracking with all RTL/LTR and next-intl implementation details.,spec/cinescore-i18n-tasks.csv,Low
+

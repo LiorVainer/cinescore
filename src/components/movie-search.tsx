@@ -5,30 +5,26 @@ import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useDebounce} from '@/lib/useDebounce';
 import MovieCard from '@/components/movie-card';
 import {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {listGenres, type MovieFilters, searchMoviesFiltered} from '@/app/actions/searchMovies';
+import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
 import {FilterBar} from '@/components/movie-search/FilterBar';
-import type {GenreOption, SortValue} from '@/components/movie-search/constants';
 import CollapsedMovieCardSkeleton from '@/components/movie-card-collapsed.skeleton';
 import {Language} from '@prisma/client';
+import {useLanguage} from '@/contexts/LanguageContext';
+import {useTranslations} from 'next-intl';
 
-const DEFAULT_SORT: SortValue = 'rating:desc';
-const DEFAULT_LANGUAGE: Language = Language.he_IL;
-
-type MoviesResult = {
-    items: MovieWithLanguageTranslation[];
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
-};
+const DEFAULT_SORT = 'rating:desc';
 
 export default function MovieSearch() {
+    const {currentLanguage, isLoading: languageLoading} = useLanguage();
+    const t = useTranslations('search');
+    const tMovie = useTranslations('movie');
+
     // Filters state
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 400);
 
-    const [sort, setSort] = useState<SortValue>(DEFAULT_SORT);
-    const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+    const [sort, setSort] = useState(DEFAULT_SORT);
+    const [selectedGenres, setSelectedGenres] = useState([]);
     const selectedGenresKey = selectedGenres.join(',');
     const [page, setPage] = useState(1);
     const pageSize = 24;
@@ -36,30 +32,31 @@ export default function MovieSearch() {
     // Reset page when core filters change
     useEffect(() => {
         setPage(1);
-    }, [debouncedSearch, sort, selectedGenresKey]);
+    }, [debouncedSearch, sort, selectedGenresKey, currentLanguage]);
 
-    // Genres via server action + TanStack Query
-    const {data: genresData} = useQuery<GenreOption[]>({
-        queryKey: ['genres'],
-        queryFn: async () => listGenres(),
+    // Genres via server action + TanStack Query (now language-aware)
+    const {data: genresData} = useQuery({
+        queryKey: ['genres', currentLanguage],
+        queryFn: async () => listGenres(currentLanguage),
         staleTime: 1000 * 60 * 60, // 1 hour
+        enabled: !languageLoading, // Don't fetch until language is loaded
     });
 
     const genres = genresData ?? [];
 
-    // Movies via server action + TanStack Query (simple-query)
+    // Movies via server action + TanStack Query (now language-aware)
     const {
         data: moviesData,
         isFetching,
         isError,
-    } = useQuery<MoviesResult>({
-        queryKey: ['simple-query', {
+    } = useQuery({
+        queryKey: ['movies-search', {
             search: debouncedSearch,
             sort,
             selectedGenres,
             page,
             pageSize,
-            language: DEFAULT_LANGUAGE
+            language: currentLanguage
         }],
         queryFn: async () =>
             searchMoviesFiltered({
@@ -68,13 +65,14 @@ export default function MovieSearch() {
                 selectedGenres,
                 page,
                 pageSize,
-                language: DEFAULT_LANGUAGE,
-            } as MovieFilters),
+                language: currentLanguage,
+            }),
         placeholderData: keepPreviousData,
+        enabled: !languageLoading, // Don't fetch until language is loaded
     });
 
     // Handlers
-    const toggleGenre = (id: number) => {
+    const toggleGenre = (id) => {
         setSelectedGenres((prev) => (prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]));
     };
 
@@ -86,6 +84,19 @@ export default function MovieSearch() {
     };
 
     const items = moviesData?.items ?? [];
+
+    // Show loading state if language is still loading
+    if (languageLoading) {
+        return (
+            <div className='h-full flex flex-col gap-4 py-4'>
+                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
+                    {Array.from({length: 9}).map((_, i) => (
+                        <CollapsedMovieCardSkeleton key={i}/>
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className='h-full flex flex-col gap-4 py-4'>
@@ -101,7 +112,11 @@ export default function MovieSearch() {
                 onClearAll={clearFilters}
             />
 
-            {isError && <div className='text-destructive'>שגיאה בטעינת הנתונים. נסה שוב.</div>}
+            {isError && (
+                <div className='text-destructive'>
+                    {t('errorLoading')}
+                </div>
+            )}
 
             {isFetching && items.length === 0 ? (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
@@ -112,11 +127,17 @@ export default function MovieSearch() {
             ) : (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 overflow-y-auto'>
                     {items.map((movie) => (
-                        <MovieCard ctaText={'פרטים'} key={movie.id} movie={movie}/>
+                        <MovieCard
+                            ctaText={tMovie('details')}
+                            key={movie.id}
+                            movie={movie}
+                        />
                     ))}
 
                     {items.length === 0 && !isFetching && (
-                        <div className='text-sm text-muted-foreground'>לא נמצאו תוצאות לפי הסינון הנוכחי.</div>
+                        <div className='text-sm text-muted-foreground'>
+                            {t('noResults')}
+                        </div>
                     )}
                 </div>
             )}

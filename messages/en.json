@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "signIn": "Sign In",
+    "language": "Language",
+    "details": "Details",
+    "title": "Starrin"
+  },
+  "app": {
+    "title": "Starrin",
+    "description": "Movie Reviews Application"
+  },
+  "search": {
+    "placeholder": "Search movies...",
+    "loading": "Searching...",
+    "noResults": "No results found for the current filter.",
+    "errorLoading": "Error loading data. Please try again."
+  },
+  "rating": {
+    "votes": "{count} votes"
+  },
+  "movie": {
+    "details": "Details",
+    "rating": "Rating",
+    "releaseDate": "Release Date"
+  },
+  "filters": {
+    "sortBy": "Sort by",
+    "genre": "Genre",
+    "clear": "Clear",
+    "clearAll": "Clear All"
+  },
+  "dates": {
+    "today": "Today",
+    "daysAgo": "{count} {count, plural, one {day} other {days}} ago",
+    "weeksAgo": "{count} {count, plural, one {week} other {weeks}} ago",
+    "monthsAgo": "{count} {count, plural, one {month} other {months}} ago",
+    "yearsAgo": "{count} {count, plural, one {year} other {years}} ago",
+    "inDays": "in {count} {count, plural, one {day} other {days}}",
+    "inWeeks": "in {count} {count, plural, one {week} other {weeks}}",
+    "inMonths": "in {count} {count, plural, one {month} other {months}}",
+    "inYears": "in {count} {count, plural, one {year} other {years}}"
+  }
+}
+

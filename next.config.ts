@@ -1,10 +1,20 @@
 import type {NextConfig} from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+// Point to the correct request configuration file
+const withNextIntl = createNextIntlPlugin({
+    requestConfigPath: './src/i18n/request.ts',
+    experimental: {
+        // Enable automatic type generation for your message files
+        createMessagesDeclaration: './messages/en.json'
+    }
+});
 
 const nextConfig: NextConfig = {
     /* config options here */
     experimental: {
         typedEnv: true,
-
+        serverComponentsExternalPackages: ['@prisma/client'],
     },
     turbopack: {
         rules: {
@@ -47,4 +57,4 @@ const nextConfig: NextConfig = {
     },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
