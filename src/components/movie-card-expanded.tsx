@@ -30,6 +30,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
 
         // Disable shared-element layout transitions inside the mobile drawer to avoid double animations
         const layoutIdEnabled = variant !== 'drawer';
+        const castMembersToShowAmount = 4;
 
         const Content = (
             <motion.div
@@ -54,7 +55,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                     />
                 </motion.div>
 
-                <div className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0 scrollable h-full'>
+                <div className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0 scrollable h-full w-full'>
                     <div className={`flex justify-between items-start gap-2`}>
                         <div className='flex-1 flex flex-col min-w-0 gap-2'>
                             <div className='flex flex-col gap-2'>
@@ -131,7 +132,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                 <h3 className='font-semibold text-sm'>שחקנים:</h3>
                                 <div className='flex flex-col gap-2'>
                                     <div className='flex flex-wrap gap-2'>
-                                        {cast.slice(0, 5).map((castMember) => (
+                                        {cast.slice(0, castMembersToShowAmount).map((castMember) => (
                                             <div key={castMember.id}
                                                  className='text-xs bg-muted p-1 rounded flex flex-col items-center gap-1 flex-1'>
                                                 <img src={castMember.actor.profileUrl ?? ''} alt={castMember.actor.name}
@@ -144,7 +145,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                         ))}
                                     </div>
                                     <div>
-                                        {cast.length > 5 && (
+                                        {cast.length > castMembersToShowAmount && (
                                             <div className='text-xs text-muted-foreground'>
                                                 ועוד {cast.length - 5} שחקנים...
                                             </div>
@@ -156,7 +157,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                     </div>
 
                     {movie.trailers.length > 0 && (
-                        <div className='flex gap-4 mt-4'>
+                        <div className='flex gap-4 mt-4 overflow-x-auto w-full py-2 h-fit'>
                             {movie.trailers.map((trailer) => (
                                 <ThumbnailButton
                                     key={trailer.id}
