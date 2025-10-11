@@ -13,7 +13,7 @@ import {
 import {Input} from '@/components/ui/input';
 import {ChevronDownIcon, FilterIcon} from 'lucide-react';
 import {useMemo, useState} from 'react';
-import type {GenreOption} from './constants';
+import type {GenreOption} from '@/constants/sort.const';
 import {useTranslations} from 'next-intl';
 
 export function GenresMultiSelect({

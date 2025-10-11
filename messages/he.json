@@ -19,7 +19,7 @@
     "errorLoading": "שגיאה בטעינת הנתונים. נסה שוב."
   },
   "rating": {
-    "votes": "{count} הצבעות"
+    "votes": "{count, plural, =0 {אין הצבעות} one {הצבעה #} other {# הצבעות}}"
   },
   "movie": {
     "details": "פרטים",
@@ -27,7 +27,7 @@
     "releaseDate": "תאריך יציאה",
     "close": "סגור",
     "cast": "שחקנים:",
-    "andMore": "ועוד {count} שחקנים..."
+    "andMore": "ועוד {count, plural, one {שחקן #} other {# שחקנים}}..."
   },
   "filters": {
     "sortBy": "מיין לפי",
@@ -40,7 +40,7 @@
     "filter": "סינון ז'אנרים",
     "filterPlaceholder": "סנן...",
     "noGenresFound": "לא נמצאו ז'אנרים",
-    "selected": "{count} נבחרו",
+    "selected": "{count, plural, =0 {לא נבחרו} one {# נבחר} other {# נבחרו}}",
     "noFilter": "ללא סינון",
     "clearSelection": "נקה בחירת ז'אנרים",
     "removeGenre": "הסר {name}"
@@ -54,13 +54,13 @@
   },
   "dates": {
     "today": "היום",
-    "daysAgo": "לפני {count} {count, plural, one {יום} other {ימים}}",
-    "weeksAgo": "לפני {count} {count, plural, one {שבוע} other {שבועות}}",
-    "monthsAgo": "לפני {count} {count, plural, one {חודש} other {חודשים}}",
-    "yearsAgo": "לפני {count} {count, plural, one {שנה} other {שנים}}",
-    "inDays": "בעוד {count} {count, plural, one {יום} other {ימים}}",
-    "inWeeks": "בעוד {count} {count, plural, one {שבוע} other {שבועות}}",
-    "inMonths": "בעוד {count} {count, plural, one {חודש} other {חודשים}}",
-    "inYears": "בעוד {count} {count, plural, one {שנה} other {שנים}}"
+    "daysAgo": "{count, plural, one {לפני # יום} other {לפני # ימים}}",
+    "weeksAgo": "{count, plural, one {לפני # שבוע} other {לפני # שבועות}}",
+    "monthsAgo": "{count, plural, one {לפני # חודש} other {לפני # חודשים}}",
+    "yearsAgo": "{count, plural, one {לפני # שנה} other {לפני # שנים}}",
+    "inDays": "{count, plural, one {בעוד # יום} other {בעוד # ימים}}",
+    "inWeeks": "{count, plural, one {בעוד # שבוע} other {בעוד # שבועות}}",
+    "inMonths": "{count, plural, one {בעוד # חודש} other {בעוד # חודשים}}",
+    "inYears": "{count, plural, one {בעוד # שנה} other {בעוד # שנים}}"
   }
 }

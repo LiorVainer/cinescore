@@ -6,7 +6,7 @@ import {SearchInput} from './SearchInput';
 import {SortSelect} from './SortSelect';
 import {GenresMultiSelect} from './GenresMultiSelect';
 import {SelectedGenreChips} from './SelectedGenreChips';
-import type {GenreOption, SortValue} from './constants';
+import type {GenreOption, SortValue} from '@/constants/sort.const';
 import {useTranslations} from 'next-intl';
 
 export function FilterBar({

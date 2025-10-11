@@ -10,7 +10,7 @@ import {HebrewAuthLocalization} from '@/constants/auth.const';
 import {Link, useRouter} from '@/i18n/navigation';
 import {useLocale} from 'next-intl';
 
-export function AppProviders({children}) {
+export function AppProviders({children}: { children: React.ReactNode }) {
     const locale = useLocale();
     const router = useRouter();
     const [queryClient] = useState(

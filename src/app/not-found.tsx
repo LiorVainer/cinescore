@@ -1,14 +1,5 @@
-'use client';
-
-import {useRouter} from '@/i18n/navigation';
-import {useEffect} from 'react';
+import {redirect} from 'next/navigation';
 
 export default function NotFoundPage() {
-    const router = useRouter();
-
-    useEffect(() => {
-        router.push('/');
-    }, [router]);
-
-    return <p className='text-center mt-10'>Redirecting to home...</p>;
+    redirect('/he');
 }

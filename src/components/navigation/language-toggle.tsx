@@ -2,12 +2,13 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Button} from "@/components/ui/button";
 import {Globe} from "lucide-react";
 import {Language} from "@prisma/client";
-import {useLocale} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {mapLanguageToLocale, mapLocaleToLanguage} from "@/constants/languages.const";
 import {usePathname, useRouter} from "@/i18n/navigation";
 
 export const LanguageToggle = () => {
     const locale= useLocale();
+    const t = useTranslations('nav');
     const currentLanguage = mapLocaleToLanguage(locale);
     const pathname = usePathname();
     const router = useRouter();

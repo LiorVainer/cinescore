@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import type {GenreOption} from '@/constants/sort.const';
+import {SortValue} from '@/constants/sort.const';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useDebounce} from '@/lib/useDebounce';
 import MovieCard from '@/components/movie/movie-card';
@@ -23,8 +23,8 @@ export default function MovieSearch() {
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 400);
 
-    const [sort, setSort] = useState(DEFAULT_SORT);
-    const [selectedGenres, setSelectedGenres] = useState<GenreOption>([]);
+    const [sort, setSort] = useState<SortValue>(DEFAULT_SORT);
+    const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
     const selectedGenresKey = selectedGenres.join(',');
     const [page, setPage] = useState(1);
     const pageSize = 24;
@@ -70,7 +70,7 @@ export default function MovieSearch() {
     });
 
     // Handlers
-    const toggleGenre = (id) => {
+    const toggleGenre = (id: number) => {
         setSelectedGenres((prev) => (prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]));
     };
 

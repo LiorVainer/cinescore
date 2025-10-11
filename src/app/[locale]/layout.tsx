@@ -21,7 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(
-    props
+    props: {
+        params: Promise<{ locale: typeof routing.locales[number] }>;
+    }
 ) {
     const {locale} = await props.params;
 

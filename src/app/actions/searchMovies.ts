@@ -7,6 +7,7 @@ import {Language, Prisma} from '@prisma/client';
 import {MovieWithLanguageTranslation} from '@/models/movies.model';
 import type {ExternalIds} from 'tmdb-ts';
 import type {Movie as OmdbMovie} from '@/lib/omdbapi';
+import {SortValue} from "@/constants/sort.const";
 
 export type SearchedMovie = {
     id: number;
@@ -105,7 +106,7 @@ export const searchMoviesInDB = async (query: string, language: Language = Langu
 
 export type MovieFilters = {
     search?: string;
-    sort?: 'rating:desc' | 'rating:asc' | 'votes:desc' | 'releaseDate:desc' | 'releaseDate:asc';
+    sort?: SortValue;
     selectedGenres?: number[];
     page?: number;
     pageSize?: number;

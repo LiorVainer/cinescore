@@ -22,7 +22,7 @@ declare const messages: {
     "errorLoading": "Error loading data. Please try again."
   },
   "rating": {
-    "votes": "{count} votes"
+    "votes": "{count, plural, =0 {no votes} one {# vote} other {# votes}}"
   },
   "movie": {
     "details": "Details",
@@ -30,7 +30,7 @@ declare const messages: {
     "releaseDate": "Release Date",
     "close": "Close",
     "cast": "Cast",
-    "andMore": "and {count} more actors..."
+    "andMore": "and {count, plural, one {# more actor} other {# more actors}}..."
   },
   "filters": {
     "sortBy": "Sort by",
@@ -43,7 +43,7 @@ declare const messages: {
     "filter": "Filter genres",
     "filterPlaceholder": "Filter...",
     "noGenresFound": "No genres found",
-    "selected": "{count} selected",
+    "selected": "{count, plural, =0 {none selected} one {# selected} other {# selected}}",
     "noFilter": "No filter",
     "clearSelection": "Clear genre selection",
     "removeGenre": "Remove {name}"
@@ -57,14 +57,14 @@ declare const messages: {
   },
   "dates": {
     "today": "Today",
-    "daysAgo": "{count} {count, plural, one {day} other {days}} ago",
-    "weeksAgo": "{count} {count, plural, one {week} other {weeks}} ago",
-    "monthsAgo": "{count} {count, plural, one {month} other {months}} ago",
-    "yearsAgo": "{count} {count, plural, one {year} other {years}} ago",
-    "inDays": "in {count} {count, plural, one {day} other {days}}",
-    "inWeeks": "in {count} {count, plural, one {week} other {weeks}}",
-    "inMonths": "in {count} {count, plural, one {month} other {months}}",
-    "inYears": "in {count} {count, plural, one {year} other {years}}"
+    "daysAgo": "{count, plural, one {# day ago} other {# days ago}}",
+    "weeksAgo": "{count, plural, one {# week ago} other {# weeks ago}}",
+    "monthsAgo": "{count, plural, one {# month ago} other {# months ago}}",
+    "yearsAgo": "{count, plural, one {# year ago} other {# years ago}}",
+    "inDays": "{count, plural, one {in # day} other {in # days}}",
+    "inWeeks": "{count, plural, one {in # week} other {in # weeks}}",
+    "inMonths": "{count, plural, one {in # month} other {in # months}}",
+    "inYears": "{count, plural, one {in # year} other {in # years}}"
   }
 };
 export default messages;
