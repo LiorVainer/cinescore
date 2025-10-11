@@ -1,15 +1,38 @@
 import {getRequestConfig} from 'next-intl/server';
+import {Formats, hasLocale} from 'next-intl';
+import {routing} from './routing';
 
-export default getRequestConfig(async ({locale}) => {
-    // Debug logging
-    console.log('Request config received locale:', locale);
+export const formats = {
+    dateTime: {
+        short: {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        }
+    },
+    number: {
+        precise: {
+            maximumFractionDigits: 5
+        }
+    },
+    list: {
+        enumeration: {
+            style: 'long',
+            type: 'conjunction'
+        }
+    }
+} satisfies Formats;
 
-    // If locale is undefined, default to 'he'
-    const validLocale = locale || 'he';
-    console.log('Using locale:', validLocale);
+
+export default getRequestConfig(async ({requestLocale}) => {
+    // Typically corresponds to the `[locale]` segment
+    const requested = await requestLocale;
+    const locale = hasLocale(routing.locales, requested)
+        ? requested
+        : routing.defaultLocale;
 
     return {
-        locale: validLocale, // ✅ MUST return the locale
-        messages: (await import(`../../messages/${validLocale}.json`)).default
+        locale,
+        messages: (await import(`../../messages/${locale}.json`)).default
     };
 });

@@ -1,4 +1,7 @@
 {
+  "metadata": {
+    "title": "סטארין"
+  },
   "nav": {
     "signIn": "התחבר",
     "language": "שפה",
@@ -21,13 +24,23 @@
   "movie": {
     "details": "פרטים",
     "rating": "דירוג",
-    "releaseDate": "תאריך יציאה"
+    "releaseDate": "תאריך יציאה",
+    "close": "סגור",
+    "cast": "שחקנים:",
+    "andMore": "ועוד {count} שחקנים..."
   },
   "filters": {
     "sortBy": "מיין לפי",
     "genre": "ז'אנר",
     "clear": "נקה",
     "clearAll": "נקה הכל"
+  },
+  "sort": {
+    "ratingDesc": "דירוג מגבוה לנמוך",
+    "ratingAsc": "דירוג מנמוך לגבוה",
+    "votesDesc": "מס׳ הצבעות מגבוה לנמוך",
+    "releaseDateDesc": "חדשים",
+    "releaseDateAsc": "ישנים"
   },
   "dates": {
     "today": "היום",
@@ -41,4 +54,3 @@
     "inYears": "בעוד {count} {count, plural, one {שנה} other {שנים}}"
   }
 }
-

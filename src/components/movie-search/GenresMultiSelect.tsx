@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -10,10 +10,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { ChevronDownIcon, FilterIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import type { GenreOption } from './constants';
+import {Input} from '@/components/ui/input';
+import {ChevronDownIcon, FilterIcon} from 'lucide-react';
+import {useMemo, useState} from 'react';
+import type {GenreOption} from './constants';
 
 export function GenresMultiSelect({
     genres,
@@ -34,7 +34,7 @@ export function GenresMultiSelect({
     }, [genres, query]);
 
     return (
-        <DropdownMenu dir='rtl'>
+        <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant='outline' className='gap-2 w-full sm:w-auto justify-between'>
                     <span className='inline-flex items-center gap-2'>

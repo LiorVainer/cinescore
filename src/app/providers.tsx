@@ -4,15 +4,14 @@ import {NuqsAdapter} from 'nuqs/adapters/next/app';
 import {ThemeProvider} from 'next-themes';
 import {authClient} from '@/lib/auth-client';
 import {AuthUIProvider} from '@daveyplate/better-auth-ui';
-import Link from 'next/link';
-import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
-import {LanguageProvider} from '@/contexts/LanguageContext';
 import {HebrewAuthLocalization} from '@/constants/auth.const';
+import {Link, useRouter} from '@/i18n/navigation';
+import {useLocale} from 'next-intl';
 
 export function AppProviders({children}) {
+    const locale = useLocale();
     const router = useRouter();
     const [queryClient] = useState(
         () =>
@@ -35,7 +34,7 @@ export function AppProviders({children}) {
                     // Clear router cache (protected routes)
                     router.refresh();
                 }}
-                localization={HebrewAuthLocalization}
+                localization={locale === 'he' ? HebrewAuthLocalization : undefined}
                 Link={Link}
                 social={{
                     providers: ['google'],
@@ -47,9 +46,7 @@ export function AppProviders({children}) {
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <LanguageProvider>
                         <NuqsAdapter>{children}</NuqsAdapter>
-                    </LanguageProvider>
                 </ThemeProvider>
             </AuthUIProvider>
             {/*<ReactQueryDevtools initialIsOpen={false}/>*/}

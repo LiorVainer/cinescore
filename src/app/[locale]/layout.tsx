@@ -1,10 +1,11 @@
-import {NextIntlClientProvider} from 'next-intl';
-import {getMessages} from 'next-intl/server';
+import {hasLocale, Locale, NextIntlClientProvider} from 'next-intl';
+
+import {getMessages, getTranslations, setRequestLocale} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 import {Geist, Geist_Mono} from 'next/font/google';
 import '../globals.css';
 import {AppProviders} from '../providers';
-import {AppNavbar} from '@/components/layout/app-navbar';
+import {AppNavbar} from '@/components/navigation/app-navbar';
 import {routing} from '@/i18n/routing';
 
 const geistSans = Geist({
@@ -19,6 +20,22 @@ const geistMono = Geist_Mono({
     display: 'swap'
 });
 
+export async function generateMetadata(
+    props
+) {
+    const {locale} = await props.params;
+
+    const t = await getTranslations({
+        locale: locale as Locale,
+        namespace: 'metadata',
+    });
+
+    return {
+        title: t('title')
+    };
+}
+
+
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({locale}));
 }
@@ -28,15 +45,15 @@ export default async function LocaleLayout({
                                                params,
                                            }: {
     children: React.ReactNode;
-    params: Promise<{ locale: string }>;
+    params: Promise<{ locale: typeof routing.locales[number] }>;
 }) {
     // Await the params before using its properties
     const {locale} = await params;
-
-    // Validate that the incoming `locale` parameter is valid using routing configuration
-    if (!routing.locales.includes(locale as any)) {
+    if (!hasLocale(routing.locales, locale)) {
         notFound();
     }
+
+    setRequestLocale(locale);
 
     const messages = await getMessages();
 
@@ -49,8 +66,8 @@ export default async function LocaleLayout({
         <body className={locale === 'he' ? 'font-hebrew' : 'font-sans'}>
         {/* ✅ CRITICAL: Pass locale to NextIntlClientProvider */}
         <NextIntlClientProvider
-            locale={locale}
-            messages={messages}
+            // locale={locale}
+            // messages={messages}
         >
             <AppProviders>
                 <AppNavbar/>

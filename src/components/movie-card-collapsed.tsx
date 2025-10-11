@@ -7,7 +7,7 @@ import React from 'react';
 import Image from 'next/image';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 import MovieStats from '@/components/movie/MovieStats';
-import MovieMeta from '@/components/movie/MovieMeta';
+import {MovieMeta} from '@/components/movie/MovieMeta';
 
 export type CollapsedMovieCardProps = {
     movie: MovieWithLanguageTranslation;

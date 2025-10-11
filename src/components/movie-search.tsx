@@ -4,19 +4,18 @@ import {useEffect, useState} from 'react';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useDebounce} from '@/lib/useDebounce';
 import MovieCard from '@/components/movie-card';
-import {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
 import {FilterBar} from '@/components/movie-search/FilterBar';
 import CollapsedMovieCardSkeleton from '@/components/movie-card-collapsed.skeleton';
-import {Language} from '@prisma/client';
-import {useLanguage} from '@/contexts/LanguageContext';
-import {useTranslations} from 'next-intl';
+import {useLocale, useTranslations} from 'next-intl';
+import {mapLocaleToLanguage} from "@/constants/languages.const";
 
 const DEFAULT_SORT = 'rating:desc';
 
 export default function MovieSearch() {
-    const {currentLanguage, isLoading: languageLoading} = useLanguage();
     const t = useTranslations('search');
+    const locale = useLocale();
+    const currentLanguage = mapLocaleToLanguage(locale);
     const tMovie = useTranslations('movie');
 
     // Filters state
@@ -32,14 +31,13 @@ export default function MovieSearch() {
     // Reset page when core filters change
     useEffect(() => {
         setPage(1);
-    }, [debouncedSearch, sort, selectedGenresKey, currentLanguage]);
+    }, [debouncedSearch, sort, selectedGenresKey]);
 
     // Genres via server action + TanStack Query (now language-aware)
     const {data: genresData} = useQuery({
         queryKey: ['genres', currentLanguage],
         queryFn: async () => listGenres(currentLanguage),
         staleTime: 1000 * 60 * 60, // 1 hour
-        enabled: !languageLoading, // Don't fetch until language is loaded
     });
 
     const genres = genresData ?? [];
@@ -68,7 +66,6 @@ export default function MovieSearch() {
                 language: currentLanguage,
             }),
         placeholderData: keepPreviousData,
-        enabled: !languageLoading, // Don't fetch until language is loaded
     });
 
     // Handlers
@@ -84,19 +81,6 @@ export default function MovieSearch() {
     };
 
     const items = moviesData?.items ?? [];
-
-    // Show loading state if language is still loading
-    if (languageLoading) {
-        return (
-            <div className='h-full flex flex-col gap-4 py-4'>
-                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
-                    {Array.from({length: 9}).map((_, i) => (
-                        <CollapsedMovieCardSkeleton key={i}/>
-                    ))}
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className='h-full flex flex-col gap-4 py-4'>

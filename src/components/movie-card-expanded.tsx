@@ -7,11 +7,12 @@ import {CloseIcon} from './movie-card-utils';
 import {MovieGenres} from '@/components/movie/movie-genres';
 import ThumbnailButton from '@/components/thumbnail-button-video-player';
 import MovieStats from '@/components/movie/MovieStats';
-import MovieMeta from '@/components/movie/MovieMeta';
-import {getLanguageLabel, LANGUAGE_LABELS} from '@/constants/languages.const';
+import {MovieMeta} from '@/components/movie/MovieMeta';
+import {LANGUAGE_LABELS} from '@/constants/languages.const';
 import {Button} from '@/components/ui/button';
 import Image from 'next/image';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
+import {useTranslations} from 'next-intl';
 
 export type ExpandedMovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -24,6 +25,7 @@ export type ExpandedMovieCardProps = {
 const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProps>(
     ({movie, imgSrc, idSuffix, onClose, variant = 'modal'}, ref) => {
         const {title, originalTitle, originalLanguage, releaseDate, rating, votes, genres, cast} = movie;
+        const t = useTranslations('movie');
 
         // date/since are rendered via MovieMeta; rating/votes via MovieStats
         const originalLangLabel = originalLanguage && LANGUAGE_LABELS[originalLanguage] ? LANGUAGE_LABELS[originalLanguage] : undefined;
@@ -90,7 +92,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                             onClick={() => onClose()}
                                             size={'sm'}
                                         >
-                                            <span className='text-xs'>סגור</span>
+                                            <span className='text-xs'>{t('close')}</span>
                                         </Button>
                                     )}
                                 </div>
@@ -128,7 +130,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                         {/* Display cast information */}
                         {cast && cast.length > 0 && (
                             <div className='flex flex-col gap-2'>
-                                <h3 className='font-semibold text-sm'>שחקנים:</h3>
+                                <h3 className='font-semibold text-sm'>{t('cast')}</h3>
                                 <div className='flex flex-col gap-2'>
                                     <div className='flex flex-wrap gap-2'>
                                         {cast.slice(0, 5).map((castMember) => (
@@ -146,7 +148,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                     <div>
                                         {cast.length > 5 && (
                                             <div className='text-xs text-muted-foreground'>
-                                                ועוד {cast.length - 5} שחקנים...
+                                                {t('andMore', { count: cast.length - 5 })}
                                             </div>
                                         )}
                                     </div>

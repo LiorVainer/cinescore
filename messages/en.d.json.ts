@@ -2,6 +2,9 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
+  "metadata": {
+    "title": "Starrin"
+  },
   "nav": {
     "signIn": "Sign In",
     "language": "Language",
@@ -24,13 +27,23 @@ declare const messages: {
   "movie": {
     "details": "Details",
     "rating": "Rating",
-    "releaseDate": "Release Date"
+    "releaseDate": "Release Date",
+    "close": "Close",
+    "cast": "Cast",
+    "andMore": "and {count} more actors..."
   },
   "filters": {
     "sortBy": "Sort by",
     "genre": "Genre",
     "clear": "Clear",
     "clearAll": "Clear All"
+  },
+  "sort": {
+    "ratingDesc": "Rating: High to Low",
+    "ratingAsc": "Rating: Low to High",
+    "votesDesc": "Most Votes",
+    "releaseDateDesc": "Newest",
+    "releaseDateAsc": "Oldest"
   },
   "dates": {
     "today": "Today",

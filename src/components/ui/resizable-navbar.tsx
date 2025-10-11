@@ -2,12 +2,8 @@
 import {cn} from "@/lib/utils";
 import {IconMenu2, IconX} from "@tabler/icons-react";
 import {AnimatePresence, motion, useMotionValueEvent, useScroll,} from "motion/react";
-import {usePathname} from "next/navigation";
 
 import React, {useEffect, useRef, useState} from "react";
-import Link from "next/link";
-import Logo from "@/assets/logo.svg";
-import {useTranslations} from "next-intl";
 
 
 interface NavbarProps {
@@ -272,31 +268,6 @@ export const MobileNavToggle = ({
     );
 };
 
-export const NavbarLogoContent = () => (
-    <>
-        <Logo className="text-foreground [--star-color:#FFD700] w-7 h-7"/>
-        <span className="font-bold text-base text-black dark:text-white">{Constants.appName}</span>
-    </>
-)
-
-export const NavbarLogo = () => {
-    const t = useTranslations("app");
-    return (
-        <Link
-            href="/"
-            className="relative z-20 flex flex-row items-center gap-2 text-lg font-bold text-black dark:text-white"
-        >
-            <Logo className="h-6 w-6"/>
-            <motion.span
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                className="whitespace-pre"
-            >
-                {t("title")}
-            </motion.span>
-        </Link>
-    );
-};
 
 export const NavbarButton = ({
                                  href,
