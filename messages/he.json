@@ -35,6 +35,16 @@
     "clear": "נקה",
     "clearAll": "נקה הכל"
   },
+  "genres": {
+    "title": "ז'אנרים",
+    "filter": "סינון ז'אנרים",
+    "filterPlaceholder": "סנן...",
+    "noGenresFound": "לא נמצאו ז'אנרים",
+    "selected": "{count} נבחרו",
+    "noFilter": "ללא סינון",
+    "clearSelection": "נקה בחירת ז'אנרים",
+    "removeGenre": "הסר {name}"
+  },
   "sort": {
     "ratingDesc": "דירוג מגבוה לנמוך",
     "ratingAsc": "דירוג מנמוך לגבוה",

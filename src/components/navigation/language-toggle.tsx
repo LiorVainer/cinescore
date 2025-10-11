@@ -46,14 +46,14 @@ export const LanguageToggle = () => {
                     onClick={() => handleLanguageChange(Language.he_IL)}
                     className={currentLanguage === Language.he_IL ? 'bg-accent' : ''}
                 >
-                    <span className='mr-2'>🇮🇱</span>
+                    <span className='me-2'>🇮🇱</span>
                     עברית
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => handleLanguageChange(Language.en_US)}
                     className={currentLanguage === Language.en_US ? 'bg-accent' : ''}
                 >
-                    <span className='mr-2'>🇺🇸</span>
+                    <span className='me-2'>🇺🇸</span>
                     English
                 </DropdownMenuItem>
             </DropdownMenuContent>

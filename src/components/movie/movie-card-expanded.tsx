@@ -3,7 +3,6 @@
 import React from 'react';
 import {motion} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {CloseIcon} from './movie-card-utils';
 import {MovieGenres} from '@/components/movie/movie-genres';
 import ThumbnailButton from '@/components/thumbnail-button-video-player';
 import MovieStats from '@/components/movie/MovieStats';
@@ -189,7 +188,6 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                     className={`flex absolute top-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6`}
                     onClick={onClose}
                 >
-                    <CloseIcon/>
                 </motion.button>
                 {Content}
             </div>

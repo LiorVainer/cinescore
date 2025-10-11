@@ -1,4 +1,4 @@
-import MovieSearch from '@/components/movie-search';
+import MovieSearch from '@/components/movie-search/movie-search';
 
 export default function HomePage() {
     return (

@@ -1,6 +1,6 @@
 import {motion} from 'motion/react';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
-import {RelativeDate} from '@/components/ui/RelativeDate';
+import {RelativeDate} from '@/components/ui/relative-date';
 
 export function MovieMeta({
                               title,

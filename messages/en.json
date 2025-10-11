@@ -35,6 +35,16 @@
     "clear": "Clear",
     "clearAll": "Clear All"
   },
+  "genres": {
+    "title": "Genres",
+    "filter": "Filter genres",
+    "filterPlaceholder": "Filter...",
+    "noGenresFound": "No genres found",
+    "selected": "{count} selected",
+    "noFilter": "No filter",
+    "clearSelection": "Clear genre selection",
+    "removeGenre": "Remove {name}"
+  },
   "sort": {
     "ratingDesc": "Rating: High to Low",
     "ratingAsc": "Rating: Low to High",

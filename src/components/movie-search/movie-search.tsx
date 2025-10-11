@@ -1,12 +1,13 @@
 'use client';
 
 import {useEffect, useState} from 'react';
+import type {GenreOption} from '@/constants/sort.const';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useDebounce} from '@/lib/useDebounce';
-import MovieCard from '@/components/movie-card';
+import MovieCard from '@/components/movie/movie-card';
 import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
 import {FilterBar} from '@/components/movie-search/FilterBar';
-import CollapsedMovieCardSkeleton from '@/components/movie-card-collapsed.skeleton';
+import CollapsedMovieCardSkeleton from '@/components/movie/movie-card-collapsed.skeleton';
 import {useLocale, useTranslations} from 'next-intl';
 import {mapLocaleToLanguage} from "@/constants/languages.const";
 
@@ -23,7 +24,7 @@ export default function MovieSearch() {
     const debouncedSearch = useDebounce(search, 400);
 
     const [sort, setSort] = useState(DEFAULT_SORT);
-    const [selectedGenres, setSelectedGenres] = useState([]);
+    const [selectedGenres, setSelectedGenres] = useState<GenreOption>([]);
     const selectedGenresKey = selectedGenres.join(',');
     const [page, setPage] = useState(1);
     const pageSize = 24;

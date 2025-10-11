@@ -1,6 +1,6 @@
-import { ImdbLogo } from '@/components/imdb-logo';
-import { cn } from '@/lib/utils';
-import { Star, Users } from 'lucide-react';
+import {ImdbLogo} from '@/components/movie/imdb-logo';
+import {cn} from '@/lib/utils';
+import {Star, Users} from 'lucide-react';
 
 export function MovieStats({
     rating,

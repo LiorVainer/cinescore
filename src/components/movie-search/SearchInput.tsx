@@ -1,19 +1,24 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
+import {Input} from '@/components/ui/input';
+import {useTranslations} from 'next-intl';
 
 export function SearchInput({
     value,
     onChange,
-    placeholder = 'חפש לפי כותרת או שם מקורי...',
 }: {
     value: string;
     onChange: (next: string) => void;
-    placeholder?: string;
 }) {
+    const t = useTranslations('search');
+
     return (
         <div className='flex-1 min-w-0'>
-            <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+            <Input
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={t('placeholder')}
+            />
         </div>
     );
 }

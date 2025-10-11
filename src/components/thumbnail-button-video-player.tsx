@@ -94,7 +94,7 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                         {/* Play Icon Overlay */}
                         <div className='absolute inset-0 flex items-center justify-center'>
                             <div className='p-1 rounded-full bg-background shadow-sm border border-border'>
-                                <Play size={10} className='fill-foreground text-foreground ml-0.5'/>
+                                <Play size={10} className='fill-foreground text-foreground ms-0.5'/>
                             </div>
                         </div>
 
@@ -110,7 +110,7 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                     </div>
 
                     {/* Button Text */}
-                    <p className='pl-2 pr-2 pb-2 text-foreground text-sm'>{title}</p>
+                    <p className='ps-2 pe-2 pb-2 text-foreground text-sm'>{title}</p>
                 </div>
             </motion.button>
 
