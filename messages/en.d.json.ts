@@ -3,17 +3,16 @@
 
 declare const messages: {
   "metadata": {
-    "title": "Starrin"
+    "title": "Starzi"
   },
   "nav": {
-    "signIn": "Sign In",
+    "signIn": "Login",
     "language": "Language",
-    "details": "Details",
-    "title": "Starrin"
+    "details": "Details"
   },
-  "app": {
-    "title": "Starrin",
-    "description": "Movie Reviews Application"
+  "languages": {
+    "en_US": "English",
+    "he_IL": "Hebrew"
   },
   "search": {
     "placeholder": "Search movies...",

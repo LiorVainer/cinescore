@@ -1,16 +1,15 @@
 {
   "metadata": {
-    "title": "סטארין"
+    "title": "סטארזי"
   },
   "nav": {
     "signIn": "התחבר",
     "language": "שפה",
-    "details": "פרטים",
-    "title": "סטארין"
+    "details": "פרטים"
   },
-  "app": {
-    "title": "סטארין",
-    "description": "אפליקציית ביקורות סרטים"
+  "languages": {
+    "en_US": "אנגלית",
+    "he_IL": "עברית"
   },
   "search": {
     "placeholder": "חפש סרטים...",

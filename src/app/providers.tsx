@@ -9,6 +9,7 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {HebrewAuthLocalization} from '@/constants/auth.const';
 import {Link, useRouter} from '@/i18n/navigation';
 import {useLocale} from 'next-intl';
+import {Direction} from "radix-ui";
 
 export function AppProviders({children}: { children: React.ReactNode }) {
     const locale = useLocale();
@@ -26,30 +27,32 @@ export function AppProviders({children}: { children: React.ReactNode }) {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <AuthUIProvider
-                authClient={authClient}
-                navigate={router.push}
-                replace={router.replace}
-                onSessionChange={() => {
-                    // Clear router cache (protected routes)
-                    router.refresh();
-                }}
-                localization={locale === 'he' ? HebrewAuthLocalization : undefined}
-                Link={Link}
-                social={{
-                    providers: ['google'],
-                }}
-            >
-                <ThemeProvider
-                    attribute='class'
-                    defaultTheme='system'
-                    enableSystem
-                    disableTransitionOnChange
+            <Direction.Provider dir={locale === 'he' ? 'rtl' : 'ltr'}>
+                <AuthUIProvider
+                    authClient={authClient}
+                    navigate={router.push}
+                    replace={router.replace}
+                    onSessionChange={() => {
+                        // Clear router cache (protected routes)
+                        router.refresh();
+                    }}
+                    localization={locale === 'he' ? HebrewAuthLocalization : undefined}
+                    Link={Link}
+                    social={{
+                        providers: ['google'],
+                    }}
                 >
+                    <ThemeProvider
+                        attribute='class'
+                        defaultTheme='system'
+                        enableSystem
+                        disableTransitionOnChange
+                    >
                         <NuqsAdapter>{children}</NuqsAdapter>
-                </ThemeProvider>
-            </AuthUIProvider>
-            {/*<ReactQueryDevtools initialIsOpen={false}/>*/}
+                    </ThemeProvider>
+                </AuthUIProvider>
+                {/*<ReactQueryDevtools initialIsOpen={false}/>*/}
+            </Direction.Provider>
         </QueryClientProvider>
     );
 }

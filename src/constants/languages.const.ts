@@ -1,12 +1,19 @@
 import {$Enums, Language} from "@prisma/client";
 
+/**
+ * @deprecated Use useLanguageLabel() hook from '@/hooks/use-language-label' for translated language labels
+ * This constant is kept for backward compatibility but should not be used in components
+ */
 export const LANGUAGE_LABELS = {
-    en_US: 'אנגלית',
-    he_IL: 'עברית',
+    en_US: 'English',
+    he_IL: 'Hebrew',
 } satisfies Record<string & $Enums.Language, string>
 
 export type LanguageCode = keyof typeof LANGUAGE_LABELS;
 
+/**
+ * @deprecated Use useLanguageLabel() hook instead for translated labels
+ */
 export function getLanguageLabel(code?: string | null): string | undefined {
     if (!code) return undefined;
     const k = code.toLowerCase() as LanguageCode;
@@ -35,4 +42,3 @@ export const mapLanguageToLocale = (language: Language) => {
             return 'he';
     }
 };
-

@@ -7,12 +7,11 @@ import {mapLanguageToLocale, mapLocaleToLanguage} from "@/constants/languages.co
 import {usePathname, useRouter} from "@/i18n/navigation";
 
 export const LanguageToggle = () => {
-    const locale= useLocale();
+    const locale = useLocale();
     const t = useTranslations('nav');
     const currentLanguage = mapLocaleToLanguage(locale);
     const pathname = usePathname();
     const router = useRouter();
-
 
 
     const handleLanguageChange = (language: Language) => {
@@ -26,7 +25,6 @@ export const LanguageToggle = () => {
             case Language.en_US:
                 return {flag: '🇺🇸', name: 'English', short: 'EN'};
             default:
-                // ✅ Typesafe: 'language' key is validated against nav namespace
                 return {flag: '🌐', name: t('language'), short: 'LG'};
         }
     };
@@ -36,13 +34,13 @@ export const LanguageToggle = () => {
     return <div className='flex items-center gap-4'>
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant='outline' size='sm' className='gap-2 rounded-full'>
+                <Button variant='outline' size='sm' className='gap-2 rounded-full bg-background/20'>
                     <Globe className='h-4 w-4'/>
                     <span className='hidden sm:inline'>{currentLangDisplay.name}</span>
                     <span className='sm:hidden'>{currentLangDisplay.short}</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
+            <DropdownMenuContent align='end' className='flex flex-col gap-1'>
                 <DropdownMenuItem
                     onClick={() => handleLanguageChange(Language.he_IL)}
                     className={currentLanguage === Language.he_IL ? 'bg-accent' : ''}

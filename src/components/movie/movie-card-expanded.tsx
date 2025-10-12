@@ -7,11 +7,12 @@ import {MovieGenres} from '@/components/movie/movie-genres';
 import ThumbnailButton from '@/components/thumbnail-button-video-player';
 import MovieStats from '@/components/movie/MovieStats';
 import {MovieMeta} from '@/components/movie/MovieMeta';
-import {LANGUAGE_LABELS} from '@/constants/languages.const';
+import {mapLocaleToLanguage} from '@/constants/languages.const';
+import {useLanguageLabel} from '@/hooks/use-language-label';
 import {Button} from '@/components/ui/button';
 import Image from 'next/image';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
-import {useTranslations} from 'next-intl';
+import {useTranslations, useLocale} from 'next-intl';
 
 export type ExpandedMovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -25,9 +26,12 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
     ({movie, imgSrc, idSuffix, onClose, variant = 'modal'}, ref) => {
         const {title, originalTitle, originalLanguage, releaseDate, rating, votes, genres, cast} = movie;
         const t = useTranslations('movie');
+        const locale = useLocale();
+        const getLanguageLabel = useLanguageLabel();
 
         // date/since are rendered via MovieMeta; rating/votes via MovieStats
-        const originalLangLabel = originalLanguage && LANGUAGE_LABELS[originalLanguage] ? LANGUAGE_LABELS[originalLanguage] : undefined;
+        const originalLangLabel = getLanguageLabel(originalLanguage);
+        const isLocaleLanguageDiffrentFromOriginal = !!originalLanguage && mapLocaleToLanguage(locale) !== originalLanguage;
 
         // Disable shared-element layout transitions inside the mobile drawer to avoid double animations
         const layoutIdEnabled = variant !== 'drawer';
@@ -73,7 +77,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                         >
                                             {title}
                                         </motion.h1>
-                                        {originalTitle && originalLangLabel && (
+                                        {isLocaleLanguageDiffrentFromOriginal && originalLangLabel && (
                                             <motion.p
                                                 layoutId={
                                                     layoutIdEnabled
@@ -148,7 +152,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                     <div>
                                         {cast.length > castMembersToShowAmount && (
                                             <div className='text-xs text-muted-foreground'>
-                                                {t('andMore', { count: cast.length - 5 })}
+                                                {t('andMore', {count: cast.length - 5})}
                                             </div>
                                         )}
                                     </div>

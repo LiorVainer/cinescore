@@ -8,6 +8,7 @@ import {Button} from '@/components/ui/button';
 import {useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation'
 import {NavbarLogo} from './navbar-logo';
+import {LogIn} from 'lucide-react';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
@@ -36,9 +37,11 @@ export const NavbarContent = () => {
 
     return (
         <nav className='flex items-center gap-6'>
-            <div className='flex items-center gap-2'>
-                <ModeToggle/>
-            <LanguageToggle/>
+            <div className='flex items-center gap-4'>
+                <div className='flex items-center gap-2'>
+                    <ModeToggle/>
+                    <LanguageToggle/>
+                </div>
                 <SignedIn>
                     <UserButton
                         className='rounded-full'
@@ -64,8 +67,7 @@ export const NavbarContent = () => {
 
                 <SignedOut>
                     <Link href='/auth/sign-in'>
-                        <Button variant='outline' className='rounded-full'>
-                            {/* ✅ Typesafe: 'signIn' key is validated */}
+                        <Button size='sm' className='rounded-full font-bold'>
                             {t('signIn')}
                         </Button>
                     </Link>
