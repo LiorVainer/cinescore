@@ -1,18 +1,18 @@
 'use client';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {useState} from 'react';
+import {cn} from '@/lib/utils';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
 
-import { useRouter } from 'next/navigation';
+import {useRouter} from 'next/navigation';
 
-import { authClient } from '@/lib/auth-client';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Terminal } from 'lucide-react';
+import {authClient} from '@/lib/auth-client';
+import {Alert, AlertDescription} from '../ui/alert';
+import {Terminal} from 'lucide-react';
 
-import { IconLoader } from '@tabler/icons-react';
+import {IconLoader} from '@tabler/icons-react';
 
 export function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
     const router = useRouter();
@@ -104,7 +104,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                                     <Label htmlFor='password'>Password</Label>
                                     <a
                                         href='#'
-                                        className='ml-auto inline-block text-sm underline-offset-4 hover:underline'
+                                        className='ms-auto inline-block text-sm underline-offset-4 hover:underline'
                                     >
                                         Forgot your password?
                                     </a>

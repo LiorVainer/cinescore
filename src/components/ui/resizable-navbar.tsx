@@ -2,13 +2,8 @@
 import {cn} from "@/lib/utils";
 import {IconMenu2, IconX} from "@tabler/icons-react";
 import {AnimatePresence, motion, useMotionValueEvent, useScroll,} from "motion/react";
-import {usePathname} from "next/navigation";
 
 import React, {useEffect, useRef, useState} from "react";
-import Link from "next/link";
-import Image from "next/image";
-import {Constants} from "@/constants/app.const";
-import Logo from "@/assets/logo.svg";
 
 
 interface NavbarProps {
@@ -148,8 +143,8 @@ export const NavBody = ({children, className, visible}: NavBodyProps) => {
                 minWidth: "800px",
             }}
             className={cn(
-                "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 lg:flex dark:bg-transparent",
-                visible && "bg-background/80",
+                "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 pe-6 lg:flex",
+                visible && "bg-muted/80",
                 className,
             )}
         >
@@ -199,8 +194,8 @@ export const MobileNav = ({children, className, visible}: MobileNavProps) => {
                     ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
                     : "none",
                 width: visible ? "90%" : "100%",
-                paddingRight: visible ? "16px" : "0px",
-                paddingLeft: visible ? "12px" : "0px",
+                paddingInlineStart: visible ? "16px" : "0px",
+                paddingInlineEnd: visible ? "12px" : "0px",
                 y: visible ? 20 : 0,
             }}
             transition={{
@@ -273,32 +268,6 @@ export const MobileNavToggle = ({
     );
 };
 
-export const NavbarLogoContent = () => (
-    <>
-        <Logo className="text-foreground [--star-color:#FFD700] w-7 h-7"/>
-        <span className="font-bold text-base text-black dark:text-white">{Constants.appName}</span>
-    </>
-)
-
-export const NavbarLogo = () => {
-    const pathname = usePathname();
-
-    const isHome = pathname === '/';
-    const className = 'relative z-20 flex items-center space-x-2 text-sm font-normal text-black'
-
-    if (!isHome) {
-        return <Link href="/" className={className}><NavbarLogoContent/></Link>;
-    }
-
-    return (
-        <a
-            href="#"
-            className={className}
-        >
-            <NavbarLogoContent/>
-        </a>
-    );
-};
 
 export const NavbarButton = ({
                                  href,

@@ -1,15 +1,15 @@
-import { motion } from 'motion/react';
-import { formatSinceDate } from '@/lib/date.utils';
-import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
+import {motion} from 'motion/react';
+import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
+import {RelativeDate} from '@/components/ui/relative-date';
 
 export function MovieMeta({
-    title,
-    idSuffix,
-    releaseDate,
-    showDate = false,
-    className,
-    layoutIdEnabled = true,
-}: {
+                              title,
+                              idSuffix,
+                              releaseDate,
+                              showDate = false,
+                              className,
+                              layoutIdEnabled = true,
+                          }: {
     title: string;
     idSuffix: string;
     releaseDate?: Date | string | null;
@@ -20,7 +20,6 @@ export function MovieMeta({
     const date = releaseDate
         ? new Date(releaseDate).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' })
         : undefined;
-    const sinceLabel = formatSinceDate(releaseDate);
 
     return (
         <div className={className}>
@@ -32,16 +31,15 @@ export function MovieMeta({
                     {date}
                 </motion.p>
             )}
-            {sinceLabel && (
-                <motion.p
+            {releaseDate && (
+                <motion.div
                     layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.SINCE(title, idSuffix) : undefined}
                     className='text-sm text-neutral-500 dark:text-neutral-300'
                 >
-                    {sinceLabel}
-                </motion.p>
+                    <RelativeDate date={releaseDate} />
+                </motion.div>
             )}
         </div>
     );
 }
 
-export default MovieMeta;

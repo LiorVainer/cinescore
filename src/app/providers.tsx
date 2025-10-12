@@ -1,39 +1,58 @@
 'use client';
 
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { ThemeProvider } from '@/components/theme-provider';
-import { authClient } from '@/lib/auth-client';
-import { AuthUIProvider } from '@daveyplate/better-auth-ui';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HebrewAuthLocalization } from '@/constants/auth.const';
+import {NuqsAdapter} from 'nuqs/adapters/next/app';
+import {ThemeProvider} from 'next-themes';
+import {authClient} from '@/lib/auth-client';
+import {AuthUIProvider} from '@daveyplate/better-auth-ui';
+import {useState} from 'react';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {HebrewAuthLocalization} from '@/constants/auth.const';
+import {Link, useRouter} from '@/i18n/navigation';
+import {useLocale} from 'next-intl';
+import {Direction} from "radix-ui";
 
-export function AppProviders({ children }: { children: React.ReactNode }) {
+export function AppProviders({children}: { children: React.ReactNode }) {
+    const locale = useLocale();
     const router = useRouter();
-    const [client] = useState(() => new QueryClient());
+    const [queryClient] = useState(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        staleTime: 60 * 1000,
+                    },
+                },
+            })
+    );
 
     return (
-        <QueryClientProvider client={client}>
-            <AuthUIProvider
-                authClient={authClient}
-                navigate={router.push}
-                replace={router.replace}
-                onSessionChange={() => {
-                    // Clear router cache (protected routes)
-                    router.refresh();
-                }}
-                localization={HebrewAuthLocalization}
-                Link={Link}
-                social={{
-                    providers: ['google'],
-                }}
-            >
-                <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-                    <NuqsAdapter>{children}</NuqsAdapter>
-                </ThemeProvider>
-            </AuthUIProvider>
+        <QueryClientProvider client={queryClient}>
+            <Direction.Provider dir={locale === 'he' ? 'rtl' : 'ltr'}>
+                <AuthUIProvider
+                    authClient={authClient}
+                    navigate={router.push}
+                    replace={router.replace}
+                    onSessionChange={() => {
+                        // Clear router cache (protected routes)
+                        router.refresh();
+                    }}
+                    localization={locale === 'he' ? HebrewAuthLocalization : undefined}
+                    Link={Link}
+                    social={{
+                        providers: ['google'],
+                    }}
+                >
+                    <ThemeProvider
+                        attribute='class'
+                        defaultTheme='system'
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <NuqsAdapter>{children}</NuqsAdapter>
+                    </ThemeProvider>
+                </AuthUIProvider>
+                {/*<ReactQueryDevtools initialIsOpen={false}/>*/}
+            </Direction.Provider>
         </QueryClientProvider>
     );
 }

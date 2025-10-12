@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -10,10 +10,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { ChevronDownIcon, FilterIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import type { GenreOption } from './constants';
+import {Input} from '@/components/ui/input';
+import {ChevronDownIcon, FilterIcon} from 'lucide-react';
+import {useMemo, useState} from 'react';
+import type {GenreOption} from '@/constants/sort.const';
+import {useTranslations} from 'next-intl';
 
 export function GenresMultiSelect({
     genres,
@@ -27,6 +28,8 @@ export function GenresMultiSelect({
     onClear?: () => void;
 }) {
     const [query, setQuery] = useState('');
+    const t = useTranslations('genres');
+
     const filtered = useMemo(() => {
         const f = query.trim().toLowerCase();
         if (!f) return genres;
@@ -34,25 +37,25 @@ export function GenresMultiSelect({
     }, [genres, query]);
 
     return (
-        <DropdownMenu dir='rtl'>
+        <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant='outline' className='gap-2 w-full sm:w-auto justify-between'>
                     <span className='inline-flex items-center gap-2'>
-                        <FilterIcon className='size-4' /> ז׳אנרים
+                        <FilterIcon className='size-4' /> {t('title')}
                     </span>
                     <span className='opacity-60 text-xs'>
-                        {selected.length > 0 ? `${selected.length} נבחרו` : 'ללא סינון'}
+                        {selected.length > 0 ? t('selected', {count: selected.length}) : t('noFilter')}
                     </span>
                     <ChevronDownIcon className='size-4 opacity-60' />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-64 p-2'>
-                <DropdownMenuLabel>סינון ז׳אנרים</DropdownMenuLabel>
+                <DropdownMenuLabel>{t('filter')}</DropdownMenuLabel>
                 <div className='p-1'>
-                    <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder='סנן...' />
+                    <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('filterPlaceholder')} />
                 </div>
                 <DropdownMenuSeparator />
-                <div className='max-h-72 overflow-y-auto pr-1'>
+                <div className='max-h-72 overflow-y-auto pe-1'>
                     {filtered.map((g) => (
                         <DropdownMenuCheckboxItem
                             key={g.id}
@@ -63,14 +66,14 @@ export function GenresMultiSelect({
                             {g.name}
                         </DropdownMenuCheckboxItem>
                     ))}
-                    {filtered.length === 0 && <DropdownMenuItem disabled>לא נמצאו ז׳אנרים</DropdownMenuItem>}
+                    {filtered.length === 0 && <DropdownMenuItem disabled>{t('noGenresFound')}</DropdownMenuItem>}
                 </div>
                 {selected.length > 0 && (
                     <>
                         <DropdownMenuSeparator />
                         <div className='p-2'>
                             <Button size='sm' variant='ghost' onClick={onClear} className='w-full'>
-                                נקה בחירת ז׳אנרים
+                                {t('clearSelection')}
                             </Button>
                         </div>
                     </>

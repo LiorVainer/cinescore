@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  binaryTargets = ["native", "windows", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -9,28 +9,25 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String         @id
   name          String
-  email         String
-  emailVerified Boolean   @default(false)
+  email         String         @unique
+  emailVerified Boolean        @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
   accounts      Account[]
-
-  // Application relations
-  subscriptions Subscription[]
   notifications Notification[]
+  sessions      Session[]
+  subscriptions Subscription[]
 
-  @@unique([email])
   @@map("user")
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -38,7 +35,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@map("session")
 }
 
@@ -47,7 +43,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -57,6 +52,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("account")
 }
@@ -72,79 +68,15 @@ model Verification {
   @@map("verification")
 }
 
-// --------------------------
-// Application-specific models
-// --------------------------
-
-enum NotifyMethod {
-  email
-  sms
-}
-
-model Movie {
-  id          String    @id
-  title       String
-  originalTitle String?
-  originalLanguage    String?
-  description String?
-  posterUrl   String?
-  rating      Float?
-  votes       Int?
-  releaseDate DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-
-  notifications Notification[]
-  genres        Genre[]
-  trailers      Trailer[]
-
-  @@index([rating])
-  @@index([releaseDate])
-  @@map("movie")
-}
-
-enum Language {
-  en_US
-  he_IL
-}
-
-model Trailer {
-  id        String   @id @default(cuid())
-  movieId   String
-  youtubeId  String
-  url       String
-  language  Language
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
-
-  @@unique([movieId, url])
-  @@map("trailer")
-}
-
-model Genre {
-  id        Int      @id
-  name      String   @unique
-  movies    Movie[]
-  language  Language @default(he_IL)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  @@map("genre")
-}
-
 model Subscription {
   id        String         @id @default(cuid())
   userId    String
   threshold Float
   genre     String?
-  notifyBy  NotifyMethod[]
   createdAt DateTime       @default(now())
   updatedAt DateTime       @default(now()) @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notifyBy  NotifyMethod[]
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([threshold])
   @@map("subscription")
@@ -157,11 +89,153 @@ model Notification {
   sentAt    DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
   @@index([sentAt])
   @@map("notification")
+}
+
+model Movie {
+  id               String             @id
+  imdbId           String?            @unique
+  tmdbId           Int?               @unique
+  originalLanguage Language?
+  rating           Float?
+  votes            Int?
+  releaseDate      DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  genres           Genre[]
+  cast             Cast[]
+  trailers         Trailer[]
+  translations     MovieTranslation[]
+  notifications    Notification[]
+
+  @@index([rating])
+  @@index([releaseDate])
+  @@map("movie")
+}
+
+model MovieTranslation {
+  id            String   @id @default(cuid())
+  movieId       String
+  language      Language
+  title         String
+  description   String?
+  originalTitle String?
+  posterUrl     String? // ✅ poster can differ by language
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+  movie         Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, language])
+  @@index([language])
+  @@map("movie_translation")
+}
+
+model Trailer {
+  id        String   @id @default(cuid())
+  movieId   String
+  url       String
+  title     String
+  youtubeId String
+  language  Language
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, url])
+  @@map("trailer")
+}
+
+//
+// ─── GENRES ──────────────────────────────────────────────
+//
+
+model Genre {
+  id           String             @id @default(cuid())
+  tmdbId       Int?               @unique // Add TMDB ID as a separate field
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now()) @updatedAt
+  movies       Movie[]
+  translations GenreTranslation[]
+
+  @@map("genre")
+}
+
+model GenreTranslation {
+  id        String   @id @default(cuid())
+  genreId   String
+  language  Language
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  genre     Genre    @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@unique([genreId, language])
+  @@index([language])
+  @@map("genre_translation")
+}
+
+//
+// ─── ACTORS ──────────────────────────────────────────────
+//
+
+model Actor {
+  id           String             @id @default(cuid())
+  imdbId       String             @unique
+  tmdbId       Int?
+  profileUrl   String?
+  popularity   Float?
+  birthday     DateTime?
+  deathday     DateTime?
+  placeOfBirth String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now()) @updatedAt
+  translations ActorTranslation[]
+  cast         Cast[]
+
+  @@map("actor")
+}
+
+model ActorTranslation {
+  id        String   @id @default(cuid())
+  actorId   String
+  language  Language
+  name      String
+  biography String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  actor     Actor    @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@unique([actorId, language])
+  @@index([language])
+  @@map("actor_translation")
+}
+
+model Cast {
+  id        String   @id @default(cuid())
+  movieId   String
+  actorId   String
+  character String?
+  order     Int?
+  createdAt DateTime @default(now())
+  actor     Actor    @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([movieId, actorId])
+  @@map("cast")
+}
+
+enum Language {
+  he_IL
+  en_US
+}
+
+enum NotifyMethod {
+  EMAIL
+  // SMS
+  // PUSH
 }

@@ -1,67 +1,11 @@
-import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import { Suspense } from 'react';
-import { AppProviders } from './providers';
-import { Metadata } from 'next';
-import { AppNavbar } from '@/components/layout/app-navbar';
+import {routing} from '@/i18n/routing';
+import {NextIntlClientProvider} from 'next-intl';
+import {getMessages} from 'next-intl/server';
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
-
-const VERSION = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 8) ?? Date.now().toString();
-
-export async function generateMetadata(): Promise<Metadata> {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sitewave.app';
-    const title = 'CineScore';
-    const description = 'Discover, organize, and manage websites bookmarks with AI-powered suggestions';
-    const ogImage = `/og.png?v=${VERSION}`;
-
-    return {
-        title,
-        description,
-        metadataBase: new URL(siteUrl),
-        openGraph: {
-            type: 'website',
-            url: siteUrl,
-            title,
-            description,
-            siteName: title,
-            locale: 'en_US',
-            images: [
-                {
-                    url: ogImage,
-                    width: 1200,
-                    height: 630,
-                    alt: 'Sitewave preview image',
-                    type: 'image/png',
-                },
-            ],
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title,
-            description,
-            images: [
-                {
-                    url: ogImage,
-                    alt: 'Sitewave preview image',
-                },
-            ],
-        },
-    };
-}
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <html lang='en' dir='rtl'>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}>
-                <Suspense fallback={null}>
-                    <AppProviders>
-                        <AppNavbar />
-                        <div className='mt-15 h-[calc(100%-3.75rem)]'>{children}</div>
-                    </AppProviders>
-                </Suspense>
-            </body>
-        </html>
-    );
+export default async function RootLayout({
+                                             children,
+                                         }: {
+    children: React.ReactNode;
+}) {
+    return children;
 }

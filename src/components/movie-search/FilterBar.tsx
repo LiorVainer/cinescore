@@ -1,12 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { XIcon } from 'lucide-react';
-import { SearchInput } from './SearchInput';
-import { SortSelect } from './SortSelect';
-import { GenresMultiSelect } from './GenresMultiSelect';
-import { SelectedGenreChips } from './SelectedGenreChips';
-import type { GenreOption, SortValue } from './constants';
+import {Button} from '@/components/ui/button';
+import {XIcon} from 'lucide-react';
+import {SearchInput} from './SearchInput';
+import {SortSelect} from './SortSelect';
+import {GenresMultiSelect} from './GenresMultiSelect';
+import {SelectedGenreChips} from './SelectedGenreChips';
+import type {GenreOption, SortValue} from '@/constants/sort.const';
+import {useTranslations} from 'next-intl';
 
 export function FilterBar({
     search,
@@ -29,6 +30,7 @@ export function FilterBar({
     onClearGenres: () => void;
     onClearAll: () => void;
 }) {
+    const t = useTranslations('filters');
     const isDefault = search.trim() === '' && sort === 'rating:desc' && selectedGenres.length === 0;
 
     return (
@@ -48,7 +50,7 @@ export function FilterBar({
                         onClick={onClearAll}
                         className='gap-2 w-full sm:w-auto text-destructive border-destructive/40 hover:bg-destructive/10'
                     >
-                        <XIcon className='size-4' /> נקה הכל
+                        <XIcon className='size-4' /> {t('clearAll')}
                     </Button>
                 )}
             </div>

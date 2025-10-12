@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=IBM+Plex+Sans+Hebrew:wght@100;200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&family=IBM+Plex+Sans+Hebrew:wght@100;200;300;400;500;600;700&family=Rubik:wght@300..900&family=Heebo:wght@100..900&display=swap');
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
@@ -14,6 +14,7 @@
     --font-sans: var(--font-body);
     --font-heading: var(--font-heading);
     --font-mono: var(--font-geist-mono);
+    --font-hebrew: 'Rubik', 'Assistant', 'IBM Plex Sans Hebrew', 'Heebo', system-ui, sans-serif;
     --color-popover: var(--popover);
     --color-popover-foreground: var(--popover-foreground);
     --color-primary: var(--primary);
@@ -29,6 +30,11 @@
     --color-ring: var(--ring);
 }
 
+/* Hebrew Font Classes */
+.font-hebrew {
+    font-family: var(--font-hebrew);
+}
+
 :root {
     --radius: 0.625rem;
 
@@ -42,7 +48,7 @@
     --popover: oklch(99% 0.01 280);
     --popover-foreground: var(--foreground);
 
-    --primary: oklch(72% 0.18 85); /* elegant gold */
+    --primary: oklch(82% 0.18 85); /* elegant gold */
     --primary-foreground: oklch(15% 0.03 270);
 
     --secondary: oklch(92% 0.02 280); /* soft muted purple surface */
@@ -151,9 +157,9 @@
 
     body {
         font-family: var(--font-body);
-        direction: rtl;
         @apply bg-background text-foreground;
     }
+
 
     h1, h2, h3, h4, h5, h6 {
         font-family: var(--font-heading);

@@ -2,7 +2,8 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import Image from 'next/image';
-import {AnimatePresence, motion} from 'framer-motion';
+import {motion, AnimatePresence} from 'framer-motion';
+import {createPortal} from 'react-dom';
 
 import {Play, X, Youtube} from 'lucide-react';
 
@@ -30,7 +31,7 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                                                              className = '',
                                                          }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [buttonRect, setButtonRect] = useState<DOMRect | null>(null);
+    const [mounted, setMounted] = useState(false);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -41,32 +42,52 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
     const finalVideoUrl =
         isYouTube && youtubeId ? getYouTubeEmbedUrl(youtubeId) : videoUrl || DEFAULT_VIDEO_FALLBACK_URL;
 
-    const handleOpenModal = () => {
-        if (buttonRef.current) {
-            setButtonRect(buttonRef.current.getBoundingClientRect());
-        }
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const handleOpenModal = (e: React.MouseEvent) => {
+        e.stopPropagation();
         setIsModalOpen(true);
     };
 
-    const handleCloseModal = () => setIsModalOpen(false);
+    const handleCloseModal = (e?: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        setIsModalOpen(false);
+    };
 
-    const getTransformOrigin = () => {
-        if (!buttonRect) return 'center center';
-
-        const centerX = buttonRect.left + buttonRect.width / 2;
-        const centerY = buttonRect.top + buttonRect.height / 2;
-
-        return `${centerX}px ${centerY}px`;
+    // Handle backdrop click
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Only close if clicking the backdrop itself, not its children
+        if (e.target === e.currentTarget) {
+            handleCloseModal();
+        }
     };
 
     useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') handleCloseModal();
+            if (e.key === 'Escape' && isModalOpen) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                handleCloseModal();
+            }
         };
         if (isModalOpen) {
-            document.addEventListener('keydown', handleEsc);
+            // Use capture phase to handle the event before it bubbles
+            document.addEventListener('keydown', handleEsc, true);
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
         }
-        return () => document.removeEventListener('keydown', handleEsc);
+        return () => {
+            document.removeEventListener('keydown', handleEsc, true);
+            document.body.style.overflow = '';
+        };
     }, [isModalOpen]);
 
     return (
@@ -77,90 +98,107 @@ const ThumbnailButton: React.FC<ThumbnailButtonProps> = ({
                 whileTap={{scale: 0.95}}
                 onClick={handleOpenModal}
                 className={`
-          relative rounded-2xl bg-muted
+          relative rounded-lg overflow-hidden bg-muted
           shadow-sm hover:shadow-md transition-all duration-200
           group focus:outline-none focus:ring-2 focus:ring-ring/50
-          w-max hover:cursor-pointer
-          flex
+          hover:cursor-pointer
           ${className}
         `}
                 aria-label={title}
             >
-                <div className='flex items-end flex-col gap-2'>
-                    {/* Thumbnail Image */}
-                    <div className='relative w-[200px] h-[100px] rounded-lg overflow-hidden flex-shrink-0'>
-                        <Image src={finalThumbnail} alt='Video thumbnail' fill className='object-cover' sizes='70px'/>
+                {/* Thumbnail Image */}
+                <div className='relative w-full h-full'>
+                    <Image src={finalThumbnail} alt='Video thumbnail' fill className='object-cover' sizes='200px'/>
 
-                        {/* Play Icon Overlay */}
-                        <div className='absolute inset-0 flex items-center justify-center'>
-                            <div className='p-1 rounded-full bg-background shadow-sm border border-border'>
-                                <Play size={10} className='fill-foreground text-foreground ml-0.5'/>
-                            </div>
+                    {/* Play Icon Overlay */}
+                    <div className='absolute inset-0 flex items-center justify-center'>
+                        <div className='p-2 rounded-full bg-background/90 shadow-sm border border-border'>
+                            <Play size={16} className='fill-foreground text-foreground ms-0.5'/>
                         </div>
-
-                        {/* YouTube Badge */}
-                        {isYouTube && (
-                            <div
-                                className='absolute bottom-2 right-2 bg-red-600/90 text-white p-0.5 rounded-full shadow-sm border border-white/10'
-                                aria-label='YouTube'
-                            >
-                                <Youtube className='w-3 h-3'/>
-                            </div>
-                        )}
                     </div>
 
-                    {/* Button Text */}
-                    <p className='pl-2 pr-2 pb-2 text-foreground text-sm'>{title}</p>
+                    {/* YouTube Badge */}
+                    {isYouTube && (
+                        <div
+                            className='absolute top-2 end-2 bg-red-600/90 text-white p-1 rounded-full shadow-sm border border-white/10'
+                            aria-label='YouTube'
+                        >
+                            <Youtube className='w-3 h-3'/>
+                        </div>
+                    )}
+
+                    {/* Title Overlay - matching actor name style */}
+                    <div
+                        className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
+                        <span className='font-medium text-white text-sm line-clamp-2'>
+                            {title}
+                        </span>
+                    </div>
                 </div>
             </motion.button>
 
-            {/* Modal */}
-            <AnimatePresence>
-                {isModalOpen && (
-                    <motion.div
-                        className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm'
-                        onClick={handleCloseModal}
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        exit={{opacity: 0}}
-                        role='dialog'
-                        aria-modal='true'
-                        aria-label='Video Modal'
-                    >
+            {/* Modal - Rendered via Portal to bypass stacking context */}
+            {mounted && createPortal(
+                <AnimatePresence>
+                    {isModalOpen && (
                         <motion.div
-                            onClick={(e) => e.stopPropagation()}
-                            initial={{opacity: 0, scale: 0.1}}
-                            animate={{opacity: 1, scale: 1}}
-                            exit={{opacity: 0, scale: 0.1}}
-                            transition={{duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94]}}
-                            className='relative w-full max-w-4xl aspect-video bg-card rounded-2xl overflow-hidden shadow-2xl border border-border'
-                            style={{transformOrigin: getTransformOrigin()}}
+                            key="video-modal"
+                            className='fixed inset-0 z-[300] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm pointer-events-auto'
+                            onClick={handleBackdropClick}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            onMouseUp={(e) => e.stopPropagation()}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            onTouchEnd={(e) => e.stopPropagation()}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
+                            transition={{duration: 0.2}}
+                            role='dialog'
+                            aria-modal='true'
+                            aria-label='Video Modal'
                         >
-                            {/* Close Button */}
-                            <button
-                                onClick={handleCloseModal}
-                                className='absolute top-4 right-4 z-10 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white border border-white/20 backdrop-blur-sm transition-all duration-200 hover:cursor-pointer'
-                                aria-label='Close video'
+                            <motion.div
+                                initial={{opacity: 0, scale: 0.9}}
+                                animate={{opacity: 1, scale: 1}}
+                                exit={{opacity: 0, scale: 0.9}}
+                                transition={{duration: 0.2}}
+                                className='relative w-full max-w-4xl aspect-video bg-card rounded-2xl overflow-hidden shadow-2xl border border-border pointer-events-auto'
+                                onClick={(e) => e.stopPropagation()}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onMouseUp={(e) => e.stopPropagation()}
+                                onTouchStart={(e) => e.stopPropagation()}
+                                onTouchEnd={(e) => e.stopPropagation()}
                             >
-                                <X size={20}/>
-                            </button>
+                                {/* Close Button */}
+                                <button
+                                    onClick={handleCloseModal}
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                    type="button"
+                                    className='absolute top-4 end-4 z-[310] p-2 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 backdrop-blur-sm transition-all duration-200 cursor-pointer pointer-events-auto'
+                                    aria-label='Close video'
+                                >
+                                    <X size={20}/>
+                                </button>
 
-                            {/* Video or YouTube */}
-                            {isYouTube ? (
-                                <iframe
-                                    src={finalVideoUrl}
-                                    className='w-full h-full'
-                                    allow='autoplay; encrypted-media'
-                                    allowFullScreen
-                                    title={title}
-                                />
-                            ) : (
-                                <video src={finalVideoUrl} controls autoPlay className='w-full h-full'/>
-                            )}
+                                {/* Video or YouTube */}
+                                {isYouTube ? (
+                                    <iframe
+                                        src={finalVideoUrl}
+                                        className='w-full h-full pointer-events-auto'
+                                        allow='autoplay; encrypted-media'
+                                        allowFullScreen
+                                        title={title}
+                                    />
+                                ) : (
+                                    <video src={finalVideoUrl} controls autoPlay
+                                           className='w-full h-full pointer-events-auto'/>
+                                )}
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
         </>
     );
 };
