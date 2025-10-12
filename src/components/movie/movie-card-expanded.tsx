@@ -4,7 +4,8 @@ import React from 'react';
 import {motion} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {MovieGenres} from '@/components/movie/movie-genres';
-import ThumbnailButton from '@/components/thumbnail-button-video-player';
+import {MovieCastSection} from '@/components/movie/movie-cast-section';
+import {MovieTrailersSection} from '@/components/movie/movie-trailers-section';
 import MovieStats from '@/components/movie/MovieStats';
 import {MovieMeta} from '@/components/movie/MovieMeta';
 import {mapLocaleToLanguage} from '@/constants/languages.const';
@@ -13,7 +14,6 @@ import {Button} from '@/components/ui/button';
 import Image from 'next/image';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 import {useTranslations, useLocale} from 'next-intl';
-import {useIsMobile} from "@/hooks/use-mobile";
 
 export type ExpandedMovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -29,7 +29,6 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
         const t = useTranslations('movie');
         const locale = useLocale();
         const getLanguageLabel = useLanguageLabel();
-        const [showAllCast, setShowAllCast] = React.useState(false);
 
         // date/since are rendered via MovieMeta; rating/votes via MovieStats
         const originalLangLabel = getLanguageLabel(originalLanguage);
@@ -39,10 +38,6 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
         const layoutIdEnabled = variant !== 'drawer';
 
         // Calculate items per row based on grid columns
-        const isMobile = useIsMobile()
-        const itemsPerRow = isMobile ? 3 : 6; // lg:grid-cols-5
-        const displayedCast = showAllCast ? cast : cast?.slice(0, itemsPerRow) || [];
-        const hasMoreCast = (cast?.length || 0) > itemsPerRow;
 
         const Content = (
             <motion.div
@@ -137,60 +132,10 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
 
                         <MovieStats rating={rating} votes={votes} size='sm' className='mt-2'/>
 
-                        {/* Display cast information */}
-                        {cast && cast.length > 0 && (
-                            <div className='flex flex-col gap-2'>
-                                <h3 className='font-semibold text-sm'>{t('cast')}</h3>
-                                <div className='flex flex-col gap-3'>
-                                    <div
-                                        className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4'>
-                                        {displayedCast.map((castMember) => (
-                                            <div key={castMember.id}
-                                                 className='relative text-xs rounded overflow-hidden group'>
-                                                <img
-                                                    src={castMember.actor.profileUrl ?? ''}
-                                                    alt={castMember.actor.name}
-                                                    className='w-full aspect-2/3 object-cover object-center'
-                                                />
-                                                <div
-                                                    className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
-                                                    <span className='font-medium text-white text-sm line-clamp-2'>
-                                                        {castMember.actor.name}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    {hasMoreCast && (
-                                        <Button
-                                            variant='outline'
-                                            size='sm'
-                                            onClick={() => setShowAllCast(!showAllCast)}
-                                            className='w-full'
-                                        >
-                                            {showAllCast ? t('showLess') : t('showAll')}
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                        <MovieCastSection cast={cast}/>
 
-                    {movie.trailers.length > 0 && (
-                        <div className='flex flex-col gap-2'>
-                            <h3 className='font-semibold text-sm'>{t('trailers')}</h3>
-                            <div className='flex gap-4 overflow-x-auto py-2'>
-                                {movie.trailers.map((trailer) => (
-                                    <ThumbnailButton
-                                        key={trailer.id}
-                                        youtubeId={trailer.youtubeId!}
-                                        title={trailer.title}
-                                        className='aspect-video h-24 shrink-0'
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                        <MovieTrailersSection trailers={movie.trailers}/>
+                    </div>
                 </div>
             </motion.div>
         );
@@ -202,7 +147,11 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
 
         // Default: modal-style wrapper
         return (
-            <div className='fixed inset-0 grid place-items-center z-[100] p-4'>
+            <div
+                className='fixed inset-0 z-[100] overflow-hidden'
+                onWheel={(e) => e.stopPropagation()}
+                onTouchMove={(e) => e.stopPropagation()}
+            >
                 {/* Backdrop overlay to capture events and prevent passthrough */}
                 <motion.div
                     initial={{opacity: 0}}
@@ -211,7 +160,12 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                     className='absolute inset-0 bg-black/60 backdrop-blur-sm'
                     onClick={onClose}
                 />
-                {Content}
+                {/* Content wrapper - positioned above backdrop, centered, with pointer events enabled */}
+                <div className='absolute inset-0 flex items-center justify-center p-4 pointer-events-none'>
+                    <div className='pointer-events-auto'>
+                        {Content}
+                    </div>
+                </div>
             </div>
         );
     },

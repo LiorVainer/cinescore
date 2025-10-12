@@ -29,7 +29,7 @@
     "rating": "דירוג",
     "releaseDate": "תאריך יציאה",
     "close": "סגור",
-    "cast": "שחקנים:",
+    "cast": "שחקנים",
     "andMore": "ועוד {count, plural, one {שחקן #} other {# שחקנים}}...",
     "showAll": "הצג הכל",
     "showLess": "הצג פחות",
