@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "title": "סטארזי"
+  },
+  "nav": {
+    "signIn": "התחבר",
+    "language": "שפה",
+    "details": "פרטים"
+  },
+  "userButton": {
+    "settings": "הגדרות",
+    "signOut": "התנתק"
+  },
+  "languages": {
+    "en_US": "אנגלית",
+    "he_IL": "עברית"
+  },
+  "search": {
+    "placeholder": "חפש סרטים...",
+    "loading": "מחפש...",
+    "noResults": "לא נמצאו תוצאות לפי הסינון הנוכחי.",
+    "errorLoading": "שגיאה בטעינת הנתונים. נסה שוב."
+  },
+  "rating": {
+    "votes": "{count, plural, =0 {אין הצבעות} one {הצבעה #} other {# הצבעות}}"
+  },
+  "movie": {
+    "details": "פרטים",
+    "rating": "דירוג",
+    "releaseDate": "תאריך יציאה",
+    "close": "סגור",
+    "cast": "שחקנים",
+    "andMore": "ועוד {count, plural, one {שחקן #} other {# שחקנים}}...",
+    "showAll": "הצג הכל",
+    "showLess": "הצג פחות",
+    "trailers": "טריילרים"
+  },
+  "filters": {
+    "sortBy": "מיין לפי",
+    "genre": "ז'אנר",
+    "clear": "נקה",
+    "clearAll": "נקה הכל"
+  },
+  "genres": {
+    "title": "ז'אנרים",
+    "filter": "סינון ז'אנרים",
+    "filterPlaceholder": "סנן...",
+    "noGenresFound": "לא נמצאו ז'אנרים",
+    "selected": "{count, plural, =0 {לא נבחרו} one {# נבחר} other {# נבחרו}}",
+    "noFilter": "ללא סינון",
+    "clearSelection": "נקה בחירת ז'אנרים",
+    "removeGenre": "הסר {name}"
+  },
+  "sort": {
+    "ratingDesc": "דירוג מגבוה לנמוך",
+    "ratingAsc": "דירוג מנמוך לגבוה",
+    "votesDesc": "מס׳ הצבעות מגבוה לנמוך",
+    "releaseDateDesc": "חדשים",
+    "releaseDateAsc": "ישנים"
+  },
+  "dates": {
+    "today": "היום",
+    "daysAgo": "{count, plural, one {לפני # יום} other {לפני # ימים}}",
+    "weeksAgo": "{count, plural, one {לפני # שבוע} other {לפני # שבועות}}",
+    "monthsAgo": "{count, plural, one {לפני # חודש} other {לפני # חודשים}}",
+    "yearsAgo": "{count, plural, one {לפני # שנה} other {לפני # שנים}}",
+    "inDays": "{count, plural, one {בעוד # יום} other {בעוד # ימים}}",
+    "inWeeks": "{count, plural, one {בעוד # שבוע} other {בעוד # שבועות}}",
+    "inMonths": "{count, plural, one {בעוד # חודש} other {בעוד # חודשים}}",
+    "inYears": "{count, plural, one {בעוד # שנה} other {בעוד # שנים}}"
+  }
+}

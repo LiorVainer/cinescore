@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect, useId, useRef, useState} from 'react';
-import {AnimatePresence, motion} from 'motion/react';
+import {AnimatePresence} from 'motion/react';
 import {useOutsideClick} from '@/hooks/use-outside-click';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import CollapsedMovieCard from './movie-card-collapsed';
@@ -16,14 +16,13 @@ export type MovieCardProps = {
     className?: string;
 };
 
-export default function MovieCard({movie, ctaText = 'Details', ctaHref, className}: MovieCardProps) {
+export default function MovieCard({movie, className}: MovieCardProps) {
     const [active, setActive] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
     const isMobile = useIsMobile();
 
     const imgSrc = movie.posterUrl || '/window.svg'; // Now uses posterUrl from translation
-    const imdbUrl = ctaHref ?? (movie.imdbId ? `https://www.imdb.com/title/${movie.imdbId}/` : undefined);
 
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
@@ -66,30 +65,18 @@ export default function MovieCard({movie, ctaText = 'Details', ctaHref, classNam
                     </DrawerContent>
                 </Drawer>
             ) : (
-                <>
-                    <AnimatePresence>
-                        {active && (
-                            <motion.div
-                                initial={{opacity: 0}}
-                                animate={{opacity: 1}}
-                                exit={{opacity: 0}}
-                                className='fixed inset-0 bg-black/20 h-full w-full z-50 backdrop-blur-sm'
-                            />
-                        )}
-                    </AnimatePresence>
-                    <AnimatePresence>
-                        {active ? (
-                            <ExpandedMovieCard
-                                ref={ref}
-                                movie={movie}
-                                imgSrc={imgSrc}
-                                idSuffix={id}
-                                onClose={() => setActive(false)}
-                                variant='modal'
-                            />
-                        ) : null}
-                    </AnimatePresence>
-                </>
+                <AnimatePresence>
+                    {active ? (
+                        <ExpandedMovieCard
+                            ref={ref}
+                            movie={movie}
+                            imgSrc={imgSrc}
+                            idSuffix={id}
+                            onClose={() => setActive(false)}
+                            variant='modal'
+                        />
+                    ) : null}
+                </AnimatePresence>
             )}
 
             <CollapsedMovieCard

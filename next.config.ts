@@ -1,10 +1,18 @@
 import type {NextConfig} from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+// Point to the correct request configuration file
+const withNextIntl = createNextIntlPlugin({
+    experimental: {
+        // Enable automatic type generation for your message files
+        createMessagesDeclaration: './messages/en.json'
+    }
+});
 
 const nextConfig: NextConfig = {
     /* config options here */
     experimental: {
         typedEnv: true,
-
     },
     turbopack: {
         rules: {
@@ -47,4 +55,4 @@ const nextConfig: NextConfig = {
     },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

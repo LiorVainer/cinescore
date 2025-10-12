@@ -1,28 +1,24 @@
 'use client';
 
 import {useEffect, useState} from 'react';
+import {SortValue} from '@/constants/sort.const';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useDebounce} from '@/lib/useDebounce';
-import MovieCard from '@/components/movie-card';
-import {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {listGenres, type MovieFilters, searchMoviesFiltered} from '@/app/actions/searchMovies';
+import MovieCard from '@/components/movie/movie-card';
+import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
 import {FilterBar} from '@/components/movie-search/FilterBar';
-import type {GenreOption, SortValue} from '@/components/movie-search/constants';
-import CollapsedMovieCardSkeleton from '@/components/movie-card-collapsed.skeleton';
-import {Language} from '@prisma/client';
+import CollapsedMovieCardSkeleton from '@/components/movie/movie-card-collapsed.skeleton';
+import {useLocale, useTranslations} from 'next-intl';
+import {mapLocaleToLanguage} from "@/constants/languages.const";
 
-const DEFAULT_SORT: SortValue = 'rating:desc';
-const DEFAULT_LANGUAGE: Language = Language.he_IL;
-
-type MoviesResult = {
-    items: MovieWithLanguageTranslation[];
-    total: number;
-    page: number;
-    pageSize: number;
-    totalPages: number;
-};
+const DEFAULT_SORT = 'rating:desc';
 
 export default function MovieSearch() {
+    const t = useTranslations('search');
+    const locale = useLocale();
+    const currentLanguage = mapLocaleToLanguage(locale);
+    const tMovie = useTranslations('movie');
+
     // Filters state
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 400);
@@ -38,28 +34,28 @@ export default function MovieSearch() {
         setPage(1);
     }, [debouncedSearch, sort, selectedGenresKey]);
 
-    // Genres via server action + TanStack Query
-    const {data: genresData} = useQuery<GenreOption[]>({
-        queryKey: ['genres'],
-        queryFn: async () => listGenres(),
+    // Genres via server action + TanStack Query (now language-aware)
+    const {data: genresData} = useQuery({
+        queryKey: ['genres', currentLanguage],
+        queryFn: async () => listGenres(currentLanguage),
         staleTime: 1000 * 60 * 60, // 1 hour
     });
 
     const genres = genresData ?? [];
 
-    // Movies via server action + TanStack Query (simple-query)
+    // Movies via server action + TanStack Query (now language-aware)
     const {
         data: moviesData,
         isFetching,
         isError,
-    } = useQuery<MoviesResult>({
-        queryKey: ['simple-query', {
+    } = useQuery({
+        queryKey: ['movies-search', {
             search: debouncedSearch,
             sort,
             selectedGenres,
             page,
             pageSize,
-            language: DEFAULT_LANGUAGE
+            language: currentLanguage
         }],
         queryFn: async () =>
             searchMoviesFiltered({
@@ -68,8 +64,8 @@ export default function MovieSearch() {
                 selectedGenres,
                 page,
                 pageSize,
-                language: DEFAULT_LANGUAGE,
-            } as MovieFilters),
+                language: currentLanguage,
+            }),
         placeholderData: keepPreviousData,
     });
 
@@ -88,7 +84,7 @@ export default function MovieSearch() {
     const items = moviesData?.items ?? [];
 
     return (
-        <div className='h-full flex flex-col gap-4 py-4'>
+        <div className='h-full flex flex-col gap-4'>
             <FilterBar
                 search={search}
                 onSearchChange={setSearch}
@@ -101,7 +97,11 @@ export default function MovieSearch() {
                 onClearAll={clearFilters}
             />
 
-            {isError && <div className='text-destructive'>שגיאה בטעינת הנתונים. נסה שוב.</div>}
+            {isError && (
+                <div className='text-destructive'>
+                    {t('errorLoading')}
+                </div>
+            )}
 
             {isFetching && items.length === 0 ? (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
@@ -112,11 +112,17 @@ export default function MovieSearch() {
             ) : (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 overflow-y-auto'>
                     {items.map((movie) => (
-                        <MovieCard ctaText={'פרטים'} key={movie.id} movie={movie}/>
+                        <MovieCard
+                            ctaText={tMovie('details')}
+                            key={movie.id}
+                            movie={movie}
+                        />
                     ))}
 
                     {items.length === 0 && !isFetching && (
-                        <div className='text-sm text-muted-foreground'>לא נמצאו תוצאות לפי הסינון הנוכחי.</div>
+                        <div className='text-sm text-muted-foreground'>
+                            {t('noResults')}
+                        </div>
                     )}
                 </div>
             )}
