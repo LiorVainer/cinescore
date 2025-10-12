@@ -13,6 +13,7 @@ import {Button} from '@/components/ui/button';
 import Image from 'next/image';
 import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 import {useTranslations, useLocale} from 'next-intl';
+import {useIsMobile} from "@/hooks/use-mobile";
 
 export type ExpandedMovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -28,6 +29,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
         const t = useTranslations('movie');
         const locale = useLocale();
         const getLanguageLabel = useLanguageLabel();
+        const [showAllCast, setShowAllCast] = React.useState(false);
 
         // date/since are rendered via MovieMeta; rating/votes via MovieStats
         const originalLangLabel = getLanguageLabel(originalLanguage);
@@ -35,7 +37,12 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
 
         // Disable shared-element layout transitions inside the mobile drawer to avoid double animations
         const layoutIdEnabled = variant !== 'drawer';
-        const castMembersToShowAmount = 4;
+
+        // Calculate items per row based on grid columns
+        const isMobile = useIsMobile()
+        const itemsPerRow = isMobile ? 3 : 6; // lg:grid-cols-5
+        const displayedCast = showAllCast ? cast : cast?.slice(0, itemsPerRow) || [];
+        const hasMoreCast = (cast?.length || 0) > itemsPerRow;
 
         const Content = (
             <motion.div
@@ -44,23 +51,23 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                 className={
                     variant === 'drawer'
                         ? 'w-full flex flex-col lg:flex-row items-stretch rounded-t-xl'
-                        : 'w-full max-w-[80%] h-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl bg-background'
+                        : 'w-[80vw] max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl bg-background overflow-hidden'
                 }
             >
                 <motion.div
                     layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.IMAGE(title, idSuffix) : undefined}
-                    className='shrink-0'
+                    className='shrink-0 bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center'
                 >
                     <Image
                         height={200}
                         width={300}
                         src={imgSrc}
                         alt={title}
-                        className='w-full lg:min-w-[300px] aspect-[16/9] h-full rounded-tl-lg lg:rounded-r-lg lg:rounded-tl-none object-cover object-top'
+                        className='w-full lg:min-w-[300px] aspect-[16/9] md:aspect-[2/3] rounded-tl-lg lg:rounded-r-lg lg:rounded-tl-none object-cover object-top'
                     />
                 </motion.div>
 
-                <div className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0 scrollable h-full w-full'>
+                <div className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0 overflow-y-auto w-full'>
                     <div className={`flex justify-between items-start gap-2`}>
                         <div className='flex-1 flex flex-col min-w-0 gap-2'>
                             <div className='flex flex-col gap-2'>
@@ -94,9 +101,8 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                         <Button
                                             className='shrink-0 inline-flex cursor-pointer'
                                             onClick={() => onClose()}
-                                            size={'sm'}
                                         >
-                                            <span className='text-xs'>{t('close')}</span>
+                                            <span>{t('close')}</span>
                                         </Button>
                                     )}
                                 </div>
@@ -135,41 +141,54 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                         {cast && cast.length > 0 && (
                             <div className='flex flex-col gap-2'>
                                 <h3 className='font-semibold text-sm'>{t('cast')}</h3>
-                                <div className='flex flex-col gap-2'>
-                                    <div className='flex flex-wrap gap-2'>
-                                        {cast.slice(0, castMembersToShowAmount).map((castMember) => (
+                                <div className='flex flex-col gap-3'>
+                                    <div
+                                        className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4'>
+                                        {displayedCast.map((castMember) => (
                                             <div key={castMember.id}
-                                                 className='text-xs bg-muted p-1 rounded flex flex-col items-center gap-1 flex-1'>
-                                                <img src={castMember.actor.profileUrl ?? ''} alt={castMember.actor.name}
-                                                     className='w-full aspect-2/3 rounded object-cover object-center'/>
-                                                <span className='font-medium'>{castMember.actor.name}</span>
-                                                {/*{castMember.character && (*/}
-                                                {/*    <span className='text-muted-foreground'> כ{castMember.character}</span>*/}
-                                                {/*)}*/}
+                                                 className='relative text-xs rounded overflow-hidden group'>
+                                                <img
+                                                    src={castMember.actor.profileUrl ?? ''}
+                                                    alt={castMember.actor.name}
+                                                    className='w-full aspect-2/3 object-cover object-center'
+                                                />
+                                                <div
+                                                    className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
+                                                    <span className='font-medium text-white text-sm line-clamp-2'>
+                                                        {castMember.actor.name}
+                                                    </span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
-                                    <div>
-                                        {cast.length > castMembersToShowAmount && (
-                                            <div className='text-xs text-muted-foreground'>
-                                                {t('andMore', {count: cast.length - 5})}
-                                            </div>
-                                        )}
-                                    </div>
+                                    {hasMoreCast && (
+                                        <Button
+                                            variant='outline'
+                                            size='sm'
+                                            onClick={() => setShowAllCast(!showAllCast)}
+                                            className='w-full'
+                                        >
+                                            {showAllCast ? t('showLess') : t('showAll')}
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         )}
                     </div>
 
                     {movie.trailers.length > 0 && (
-                        <div className='flex gap-4 mt-4 overflow-x-auto w-full py-2 h-fit'>
-                            {movie.trailers.map((trailer) => (
-                                <ThumbnailButton
-                                    key={trailer.id}
-                                    youtubeId={trailer.youtubeId!}
-                                    title={trailer.title}
-                                />
-                            ))}
+                        <div className='flex flex-col gap-2'>
+                            <h3 className='font-semibold text-sm'>{t('trailers')}</h3>
+                            <div className='flex gap-4 overflow-x-auto py-2'>
+                                {movie.trailers.map((trailer) => (
+                                    <ThumbnailButton
+                                        key={trailer.id}
+                                        youtubeId={trailer.youtubeId!}
+                                        title={trailer.title}
+                                        className='aspect-video h-24 shrink-0'
+                                    />
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -183,17 +202,15 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
 
         // Default: modal-style wrapper
         return (
-            <div className='fixed inset-0 grid place-items-center z-[100] scrollable rounded-xl '>
-                <motion.button
-                    key={`button-${title}-${idSuffix}`}
-                    layout
+            <div className='fixed inset-0 grid place-items-center z-[100] p-4'>
+                {/* Backdrop overlay to capture events and prevent passthrough */}
+                <motion.div
                     initial={{opacity: 0}}
                     animate={{opacity: 1}}
-                    exit={{opacity: 0, transition: {duration: 0.05}}}
-                    className={`flex absolute top-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6`}
+                    exit={{opacity: 0, transition: {duration: 0.15}}}
+                    className='absolute inset-0 bg-black/60 backdrop-blur-sm'
                     onClick={onClose}
-                >
-                </motion.button>
+                />
                 {Content}
             </div>
         );

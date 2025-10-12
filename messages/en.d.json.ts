@@ -29,7 +29,10 @@ declare const messages: {
     "releaseDate": "Release Date",
     "close": "Close",
     "cast": "Cast",
-    "andMore": "and {count, plural, one {# more actor} other {# more actors}}..."
+    "andMore": "and {count, plural, one {# more actor} other {# more actors}}...",
+    "showAll": "Show All",
+    "showLess": "Show Less",
+    "trailers": "Trailers"
   },
   "filters": {
     "sortBy": "Sort by",

@@ -37,7 +37,7 @@ export const LanguageToggle = () => {
                 <Button variant='outline' size='sm' className='gap-2 rounded-full bg-background/20'>
                     <Globe className='h-4 w-4'/>
                     <span className='hidden sm:inline'>{currentLangDisplay.name}</span>
-                    <span className='sm:hidden'>{currentLangDisplay.short}</span>
+                    <span className='sm:hidden text-xs'>{currentLangDisplay.short}</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='flex flex-col gap-1'>

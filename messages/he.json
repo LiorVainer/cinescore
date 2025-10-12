@@ -26,7 +26,10 @@
     "releaseDate": "תאריך יציאה",
     "close": "סגור",
     "cast": "שחקנים:",
-    "andMore": "ועוד {count, plural, one {שחקן #} other {# שחקנים}}..."
+    "andMore": "ועוד {count, plural, one {שחקן #} other {# שחקנים}}...",
+    "showAll": "הצג הכל",
+    "showLess": "הצג פחות",
+    "trailers": "טריילרים"
   },
   "filters": {
     "sortBy": "מיין לפי",
