@@ -10,6 +10,10 @@ declare const messages: {
     "language": "Language",
     "details": "Details"
   },
+  "userButton": {
+    "settings": "Settings",
+    "signOut": "Sign Out"
+  },
   "languages": {
     "en_US": "English",
     "he_IL": "Hebrew"

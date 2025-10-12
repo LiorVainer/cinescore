@@ -7,6 +7,10 @@
     "language": "שפה",
     "details": "פרטים"
   },
+  "userButton": {
+    "settings": "הגדרות",
+    "signOut": "התנתק"
+  },
   "languages": {
     "en_US": "אנגלית",
     "he_IL": "עברית"

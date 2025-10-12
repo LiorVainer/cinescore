@@ -1,8 +1,8 @@
 import {useTranslations} from "next-intl";
-import Link from "next/link";
 import Logo from "@/assets/logo.svg";
 import {motion} from "motion/react";
 import React from "react";
+import {Link} from "@/i18n/navigation";
 
 export const NavbarLogo = () => {
     const t = useTranslations("metadata");
