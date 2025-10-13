@@ -15,11 +15,10 @@
  */
 
 // Core Query Client
-export {getQueryClient} from './query-client';
+export { getQueryClient } from './query-client';
 
 // Entity Modules
 export * from './follow';
 export * from './interest';
 export * from './user-preferences';
 export * from './movie';
-

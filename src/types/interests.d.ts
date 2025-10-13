@@ -1,5 +1,5 @@
 // src/types/interests.d.ts
-import {InterestType} from '@prisma/client';
+import type { InterestType } from '@prisma/client';
 
 /**
  * Discriminated union types for InterestCondition based on InterestType
@@ -9,7 +9,7 @@ import {InterestType} from '@prisma/client';
 export type ActorCondition = {
     id: string;
     interestId: string;
-    type: InterestType.ACTOR;
+    type: typeof InterestType.ACTOR;
     stringValue: string;
     numericValue: null;
 };
@@ -17,7 +17,7 @@ export type ActorCondition = {
 export type GenreCondition = {
     id: string;
     interestId: string;
-    type: InterestType.GENRE;
+    type: typeof InterestType.GENRE;
     stringValue: string;
     numericValue: null;
 };
@@ -25,7 +25,7 @@ export type GenreCondition = {
 export type RatingCondition = {
     id: string;
     interestId: string;
-    type: InterestType.RATING;
+    type: typeof InterestType.RATING;
     stringValue: null;
     numericValue: number;
 };
@@ -33,7 +33,7 @@ export type RatingCondition = {
 export type DurationMinCondition = {
     id: string;
     interestId: string;
-    type: InterestType.DURATION_MIN;
+    type: typeof InterestType.DURATION_MIN;
     stringValue: null;
     numericValue: number;
 };
@@ -41,7 +41,7 @@ export type DurationMinCondition = {
 export type DurationMaxCondition = {
     id: string;
     interestId: string;
-    type: InterestType.DURATION_MAX;
+    type: typeof InterestType.DURATION_MAX;
     stringValue: null;
     numericValue: number;
 };
@@ -60,11 +60,11 @@ export type InterestCondition =
  * Input type for creating/updating conditions (allows partial values)
  */
 export type InterestConditionInput =
-    | { type: InterestType.ACTOR; stringValue: string; numericValue?: null }
-    | { type: InterestType.GENRE; stringValue: string; numericValue?: null }
-    | { type: InterestType.RATING; stringValue?: null; numericValue: number }
-    | { type: InterestType.DURATION_MIN; stringValue?: null; numericValue: number }
-    | { type: InterestType.DURATION_MAX; stringValue?: null; numericValue: number };
+    | { type: typeof InterestType.ACTOR; stringValue: string; numericValue?: null }
+    | { type: typeof InterestType.GENRE; stringValue: string; numericValue?: null }
+    | { type: typeof InterestType.RATING; stringValue?: null; numericValue: number }
+    | { type: typeof InterestType.DURATION_MIN; stringValue?: null; numericValue: number }
+    | { type: typeof InterestType.DURATION_MAX; stringValue?: null; numericValue: number };
 
 /**
  * Module augmentation to override Prisma's generated types
@@ -72,7 +72,8 @@ export type InterestConditionInput =
  */
 declare module '@prisma/client' {
     // Override the InterestCondition type
-    export interface InterestCondition extends Omit<import('@prisma/client').InterestCondition, 'type' | 'stringValue' | 'numericValue'> {
+    export interface InterestCondition
+        extends Omit<import('@prisma/client').InterestCondition, 'type' | 'stringValue' | 'numericValue'> {
         type: InterestType;
         stringValue: string | null;
         numericValue: number | null;
@@ -90,9 +91,11 @@ declare module '@prisma/client' {
     // Enhance Prisma namespace with custom types
     namespace Prisma {
         // Override InterestGetPayload to use our discriminated union
-        interface InterestGetPayload<T extends {
-            include?: { conditions?: boolean } | null
-        }> {
+        interface InterestGetPayload<
+            T extends {
+                include?: { conditions?: boolean } | null;
+            },
+        > {
             id: string;
             userId: string;
             name: string;

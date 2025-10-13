@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { tmdb, omdb, imdb } from '@/lib/clients';
-import { prisma } from '@/lib/prisma';
 import { seedNowPlayingMovies } from '../../../../../prisma/seed';
 
 export const dynamic = 'force-dynamic';

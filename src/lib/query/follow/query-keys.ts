@@ -12,11 +12,8 @@ export const followKeys = {
     byUser: (userId: string) => [...followKeys.all, 'user', userId] as const,
 
     // Check if user follows a specific actor/genre
-    check: (userId: string, type: string, value: string) =>
-        [...followKeys.all, 'check', userId, type, value] as const,
+    check: (userId: string, type: string, value: string) => [...followKeys.all, 'check', userId, type, value] as const,
 
     // Follows by type
-    byType: (userId: string, type: string) =>
-        [...followKeys.all, 'user', userId, 'type', type] as const,
+    byType: (userId: string, type: string) => [...followKeys.all, 'user', userId, 'type', type] as const,
 };
-

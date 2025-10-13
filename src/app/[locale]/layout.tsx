@@ -1,31 +1,27 @@
-import {hasLocale, Locale, NextIntlClientProvider} from 'next-intl';
+import { hasLocale, Locale, NextIntlClientProvider } from 'next-intl';
 
-import {getMessages, getTranslations, setRequestLocale} from 'next-intl/server';
-import {notFound} from 'next/navigation';
-import {Geist, Geist_Mono} from 'next/font/google';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
-import {AppProviders} from '../providers';
-import {AppNavbar} from '@/components/navigation/app-navbar';
-import {routing} from '@/i18n/routing';
+import { AppProviders } from '../providers';
+import { AppNavbar } from '@/components/navigation/app-navbar';
+import { routing } from '@/i18n/routing';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
-    display: 'swap'
+    display: 'swap',
 });
 
 const geistMono = Geist_Mono({
     variable: '--font-geist-mono',
     subsets: ['latin'],
-    display: 'swap'
+    display: 'swap',
 });
 
-export async function generateMetadata(
-    props: {
-        params: Promise<{ locale: typeof routing.locales[number] }>;
-    }
-) {
-    const {locale} = await props.params;
+export async function generateMetadata(props: { params: Promise<{ locale: (typeof routing.locales)[number] }> }) {
+    const { locale } = await props.params;
 
     const t = await getTranslations({
         locale: locale as Locale,
@@ -33,24 +29,23 @@ export async function generateMetadata(
     });
 
     return {
-        title: t('title')
+        title: t('title'),
     };
 }
 
-
 export function generateStaticParams() {
-    return routing.locales.map((locale) => ({locale}));
+    return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({
-                                               children,
-                                               params,
-                                           }: {
+    children,
+    params,
+}: {
     children: React.ReactNode;
-    params: Promise<{ locale: typeof routing.locales[number] }>;
+    params: Promise<{ locale: (typeof routing.locales)[number] }>;
 }) {
     // Await the params before using its properties
-    const {locale} = await params;
+    const { locale } = await params;
     if (!hasLocale(routing.locales, locale)) {
         notFound();
     }
@@ -65,19 +60,20 @@ export default async function LocaleLayout({
             dir={locale === 'he' ? 'rtl' : 'ltr'}
             className={`${geistSans.variable} ${geistMono.variable}`}
         >
-        <body className={locale === 'he' ? 'font-hebrew' : 'font-sans'}>
-        {/* ✅ CRITICAL: Pass locale to NextIntlClientProvider */}
-        <NextIntlClientProvider
-            // locale={locale}
-            // messages={messages}
-        >
-            <AppProviders>
-                <AppNavbar/>
-                <div style={{paddingTop: '3.25rem'}}
-                     className='h-screen lg:px-[10%]'>{children}</div>
-            </AppProviders>
-        </NextIntlClientProvider>
-        </body>
+            <body className={locale === 'he' ? 'font-hebrew' : 'font-sans'}>
+                {/* ✅ CRITICAL: Pass locale to NextIntlClientProvider */}
+                <NextIntlClientProvider
+                // locale={locale}
+                // messages={messages}
+                >
+                    <AppProviders>
+                        <AppNavbar />
+                        <div style={{ paddingTop: '3.25rem' }} className='h-screen lg:px-[10%]'>
+                            {children}
+                        </div>
+                    </AppProviders>
+                </NextIntlClientProvider>
+            </body>
         </html>
     );
 }

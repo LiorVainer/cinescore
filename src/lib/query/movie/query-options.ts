@@ -8,8 +8,8 @@
  * when movie-related actions are created.
  */
 
-import {queryOptions} from '@tanstack/react-query';
-import {movieKeys} from './query-keys';
+import { queryOptions } from '@tanstack/react-query';
+import { movieKeys } from './query-keys';
 
 /**
  * Get paginated list of movies
@@ -156,4 +156,3 @@ export const recentMoviesOptions = (limit: number = 10) =>
         staleTime: 5 * 60 * 1000, // 5 minutes
         enabled: limit > 0,
     });
-

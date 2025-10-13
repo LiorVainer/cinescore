@@ -10,4 +10,3 @@ export const actorKeys = {
     details: () => [...actorKeys.all, 'detail'] as const,
     detail: (id: string, locale: string) => [...actorKeys.details(), id, locale] as const,
 };
-

@@ -10,7 +10,7 @@
 
 'use client';
 
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
     moviesListOptions,
     movieDetailOptions,
@@ -69,4 +69,3 @@ export function useTrendingMovies() {
 export function useRecentMovies(limit: number = 10) {
     return useQuery(recentMoviesOptions(limit));
 }
-

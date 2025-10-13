@@ -1,15 +1,15 @@
 'use client';
-import {ModeToggle} from '@/components/mode-toggle';
-import {LanguageToggle} from '@/components/navigation/language-toggle';
-import {SignedIn, SignedOut} from '@daveyplate/better-auth-ui';
-import {MobileNav, MobileNavHeader, Navbar, NavBody} from '@/components/ui/resizable-navbar';
-import {useIsMobile} from '@/hooks/use-mobile';
-import {Button} from '@/components/ui/button';
-import {useTranslations} from 'next-intl';
-import {Link} from '@/i18n/navigation'
-import {NavbarLogo} from './navbar-logo';
-import {LogIn} from 'lucide-react';
-import {UserButton} from '@/components/auth/user-button';
+import { ModeToggle } from '@/components/mode-toggle';
+import { LanguageToggle } from '@/components/navigation/language-toggle';
+import { SignedIn, SignedOut } from '@daveyplate/better-auth-ui';
+import { MobileNav, MobileNavHeader, Navbar, NavBody } from '@/components/ui/resizable-navbar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
+import { NavbarLogo } from './navbar-logo';
+import { LogIn } from 'lucide-react';
+import { UserButton } from '@/components/auth/user-button';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
@@ -18,14 +18,14 @@ export const AppNavbar = () => {
         <Navbar position='fixed'>
             {!isMobile ? (
                 <NavBody className='container flex h-16 items-center justify-between'>
-                    <NavbarLogo/>
-                    <NavbarContent/>
+                    <NavbarLogo />
+                    <NavbarContent />
                 </NavBody>
             ) : (
                 <MobileNav>
                     <MobileNavHeader>
-                        <NavbarLogo/>
-                        <NavbarContent/>
+                        <NavbarLogo />
+                        <NavbarContent />
                     </MobileNavHeader>
                 </MobileNav>
             )}
@@ -40,23 +40,22 @@ export const NavbarContent = () => {
         <nav className='flex items-center gap-6'>
             <div className='flex items-center gap-4'>
                 <div className='flex items-center gap-2'>
-                    <ModeToggle/>
-                    <LanguageToggle/>
+                    <ModeToggle />
+                    <LanguageToggle />
                 </div>
                 <SignedIn>
-                    <UserButton/>
+                    <UserButton />
                 </SignedIn>
 
                 <SignedOut>
                     <Link href='/auth/sign-in'>
                         <Button size='sm' className='rounded-full font-semibold'>
-                            <LogIn className='sm:hidden size-4'/>
+                            <LogIn className='sm:hidden size-4' />
                             <span className='hidden sm:inline'>{t('signIn')}</span>
                         </Button>
                     </Link>
                 </SignedOut>
             </div>
-
         </nav>
     );
 };

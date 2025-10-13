@@ -18,4 +18,3 @@ export const interestKeys = {
     byConditionType: (userId: string, conditionType: string) =>
         [...interestKeys.all, 'user', userId, 'condition', conditionType] as const,
 };
-

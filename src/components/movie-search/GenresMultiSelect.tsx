@@ -1,6 +1,6 @@
 'use client';
 
-import {Button} from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -10,11 +10,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Input} from '@/components/ui/input';
-import {ChevronDownIcon, FilterIcon} from 'lucide-react';
-import {useMemo, useState} from 'react';
-import type {GenreOption} from '@/constants/sort.const';
-import {useTranslations} from 'next-intl';
+import { Input } from '@/components/ui/input';
+import { ChevronDownIcon, FilterIcon } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import type { GenreOption } from '@/constants/sort.const';
+import { useTranslations } from 'next-intl';
 
 export function GenresMultiSelect({
     genres,
@@ -44,7 +44,7 @@ export function GenresMultiSelect({
                         <FilterIcon className='size-4' /> {t('title')}
                     </span>
                     <span className='opacity-60 text-xs'>
-                        {selected.length > 0 ? t('selected', {count: selected.length}) : t('noFilter')}
+                        {selected.length > 0 ? t('selected', { count: selected.length }) : t('noFilter')}
                     </span>
                     <ChevronDownIcon className='size-4 opacity-60' />
                 </Button>
@@ -52,7 +52,11 @@ export function GenresMultiSelect({
             <DropdownMenuContent className='w-64 p-2'>
                 <DropdownMenuLabel>{t('filter')}</DropdownMenuLabel>
                 <div className='p-1'>
-                    <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('filterPlaceholder')} />
+                    <Input
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder={t('filterPlaceholder')}
+                    />
                 </div>
                 <DropdownMenuSeparator />
                 <div className='max-h-72 overflow-y-auto pe-1'>

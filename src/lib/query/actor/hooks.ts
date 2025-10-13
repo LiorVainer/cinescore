@@ -7,8 +7,8 @@
 
 'use client';
 
-import {useSuspenseQuery, useQuery} from '@tanstack/react-query';
-import {actorDetailOptions} from './query-options';
+import { useSuspenseQuery, useQuery } from '@tanstack/react-query';
+import { actorDetailOptions } from './query-options';
 
 /**
  * Hook to fetch a single actor by ID

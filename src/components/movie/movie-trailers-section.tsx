@@ -2,15 +2,15 @@
 
 import React from 'react';
 import ThumbnailButton from '@/components/thumbnail-button-video-player';
-import {useTranslations} from 'next-intl';
-import {motion, Variants} from 'motion/react';
-import type {MovieWithLanguageTranslation} from '@/models/movies.model';
+import { useTranslations } from 'next-intl';
+import { motion, Variants } from 'motion/react';
+import type { MovieWithLanguageTranslation } from '@/models/movies.model';
 
 type MovieTrailersSectionProps = {
     trailers: MovieWithLanguageTranslation['trailers'];
 };
 
-export const MovieTrailersSection = ({trailers}: MovieTrailersSectionProps) => {
+export const MovieTrailersSection = ({ trailers }: MovieTrailersSectionProps) => {
     const t = useTranslations('movie');
 
     if (!trailers || trailers.length === 0) {
@@ -53,10 +53,7 @@ export const MovieTrailersSection = ({trailers}: MovieTrailersSectionProps) => {
                 animate='visible'
             >
                 {trailers.map((trailer) => (
-                    <motion.div
-                        key={trailer.id}
-                        variants={trailerVariants}
-                    >
+                    <motion.div key={trailer.id} variants={trailerVariants}>
                         <ThumbnailButton
                             youtubeId={trailer.youtubeId!}
                             title={trailer.title}

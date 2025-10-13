@@ -1,7 +1,7 @@
 'use server';
 
-import {getDal} from '@/lib/server-utils';
-import type {Language} from '@prisma/client';
+import { getDal } from '@/lib/server-utils';
+import type { Language } from '@prisma/client';
 
 /**
  * Fetches an actor by ID with translations and filmography
@@ -19,7 +19,7 @@ export async function getActorById(actorId: string, locale: string) {
         ...actor,
         name: actor.translations[0]?.name || 'Unknown Actor',
         biography: actor.translations[0]?.biography,
-        movies: actor.cast.map(c => ({
+        movies: actor.cast.map((c) => ({
             id: c.movie.id,
             title: c.movie.translations[0]?.title || 'Untitled',
             posterPath: c.movie.translations[0]?.posterUrl,
@@ -28,4 +28,3 @@ export async function getActorById(actorId: string, locale: string) {
         })),
     };
 }
-

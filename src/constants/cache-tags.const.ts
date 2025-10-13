@@ -9,5 +9,4 @@ export const CACHE_TAGS = {
     USER_PREFERENCES: 'user-preferences',
 } as const;
 
-export type CacheTag = typeof CACHE_TAGS[keyof typeof CACHE_TAGS];
-
+export type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];

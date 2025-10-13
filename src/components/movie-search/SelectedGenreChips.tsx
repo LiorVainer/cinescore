@@ -1,9 +1,9 @@
 'use client';
 
-import {Badge} from '@/components/ui/badge';
-import {XIcon} from 'lucide-react';
-import type {GenreOption} from '@/constants/sort.const';
-import {useTranslations} from 'next-intl';
+import { Badge } from '@/components/ui/badge';
+import { XIcon } from 'lucide-react';
+import type { GenreOption } from '@/constants/sort.const';
+import { useTranslations } from 'next-intl';
 
 export function SelectedGenreChips({
     genres,
@@ -31,7 +31,7 @@ export function SelectedGenreChips({
                         className='flex items-center gap-1'
                     >
                         {g.name}
-                        <button className='p-1' aria-label={t('removeGenre', {name: g.name})}>
+                        <button className='p-1' aria-label={t('removeGenre', { name: g.name })}>
                             <XIcon className='size-3 opacity-70' />
                         </button>
                     </Badge>

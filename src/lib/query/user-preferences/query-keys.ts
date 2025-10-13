@@ -11,4 +11,3 @@ export const userPreferencesKeys = {
     // User preferences by user ID
     byUser: (userId: string) => [...userPreferencesKeys.all, 'user', userId] as const,
 };
-

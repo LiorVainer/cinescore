@@ -1,12 +1,11 @@
 'use server';
 
-import {InterestType} from '@prisma/client';
-import {revalidateTag} from 'next/cache';
-import {getDal, getUserSession, ActionResult} from '@/lib/server-utils';
-import {InterestDTO} from '@/models/interests.model';
-import {CACHE_TAGS} from '@/constants/cache-tags.const';
-import {INTEREST_TYPE_LABELS} from '@/constants/interest-labels.const';
-import type {InterestConditionInput} from '@/types/interests';
+import { revalidateTag } from 'next/cache';
+import { ActionResult, getDal, getUserSession } from '@/lib/server-utils';
+import { InterestDTO } from '@/models/interests.model';
+import { CACHE_TAGS } from '@/constants/cache-tags.const';
+import { formatConditionInputLabel } from '@/constants/interest-labels.const';
+import type { InterestConditionInput } from '@/types/interests';
 
 // ============================================================================
 // INTEREST ACTIONS
@@ -24,7 +23,7 @@ export async function createInterest(data: {
         if (!data.conditions || data.conditions.length === 0) {
             return {
                 success: false,
-                error: 'At least one condition is required'
+                error: 'At least one condition is required',
             };
         }
 
@@ -32,10 +31,7 @@ export async function createInterest(data: {
         let name = data.name;
         if (!name) {
             const parts: string[] = data.conditions
-                .map(condition => {
-                    const value = condition.stringValue ?? condition.numericValue;
-                    return value != null ? INTEREST_TYPE_LABELS[condition.type](value) : null;
-                })
+                .map((condition) => formatConditionInputLabel(condition))
                 .filter((part): part is string => part !== null);
 
             name = parts.length > 0 ? parts.join(' + ') : 'Custom Interest';
@@ -44,7 +40,7 @@ export async function createInterest(data: {
         const interest = await dal.interests.create({
             userId: user.id,
             name,
-            conditions: data.conditions
+            conditions: data.conditions,
         });
 
         // Revalidate cache
@@ -55,22 +51,22 @@ export async function createInterest(data: {
             data: {
                 id: interest.id,
                 name: interest.name,
-                conditions: interest.conditions.map(c => ({
+                conditions: interest.conditions.map((c) => ({
                     id: c.id,
                     interestId: c.interestId,
                     type: c.type,
                     stringValue: c.stringValue,
-                    numericValue: c.numericValue
+                    numericValue: c.numericValue,
                 })) as InterestDTO['conditions'],
                 createdAt: interest.createdAt,
-                updatedAt: interest.updatedAt
-            }
+                updatedAt: interest.updatedAt,
+            },
         };
     } catch (error) {
         console.error('createInterest error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to create interest'
+            error: error instanceof Error ? error.message : 'Failed to create interest',
         };
     }
 }
@@ -80,7 +76,7 @@ export async function updateInterest(
     data: {
         name?: string;
         conditions?: InterestConditionInput[];
-    }
+    },
 ): Promise<ActionResult<InterestDTO>> {
     try {
         const user = await getUserSession();
@@ -88,12 +84,12 @@ export async function updateInterest(
 
         // Verify ownership
         const interests = await dal.interests.findByUser(user.id);
-        const interest = interests.find(i => i.id === interestId);
+        const interest = interests.find((i) => i.id === interestId);
 
         if (!interest) {
             return {
                 success: false,
-                error: 'Interest not found or you do not have permission to update it'
+                error: 'Interest not found or you do not have permission to update it',
             };
         }
 
@@ -101,7 +97,7 @@ export async function updateInterest(
         if (data.conditions && data.conditions.length === 0) {
             return {
                 success: false,
-                error: 'At least one condition is required'
+                error: 'At least one condition is required',
             };
         }
 
@@ -115,22 +111,22 @@ export async function updateInterest(
             data: {
                 id: updatedInterest.id,
                 name: updatedInterest.name,
-                conditions: updatedInterest.conditions.map(c => ({
+                conditions: updatedInterest.conditions.map((c) => ({
                     id: c.id,
                     interestId: c.interestId,
                     type: c.type,
                     stringValue: c.stringValue,
-                    numericValue: c.numericValue
+                    numericValue: c.numericValue,
                 })) as InterestDTO['conditions'],
                 createdAt: updatedInterest.createdAt,
-                updatedAt: updatedInterest.updatedAt
-            }
+                updatedAt: updatedInterest.updatedAt,
+            },
         };
     } catch (error) {
         console.error('updateInterest error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to update interest'
+            error: error instanceof Error ? error.message : 'Failed to update interest',
         };
     }
 }
@@ -142,12 +138,12 @@ export async function deleteInterest(interestId: string): Promise<ActionResult<{
 
         // Verify ownership
         const interests = await dal.interests.findByUser(user.id);
-        const interest = interests.find(i => i.id === interestId);
+        const interest = interests.find((i) => i.id === interestId);
 
         if (!interest) {
             return {
                 success: false,
-                error: 'Interest not found or you do not have permission to delete it'
+                error: 'Interest not found or you do not have permission to delete it',
             };
         }
 
@@ -158,13 +154,13 @@ export async function deleteInterest(interestId: string): Promise<ActionResult<{
 
         return {
             success: true,
-            data: {deletedInterestId: interestId}
+            data: { deletedInterestId: interestId },
         };
     } catch (error) {
         console.error('deleteInterest error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to delete interest'
+            error: error instanceof Error ? error.message : 'Failed to delete interest',
         };
     }
 }
@@ -177,25 +173,25 @@ export async function getUserInterests(): Promise<ActionResult<InterestDTO[]>> {
 
         return {
             success: true,
-            data: interests.map(i => ({
+            data: interests.map((i) => ({
                 id: i.id,
                 name: i.name,
-                conditions: i.conditions.map(c => ({
+                conditions: i.conditions.map((c) => ({
                     id: c.id,
                     interestId: c.interestId,
                     type: c.type,
                     stringValue: c.stringValue,
-                    numericValue: c.numericValue
+                    numericValue: c.numericValue,
                 })) as InterestDTO['conditions'],
                 createdAt: i.createdAt,
-                updatedAt: i.updatedAt
-            }))
+                updatedAt: i.updatedAt,
+            })),
         };
     } catch (error) {
         console.error('getUserInterests error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to fetch interests'
+            error: error instanceof Error ? error.message : 'Failed to fetch interests',
         };
     }
 }

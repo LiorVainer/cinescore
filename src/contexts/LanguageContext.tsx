@@ -1,14 +1,17 @@
 'use client';
 
-import {createContext, useContext, useEffect, useState} from 'react';
-import {Language} from '@prisma/client';
-import {useRouter, usePathname} from 'next/navigation';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { Language } from '@prisma/client';
+import { useRouter, usePathname } from 'next/navigation';
 
-const LanguageContext = createContext<undefined | {
-    currentLanguage: Language;
-    setLanguage: (language: Language) => void;
-    isLoading: boolean;
-}>(undefined);
+const LanguageContext = createContext<
+    | undefined
+    | {
+          currentLanguage: Language;
+          setLanguage: (language: Language) => void;
+          isLoading: boolean;
+      }
+>(undefined);
 
 // Helper function to map URL locale to database Language enum
 const mapLocaleToLanguage = (locale: string) => {
@@ -34,7 +37,7 @@ const mapLanguageToLocale = (language: Language) => {
     }
 };
 
-export function LanguageProvider({children}: { children: React.ReactNode }) {
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [currentLanguage, setCurrentLanguage] = useState<Language>(Language.he_IL);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -63,7 +66,7 @@ export function LanguageProvider({children}: { children: React.ReactNode }) {
     };
 
     return (
-        <LanguageContext.Provider value={{currentLanguage, setLanguage, isLoading}}>
+        <LanguageContext.Provider value={{ currentLanguage, setLanguage, isLoading }}>
             {children}
         </LanguageContext.Provider>
     );

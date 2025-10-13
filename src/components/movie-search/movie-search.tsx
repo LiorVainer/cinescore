@@ -1,15 +1,15 @@
 'use client';
 
-import {useEffect, useState} from 'react';
-import {SortValue} from '@/constants/sort.const';
-import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {useDebounce} from '@/lib/useDebounce';
+import { useEffect, useState } from 'react';
+import { SortValue } from '@/constants/sort.const';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useDebounce } from '@/lib/useDebounce';
 import MovieCard from '@/components/movie/movie-card';
-import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
-import {FilterBar} from '@/components/movie-search/FilterBar';
+import { listGenres, searchMoviesFiltered } from '@/app/actions/searchMovies';
+import { FilterBar } from '@/components/movie-search/FilterBar';
 import CollapsedMovieCardSkeleton from '@/components/movie/movie-card-collapsed.skeleton';
-import {useLocale, useTranslations} from 'next-intl';
-import {mapLocaleToLanguage} from "@/constants/languages.const";
+import { useLocale, useTranslations } from 'next-intl';
+import { mapLocaleToLanguage } from '@/constants/languages.const';
 
 const DEFAULT_SORT = 'rating:desc';
 
@@ -35,7 +35,7 @@ export default function MovieSearch() {
     }, [debouncedSearch, sort, selectedGenresKey]);
 
     // Genres via server action + TanStack Query (now language-aware)
-    const {data: genresData} = useQuery({
+    const { data: genresData } = useQuery({
         queryKey: ['genres', currentLanguage],
         queryFn: async () => listGenres(currentLanguage),
         staleTime: 1000 * 60 * 60, // 1 hour
@@ -49,14 +49,17 @@ export default function MovieSearch() {
         isFetching,
         isError,
     } = useQuery({
-        queryKey: ['movies-search', {
-            search: debouncedSearch,
-            sort,
-            selectedGenres,
-            page,
-            pageSize,
-            language: currentLanguage
-        }],
+        queryKey: [
+            'movies-search',
+            {
+                search: debouncedSearch,
+                sort,
+                selectedGenres,
+                page,
+                pageSize,
+                language: currentLanguage,
+            },
+        ],
         queryFn: async () =>
             searchMoviesFiltered({
                 search: debouncedSearch,
@@ -97,32 +100,22 @@ export default function MovieSearch() {
                 onClearAll={clearFilters}
             />
 
-            {isError && (
-                <div className='text-destructive'>
-                    {t('errorLoading')}
-                </div>
-            )}
+            {isError && <div className='text-destructive'>{t('errorLoading')}</div>}
 
             {isFetching && items.length === 0 ? (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
-                    {Array.from({length: 9}).map((_, i) => (
-                        <CollapsedMovieCardSkeleton key={i}/>
+                    {Array.from({ length: 9 }).map((_, i) => (
+                        <CollapsedMovieCardSkeleton key={i} />
                     ))}
                 </div>
             ) : (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 overflow-y-auto'>
                     {items.map((movie) => (
-                        <MovieCard
-                            ctaText={tMovie('details')}
-                            key={movie.id}
-                            movie={movie}
-                        />
+                        <MovieCard ctaText={tMovie('details')} key={movie.id} movie={movie} />
                     ))}
 
                     {items.length === 0 && !isFetching && (
-                        <div className='text-sm text-muted-foreground'>
-                            {t('noResults')}
-                        </div>
+                        <div className='text-sm text-muted-foreground'>{t('noResults')}</div>
                     )}
                 </div>
             )}

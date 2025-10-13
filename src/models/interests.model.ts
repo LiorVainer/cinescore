@@ -1,5 +1,5 @@
 // src/models/interests.model.ts
-import type {InterestCondition} from '@/types/interests';
+import type { InterestCondition } from '@/types/interests';
 
 export type InterestConditionDTO = InterestCondition;
 

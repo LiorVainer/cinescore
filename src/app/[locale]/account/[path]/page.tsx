@@ -1,23 +1,22 @@
-import {AccountView} from '@daveyplate/better-auth-ui';
-import {accountViewPaths} from '@daveyplate/better-auth-ui/server';
+import { AccountView } from '@daveyplate/better-auth-ui';
+import { accountViewPaths } from '@daveyplate/better-auth-ui/server';
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-    return Object.values(accountViewPaths).map((path) => ({path}));
+    return Object.values(accountViewPaths).map((path) => ({ path }));
 }
 
 type AccountPageProps = {
     params: Promise<{ path: string }>;
 };
 
-export default async function AccountPage({params}: AccountPageProps) {
-    const {path} = await params;
+export default async function AccountPage({ params }: AccountPageProps) {
+    const { path } = await params;
 
     return (
-        <main
-            className='container flex grow flex-col items-center justify-center self-center p-4 md:p-8 scrollable'>
-            <AccountView path={path}/>
+        <main className='container flex grow flex-col items-center justify-center self-center p-4 md:p-8 scrollable'>
+            <AccountView path={path} />
         </main>
     );
 }

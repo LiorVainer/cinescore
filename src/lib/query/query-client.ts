@@ -1,4 +1,4 @@
-import {isServer, QueryClient, defaultShouldDehydrateQuery} from "@tanstack/react-query";
+import { isServer, QueryClient, defaultShouldDehydrateQuery } from '@tanstack/react-query';
 
 function makeQueryClient() {
     return new QueryClient({
@@ -10,15 +10,13 @@ function makeQueryClient() {
             },
             dehydrate: {
                 // Include pending queries in dehydration for streaming support
-                shouldDehydrateQuery: (query) =>
-                    defaultShouldDehydrateQuery(query) ||
-                    query.state.status === 'pending',
+                shouldDehydrateQuery: (query) => defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
                 // Don't redact errors for Next.js - Next.js handles this automatically
                 // and needs to detect dynamic pages through errors
                 shouldRedactErrors: () => false,
             },
         },
-    })
+    });
 }
 
 let broswerQueryClient: QueryClient | null = null;

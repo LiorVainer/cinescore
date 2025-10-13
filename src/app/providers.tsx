@@ -1,20 +1,19 @@
 'use client';
 
-import {NuqsAdapter} from 'nuqs/adapters/next/app';
-import {ThemeProvider} from 'next-themes';
-import {authClient} from '@/lib/auth-client';
-import {AuthUIProvider} from '@daveyplate/better-auth-ui';
-import {useState} from 'react';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {HebrewAuthLocalization} from '@/constants/auth.const';
-import {Link, useRouter} from '@/i18n/navigation';
-import {useLocale} from 'next-intl';
-import {Direction} from "radix-ui";
-import {getQueryClient} from '@/lib/query/query-client';
-import {DrawerContentProvider} from '@/contexts/drawer-content-context';
-import {UnifiedDrawer} from '@/components/shared/UnifiedDrawer';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { ThemeProvider } from 'next-themes';
+import { authClient } from '@/lib/auth-client';
+import { AuthUIProvider } from '@daveyplate/better-auth-ui';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { HebrewAuthLocalization } from '@/constants/auth.const';
+import { Link, useRouter } from '@/i18n/navigation';
+import { useLocale } from 'next-intl';
+import { Direction } from 'radix-ui';
+import { getQueryClient } from '@/lib/query/query-client';
+import { DrawerContentProvider } from '@/contexts/drawer-content-context';
+import { UnifiedDrawer } from '@/components/shared/UnifiedDrawer';
 
-export function AppProviders({children}: { children: React.ReactNode }) {
+export function AppProviders({ children }: { children: React.ReactNode }) {
     const locale = useLocale();
     const router = useRouter();
     const queryClient = getQueryClient();
@@ -36,16 +35,11 @@ export function AppProviders({children}: { children: React.ReactNode }) {
                         providers: ['google'],
                     }}
                 >
-                    <ThemeProvider
-                        attribute='class'
-                        defaultTheme='system'
-                        enableSystem
-                        disableTransitionOnChange
-                    >
+                    <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
                         <NuqsAdapter>
                             <DrawerContentProvider>
                                 {children}
-                                <UnifiedDrawer/>
+                                <UnifiedDrawer />
                             </DrawerContentProvider>
                         </NuqsAdapter>
                     </ThemeProvider>

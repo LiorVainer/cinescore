@@ -7,11 +7,11 @@
 
 'use client';
 
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-import {updateUserPreferences} from '@/app/actions/user-preferences';
-import {userPreferencesOptions} from './query-options';
-import {userPreferencesKeys} from './query-keys';
-import type {NotifyMethod} from '@prisma/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateUserPreferences } from '@/app/actions/user-preferences';
+import { userPreferencesOptions } from './query-options';
+import { userPreferencesKeys } from './query-keys';
+import type { NotifyMethod } from '@prisma/client';
 
 /**
  * Hook to fetch user preferences
@@ -42,25 +42,17 @@ export function useUpdateUserPreferences(userId: string) {
             });
 
             // Snapshot previous value
-            const previousPreferences = queryClient.getQueryData(
-                userPreferencesKeys.byUser(userId)
-            );
+            const previousPreferences = queryClient.getQueryData(userPreferencesKeys.byUser(userId));
 
             // Optimistically update
-            queryClient.setQueryData(
-                userPreferencesKeys.byUser(userId),
-                newPreferences
-            );
+            queryClient.setQueryData(userPreferencesKeys.byUser(userId), newPreferences);
 
-            return {previousPreferences};
+            return { previousPreferences };
         },
         onError: (err, variables, context) => {
             // Rollback on error
             if (context?.previousPreferences) {
-                queryClient.setQueryData(
-                    userPreferencesKeys.byUser(userId),
-                    context.previousPreferences
-                );
+                queryClient.setQueryData(userPreferencesKeys.byUser(userId), context.previousPreferences);
             }
         },
         onSettled: () => {
@@ -71,4 +63,3 @@ export function useUpdateUserPreferences(userId: string) {
         },
     });
 }
-

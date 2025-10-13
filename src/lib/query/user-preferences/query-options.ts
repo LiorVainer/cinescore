@@ -5,9 +5,9 @@
  * These are used across useQuery, prefetchQuery, and other React Query methods.
  */
 
-import {queryOptions} from '@tanstack/react-query';
-import {getUserPreferences} from '@/app/actions/user-preferences';
-import {userPreferencesKeys} from './query-keys';
+import { queryOptions } from '@tanstack/react-query';
+import { getUserPreferences } from '@/app/actions/user-preferences';
+import { userPreferencesKeys } from './query-keys';
 
 /**
  * Get user preferences

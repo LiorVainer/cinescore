@@ -1,4 +1,4 @@
-import {$Enums, Language} from "@prisma/client";
+import { $Enums, Language } from '@prisma/client';
 
 /**
  * @deprecated Use useLanguageLabel() hook from '@/hooks/use-language-label' for translated language labels
@@ -7,7 +7,7 @@ import {$Enums, Language} from "@prisma/client";
 export const LANGUAGE_LABELS = {
     en_US: 'English',
     he_IL: 'Hebrew',
-} satisfies Record<string & $Enums.Language, string>
+} satisfies Record<string & $Enums.Language, string>;
 
 export type LanguageCode = keyof typeof LANGUAGE_LABELS;
 

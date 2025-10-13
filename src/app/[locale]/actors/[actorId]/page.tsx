@@ -1,12 +1,12 @@
-import {HydrationBoundary, dehydrate} from '@tanstack/react-query';
-import {getQueryClient} from '@/lib/query';
-import {notFound} from 'next/navigation';
-import {auth} from '@/lib/auth';
-import {userFollowsOptions} from '@/lib/query/follow';
-import {getActorById} from '@/app/actions/actors';
-import {getTranslations} from 'next-intl/server';
-import type {Locale} from 'next-intl';
-import {ActorProfile, ActorBiography, ActorFilmography} from '@/components/actor/ActorDetailShared';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { getQueryClient } from '@/lib/query';
+import { notFound } from 'next/navigation';
+import { auth } from '@/lib/auth';
+import { userFollowsOptions } from '@/lib/query/follow';
+import { getActorById } from '@/app/actions/actors';
+import { getTranslations } from 'next-intl/server';
+import type { Locale } from 'next-intl';
+import { ActorProfile, ActorBiography, ActorFilmography } from '@/components/actor/ActorDetailShared';
 
 interface ActorPageProps {
     params: Promise<{
@@ -17,9 +17,9 @@ interface ActorPageProps {
 
 export default async function ActorPage(props: ActorPageProps) {
     const params = await props.params;
-    const {actorId, locale} = params;
+    const { actorId, locale } = params;
     const session = await auth.api.getSession({
-        headers: await import('next/headers').then(m => m.headers()),
+        headers: await import('next/headers').then((m) => m.headers()),
     });
     const queryClient = getQueryClient();
 
@@ -43,13 +43,13 @@ export default async function ActorPage(props: ActorPageProps) {
                     <div className='grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-8'>
                         {/* Left Column: Actor Profile - Sticky on desktop */}
                         <aside className='lg:sticky lg:top-8 lg:self-start'>
-                            <ActorProfile actor={actor} userId={session?.user?.id}/>
+                            <ActorProfile actor={actor} userId={session?.user?.id} />
                         </aside>
 
                         {/* Right Column: Biography & Filmography */}
                         <main className='space-y-8'>
-                            {actor.biography && <ActorBiography biography={actor.biography}/>}
-                            {actor.movies && <ActorFilmography movies={actor.movies}/>}
+                            {actor.biography && <ActorBiography biography={actor.biography} />}
+                            {actor.movies && <ActorFilmography movies={actor.movies} />}
                         </main>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ export default async function ActorPage(props: ActorPageProps) {
 // Generate metadata for SEO
 export async function generateMetadata(props: ActorPageProps) {
     const params = await props.params;
-    const {actorId, locale} = params;
+    const { actorId, locale } = params;
 
     const actor = await getActorById(actorId, locale);
 
@@ -88,6 +88,6 @@ export async function generateMetadata(props: ActorPageProps) {
 
     return {
         title: `${actor.name} | ${tM('title')}`,
-        description: actor.biography?.substring(0, 160) || t('pageDescription', {name: actor.name}),
+        description: actor.biography?.substring(0, 160) || t('pageDescription', { name: actor.name }),
     };
 }

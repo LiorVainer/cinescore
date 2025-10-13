@@ -1,5 +1,5 @@
 // src/models/follows.model.ts
-import {FollowType} from '@prisma/client';
+import { FollowType } from '@prisma/client';
 
 export type FollowDTO = {
     id: string;
@@ -8,4 +8,3 @@ export type FollowDTO = {
     createdAt: Date;
     updatedAt: Date;
 };
-

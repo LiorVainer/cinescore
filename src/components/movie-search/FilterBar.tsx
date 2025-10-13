@@ -1,13 +1,13 @@
 'use client';
 
-import {Button} from '@/components/ui/button';
-import {XIcon} from 'lucide-react';
-import {SearchInput} from './SearchInput';
-import {SortSelect} from './SortSelect';
-import {GenresMultiSelect} from './GenresMultiSelect';
-import {SelectedGenreChips} from './SelectedGenreChips';
-import type {GenreOption, SortValue} from '@/constants/sort.const';
-import {useTranslations} from 'next-intl';
+import { Button } from '@/components/ui/button';
+import { XIcon } from 'lucide-react';
+import { SearchInput } from './SearchInput';
+import { SortSelect } from './SortSelect';
+import { GenresMultiSelect } from './GenresMultiSelect';
+import { SelectedGenreChips } from './SelectedGenreChips';
+import type { GenreOption, SortValue } from '@/constants/sort.const';
+import { useTranslations } from 'next-intl';
 
 export function FilterBar({
     search,

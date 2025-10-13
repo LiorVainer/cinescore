@@ -7,11 +7,11 @@
 
 'use client';
 
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-import {createInterest, updateInterest, deleteInterest} from '@/app/actions/interests';
-import {userInterestsOptions, userInterestsByConditionTypeOptions} from './query-options';
-import {interestKeys} from './query-keys';
-import type {InterestConditionInput} from '@/types/interests';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { createInterest, updateInterest, deleteInterest } from '@/app/actions/interests';
+import { userInterestsOptions, userInterestsByConditionTypeOptions } from './query-options';
+import { interestKeys } from './query-keys';
+import type { InterestConditionInput } from '@/types/interests';
 
 /**
  * Hook to fetch all interests for a user
@@ -59,12 +59,8 @@ export function useUpdateInterest(userId: string) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (data: {
-            interestId: string;
-            name?: string;
-            conditions?: InterestConditionInput[];
-        }) => {
-            const {interestId, ...updateData} = data;
+        mutationFn: async (data: { interestId: string; name?: string; conditions?: InterestConditionInput[] }) => {
+            const { interestId, ...updateData } = data;
             const result = await updateInterest(interestId, updateData);
             if (!result.success) {
                 throw new Error(result.error || 'Failed to update interest');
@@ -102,25 +98,19 @@ export function useDeleteInterest(userId: string) {
             });
 
             // Snapshot previous value
-            const previousInterests = queryClient.getQueryData(
-                interestKeys.byUser(userId)
-            );
+            const previousInterests = queryClient.getQueryData(interestKeys.byUser(userId));
 
             // Optimistically update
-            queryClient.setQueryData(
-                interestKeys.byUser(userId),
-                (old: any) => old?.filter((i: any) => i.id !== interestId)
+            queryClient.setQueryData(interestKeys.byUser(userId), (old: any) =>
+                old?.filter((i: any) => i.id !== interestId),
             );
 
-            return {previousInterests};
+            return { previousInterests };
         },
         onError: (err, variables, context) => {
             // Rollback on error
             if (context?.previousInterests) {
-                queryClient.setQueryData(
-                    interestKeys.byUser(userId),
-                    context.previousInterests
-                );
+                queryClient.setQueryData(interestKeys.byUser(userId), context.previousInterests);
             }
         },
         onSettled: () => {
@@ -131,4 +121,3 @@ export function useDeleteInterest(userId: string) {
         },
     });
 }
-

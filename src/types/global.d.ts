@@ -1,4 +1,4 @@
-import {routing} from '@/i18n/routing';
+import { routing } from '@/i18n/routing';
 import type en from '../../messages/en.json';
 
 type Messages = typeof en;

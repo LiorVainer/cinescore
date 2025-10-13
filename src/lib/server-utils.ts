@@ -1,10 +1,10 @@
 // src/lib/server-utils.ts
-import {auth} from '@/lib/auth';
-import {headers} from 'next/headers';
-import {createDALs} from '@/dal';
-import {PrismaService} from '@/lib/prismaService';
-import {prisma} from '@/lib/prisma';
-import {redirect} from 'next/navigation';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { createDALs } from '@/dal';
+import { PrismaService } from '@/lib/prismaService';
+import { prisma } from '@/lib/prisma';
+import { redirect } from 'next/navigation';
 
 // Lazy DAL initialization
 let dalInstance: ReturnType<typeof createDALs> | null = null;
@@ -18,13 +18,11 @@ export function getDal() {
 }
 
 // Type-safe action result
-export type ActionResult<T> =
-    | { success: true; data: T }
-    | { success: false; error: string };
+export type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
 
 // Auth helper with redirect option
 export async function getUserSession(redirectOnFail = false) {
-    const session = await auth.api.getSession({headers: await headers()});
+    const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session?.user?.id) {
         if (redirectOnFail) {
@@ -35,4 +33,3 @@ export async function getUserSession(redirectOnFail = false) {
 
     return session.user;
 }
-
