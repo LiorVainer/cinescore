@@ -27,7 +27,7 @@ export function ActorProfile({actor, userId}: ActorProfileProps) {
     return (
         <div className='flex flex-col items-center mb-6'>
             <div className='flex flex-col gap-4 items-center'>
-                <ActorImage src={actor.profilePath || undefined} alt={actor.name} className='w-30 rounded-lg'/>
+                <ActorImage src={actor.profilePath} alt={actor.name} className='w-30 rounded-lg'/>
 
                 <h2 className='text-2xl font-bold text-center mb-2'>{actor.name}</h2>
             </div>

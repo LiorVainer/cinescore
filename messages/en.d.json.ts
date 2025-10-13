@@ -44,7 +44,12 @@ declare const messages: {
     "backToMovie": "Back to Movie",
     "loading": "Loading actor details...",
     "errorLoading": "Failed to load actor details",
-    "biography": "Biography"
+    "biography": "Biography",
+    "credits": "Credits",
+    "title": "Title",
+    "character": "Character",
+    "releaseDate": "Release Date",
+    "unknown": "Unknown"
   },
   "filters": {
     "sortBy": "Sort by",
