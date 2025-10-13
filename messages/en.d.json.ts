@@ -40,7 +40,11 @@ declare const messages: {
   },
   "actor": {
     "notFound": "Actor Not Found",
-    "pageDescription": "View {name}'s profile and filmography"
+    "pageDescription": "View {name}'s profile and filmography",
+    "backToMovie": "Back to Movie",
+    "loading": "Loading actor details...",
+    "errorLoading": "Failed to load actor details",
+    "biography": "Biography"
   },
   "filters": {
     "sortBy": "Sort by",

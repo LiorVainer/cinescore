@@ -8,7 +8,7 @@
 'use client';
 
 import {useQueries, useQuery, useSuspenseQuery} from '@tanstack/react-query';
-import {dbActorDetailsOptions, tmdbActorDetailsOptions} from './query-options';
+import {dbActorDetailsOptions, actorFullDetailsOptions} from './query-options';
 
 /**
  * Hook to fetch a single actor by ID
@@ -21,9 +21,9 @@ export function useActorDetail(actorId: string, locale: string, options?: { enab
     });
 }
 
-export function useTmdbActorDetails(tmdbActorId: number, locale: string, options?: { enabled?: boolean }) {
+export function useActorFullDetails(tmdbActorId: number, locale: string, options?: { enabled?: boolean }) {
     return useQuery({
-        ...tmdbActorDetailsOptions(tmdbActorId, locale),
+        ...actorFullDetailsOptions(tmdbActorId, locale),
         enabled: options?.enabled ?? true,
     });
 }
@@ -53,7 +53,7 @@ export function useTmdbActorsDetails(
 ) {
     return useQueries({
         queries: tmdbActorIds.map((tmdbActorId) => ({
-            ...tmdbActorDetailsOptions(tmdbActorId, locale),
+            ...actorFullDetailsOptions(tmdbActorId, locale),
             enabled: options?.enabled ?? true,
         })),
     });
@@ -81,7 +81,7 @@ export function useTmdbActorsDetailsCombined(
 ) {
     return useQueries({
         queries: tmdbActorIds.map((tmdbActorId) => ({
-            ...tmdbActorDetailsOptions(tmdbActorId, locale),
+            ...actorFullDetailsOptions(tmdbActorId, locale),
             enabled: options?.enabled ?? true,
         })),
         combine: (results) => ({

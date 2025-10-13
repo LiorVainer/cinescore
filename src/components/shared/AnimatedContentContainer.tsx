@@ -71,7 +71,7 @@ export function AnimatedContentContainer({
 
 
     return (
-        <LayoutGroup>
+        <div className={`flex flex-col h-full ${variant === 'modal' ? 'rounded-xl' : ''}`}>
             {/* Shared background layer - syncs with drawer height changes */}
             <AnimatePresence mode='wait'>
                 {backgroundImageUrl && (
@@ -133,7 +133,7 @@ export function AnimatedContentContainer({
                             <motion.div
                                 layout
                                 ref={scrollContainerRef}
-                                className={scrollClassName}
+                                className={`h-full overflow-y-auto` /* Ensure proper scrolling */}
                                 transition={layoutTransition}
                             >
                                 <Suspense fallback={<DrawerLoadingFallback/>}>
@@ -173,7 +173,7 @@ export function AnimatedContentContainer({
                             <motion.div
                                 layout
                                 ref={scrollContainerRef}
-                                className={scrollClassName}
+                                className={`h-full ${scrollClassName}` /* Ensure proper scrolling */}
                                 transition={layoutTransition}
                             >
                                 <Suspense fallback={<DrawerLoadingFallback/>}>
@@ -184,6 +184,6 @@ export function AnimatedContentContainer({
                     )}
                 </AnimatePresence>
             </motion.div>
-        </LayoutGroup>
+        </div>
     );
 }

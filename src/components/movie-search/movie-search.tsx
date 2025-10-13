@@ -87,7 +87,7 @@ export default function MovieSearch() {
     const items = moviesData?.items ?? [];
 
     return (
-        <div className='h-full flex flex-col gap-4 p-2 lg:p-0 lg:py-8 overflow-y-auto'>
+        <div className='h-full flex flex-col gap-4 lg:py-8 overflow-y-auto'>
             <FilterBar
                 search={search}
                 onSearchChange={setSearch}
@@ -109,7 +109,7 @@ export default function MovieSearch() {
                     ))}
                 </div>
             ) : (
-                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 overflow-y-auto'>
+                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-8 overflow-y-auto'>
                     {items.map((movie) => (
                         <MovieCard ctaText={tMovie('details')} key={movie.id} movie={movie}/>
                     ))}

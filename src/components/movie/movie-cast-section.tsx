@@ -8,8 +8,9 @@ import {motion, Variants} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {useOverlayState} from '@/hooks/use-overlay-state';
 import {useQueryClient} from '@tanstack/react-query';
-import {tmdbActorDetailsOptions} from '@/lib/query/actor/query-options';
+import {actorFullDetailsOptions} from '@/lib/query/actor/query-options';
 import Image from 'next/image';
+import {ActorImage} from "@/components/actor/actor-image";
 
 type MovieCastSectionProps = {
     cast: MovieWithLanguageTranslation['cast'];
@@ -37,7 +38,7 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
     // Prefetch actor data on hover/touch to reduce loading time
     const handleActorHover = useCallback(
         (tmdbActorId: number) => {
-            void queryClient.prefetchQuery(tmdbActorDetailsOptions(tmdbActorId, locale));
+            void queryClient.prefetchQuery(actorFullDetailsOptions(tmdbActorId, locale));
         },
         [queryClient, locale],
     );
@@ -100,15 +101,10 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
                                 onMouseEnter={() => castMember.actor.tmdbId && handleActorHover(castMember.actor.tmdbId)}
                                 className='relative block text-xs overflow-hidden group rounded-lg cursor-pointer transition-transform hover:scale-105'
                             >
-                                <Image
+                                <ActorImage
                                     src={castMember.actor.profileUrl ?? '/window.svg'}
                                     alt={castMember.actor.name}
-                                    width={200}
-                                    height={300}
-                                    className='w-full aspect-2/3 object-cover object-center'
                                     loading={index < itemsPerRow ? 'eager' : 'lazy'}
-                                    quality={75}
-                                    sizes='(max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw'
                                 />
                                 <div
                                     className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>

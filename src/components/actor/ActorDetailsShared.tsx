@@ -2,6 +2,7 @@
 
 import {Badge} from '@/components/ui/badge';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+import {ActorImage} from '@/components/actor/actor-image';
 import {Separator} from '@/components/ui/separator';
 import {ActorFollowButton} from '@/components/follows/ActorFollowButton';
 import {FollowType} from '@prisma/client';
@@ -22,34 +23,27 @@ interface ActorProfileProps {
     userId?: string;
 }
 
-export function ActorProfile({ actor, userId }: ActorProfileProps) {
+export function ActorProfile({actor, userId}: ActorProfileProps) {
     return (
         <div className='flex flex-col items-center mb-6'>
-            <Avatar className='h-32 w-32 mb-4'>
-                <AvatarImage src={actor.profilePath || undefined} alt={actor.name} />
-                <AvatarFallback className='text-3xl'>
-                    {actor.name
-                        .split(' ')
-                        .map((n) => n[0])
-                        .join('')
-                        .toUpperCase()}
-                </AvatarFallback>
-            </Avatar>
+            <div className='flex flex-col gap-4 items-center'>
+                <ActorImage src={actor.profilePath || undefined} alt={actor.name} className='w-30 rounded-lg'/>
 
-            <h2 className='text-2xl font-bold text-center mb-2'>{actor.name}</h2>
+                <h2 className='text-2xl font-bold text-center mb-2'>{actor.name}</h2>
+            </div>
 
             {userId && (
                 <div className='mb-4 w-full'>
-                    <ActorFollowButton userId={userId} type={FollowType.ACTOR} value={actor.name} />
+                    <ActorFollowButton userId={userId} type={FollowType.ACTOR} value={actor.name}/>
                 </div>
             )}
 
-            <Separator className='my-4 w-full' />
+            <Separator className='my-4 w-full'/>
 
             <div className='space-y-3 w-full'>
                 {actor.birthday && (
                     <div className='flex items-center gap-2 text-sm'>
-                        <CalendarDays className='h-4 w-4 text-muted-foreground' />
+                        <CalendarDays className='h-4 w-4 text-muted-foreground'/>
                         <span>
                             {new Date(actor.birthday).toLocaleDateString('en-US', {
                                 year: 'numeric',
@@ -62,7 +56,7 @@ export function ActorProfile({ actor, userId }: ActorProfileProps) {
 
                 {actor.placeOfBirth && (
                     <div className='flex items-center gap-2 text-sm'>
-                        <MapPin className='h-4 w-4 text-muted-foreground' />
+                        <MapPin className='h-4 w-4 text-muted-foreground'/>
                         <span>{actor.placeOfBirth}</span>
                     </div>
                 )}
@@ -82,7 +76,7 @@ interface ActorBiographyProps {
     biography: string;
 }
 
-export function ActorBiography({ biography }: ActorBiographyProps) {
+export function ActorBiography({biography}: ActorBiographyProps) {
     return (
         <div className='mb-6'>
             <h3 className='text-lg font-semibold mb-2'>Biography</h3>
@@ -95,7 +89,7 @@ interface ActorFilmographyProps {
     movies: Movie[];
 }
 
-export function ActorFilmography({ movies }: ActorFilmographyProps) {
+export function ActorFilmography({movies}: ActorFilmographyProps) {
     return (
         <div>
             <h3 className='text-lg font-semibold mb-3'>
@@ -120,7 +114,7 @@ export function ActorFilmography({ movies }: ActorFilmographyProps) {
                                     />
                                 ) : (
                                     <div className='h-20 w-14 bg-muted rounded flex items-center justify-center'>
-                                        <Film className='h-6 w-6 text-muted-foreground' />
+                                        <Film className='h-6 w-6 text-muted-foreground'/>
                                     </div>
                                 )}
                             </div>
@@ -143,7 +137,7 @@ export function ActorFilmography({ movies }: ActorFilmographyProps) {
                 </div>
             ) : (
                 <div className='text-center py-8 text-muted-foreground'>
-                    <Film className='h-10 w-10 mx-auto mb-3 opacity-50' />
+                    <Film className='h-10 w-10 mx-auto mb-3 opacity-50'/>
                     <p className='text-sm'>No movies found for this actor.</p>
                 </div>
             )}

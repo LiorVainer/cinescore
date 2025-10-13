@@ -16,6 +16,7 @@ export function DesktopModal() {
     // Use the custom hook to handle all data fetching logic
     const {movieData, isLoadingMovie, actorProfilePath} = useOverlayContent();
 
+
     // Don't render on mobile (handled by MobileDrawer)
     if (isMobile) return null;
 

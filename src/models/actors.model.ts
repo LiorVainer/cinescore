@@ -1,8 +1,17 @@
-/**
- * Actor Details DTO
- * Represents actor information from external APIs in camelCase format
- */
-export type ActorDetailsDto = {
+export interface ActorCreditDto {
+    id: number;
+    title: string;
+    mediaType: 'movie' | 'tv';
+    character?: string | null;
+    releaseDate?: string | null;
+    poster?: string | null;
+    imdbId?: string | null;
+    imdbRating?: number | null;
+    imdbVotes?: number | null;
+    popularity?: number | null;
+}
+
+export interface ActorDetailsDto {
     id: number;
     imdbId: string | null;
     tmdbId: number;
@@ -13,5 +22,10 @@ export type ActorDetailsDto = {
     placeOfBirth: string | null;
     profilePath: string | null;
     popularity: number | null;
-};
+    knownForDepartment: string | null;
+    alsoKnownAs: string[];
+    homepage: string | null;
+    knownFor?: string[];
+    credits?: ActorCreditDto[];
+}
 

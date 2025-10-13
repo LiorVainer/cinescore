@@ -36,8 +36,17 @@
     "trailers": "טריילרים"
   },
   "actor": {
-    "notFound": "Actor Not Found",
-    "pageDescription": "View {name}'s profile and filmography"
+    "notFound": "שחקן לא נמצא",
+    "pageDescription": "צפה בפרופיל וקריירה של {name}",
+    "backToMovie": "חזרה לסרט",
+    "loading": "טוען פרטי שחקן...",
+    "errorLoading": "שגיאה בטעינת פרטי השחקן",
+    "biography": "ביוגרפיה",
+    "credits": "קרדיטים",
+    "title": "כותרת",
+    "character": "דמות",
+    "releaseDate": "תאריך יציאה",
+    "unknown": "לא ידוע"
   },
   "filters": {
     "sortBy": "מיין לפי",

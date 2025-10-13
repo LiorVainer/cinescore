@@ -35,7 +35,7 @@ export function MobileDrawer() {
 
     return (
         <Drawer open={isOpen} onOpenChange={(open) => !open && close()}>
-            <DrawerContent className='p-0 overflow-hidden'>
+            <DrawerContent className='p-0 overflow-y-hidden'>
                 {/* Add visually hidden title for accessibility */}
                 <VisuallyHidden asChild>
                     <DrawerTitle>

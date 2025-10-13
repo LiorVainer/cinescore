@@ -39,7 +39,6 @@ export function AppProviders({children}: { children: React.ReactNode }) {
                         <NuqsAdapter>
                             <MovieProvider>
                                 {children}
-                                <MobileDrawer/>
                             </MovieProvider>
                         </NuqsAdapter>
                     </ThemeProvider>
