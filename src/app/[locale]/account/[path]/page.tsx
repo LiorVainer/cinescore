@@ -1,4 +1,3 @@
-import {Suspense} from 'react';
 import {AccountView} from '@daveyplate/better-auth-ui';
 import {accountViewPaths} from '@daveyplate/better-auth-ui/server';
 
@@ -16,10 +15,9 @@ export default async function AccountPage({params}: AccountPageProps) {
     const {path} = await params;
 
     return (
-        <main className='container flex grow flex-col items-center justify-center self-center p-4 md:p-8 scrollable'>
-            <Suspense fallback={<div>Loading...</div>}>
-                <AccountView path={path}/>
-            </Suspense>
+        <main
+            className='container flex grow flex-col items-center justify-center self-center p-8 md:p-6 scrollable'>
+            <AccountView path={path}/>
         </main>
     );
 }
