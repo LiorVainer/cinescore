@@ -57,4 +57,35 @@ export class ActorsDAL {
             },
         });
     }
+
+    /**
+     * Fetches an actor by ID with translations and filmography
+     */
+    async findByIdWithMovies(actorId: string, language: Language, limit: number = 20) {
+        return this.prisma.actor.findUnique({
+            where: {id: actorId},
+            include: {
+                translations: {
+                    where: {language},
+                },
+                cast: {
+                    include: {
+                        movie: {
+                            include: {
+                                translations: {
+                                    where: {language},
+                                },
+                            },
+                        },
+                    },
+                    orderBy: {
+                        movie: {
+                            releaseDate: 'desc',
+                        },
+                    },
+                    take: limit,
+                },
+            },
+        });
+    }
 }

@@ -1,11 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, {useState} from 'react';
 import {Button} from '@/components/ui/button';
 import {useTranslations} from 'next-intl';
 import {useIsMobile} from '@/hooks/use-mobile';
 import {motion, Variants} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
+import {Link} from '@/i18n/navigation';
+import {useDrawerContent} from '@/contexts/drawer-content-context';
 
 type MovieCastSectionProps = {
     cast: MovieWithLanguageTranslation['cast'];
@@ -15,6 +17,7 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
     const t = useTranslations('movie');
     const isMobile = useIsMobile();
     const [showAllCast, setShowAllCast] = React.useState(false);
+    const {openActor} = useDrawerContent();
 
     if (!cast || cast.length === 0) {
         return null;
@@ -51,6 +54,13 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
         },
     };
 
+    const handleActorClick = (actorId: string, e: React.MouseEvent) => {
+        if (isMobile) {
+            e.preventDefault();
+            openActor(actorId);
+        }
+    };
+
     return (
         <div className='flex flex-col gap-2'>
             <h3 className='font-semibold text-sm'>{t('cast')}</h3>
@@ -64,21 +74,26 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
                     {displayedCast.map((castMember, index) => (
                         <motion.div
                             key={castMember.id}
-                            className='relative text-xs overflow-hidden group rounded-lg'
                             variants={cardVariants}
                             custom={index}
                         >
-                            <img
-                                src={castMember.actor.profileUrl ?? ''}
-                                alt={castMember.actor.name}
-                                className='w-full aspect-2/3 object-cover object-center'
-                            />
-                            <div
-                                className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
-                                <span className='font-medium text-white text-sm line-clamp-2'>
-                                    {castMember.actor.name}
-                                </span>
-                            </div>
+                            <Link
+                                href={`/actors/${castMember.actor.id}`}
+                                onClick={(e) => handleActorClick(castMember.actor.id, e)}
+                                className='relative block text-xs overflow-hidden group rounded-lg cursor-pointer transition-transform hover:scale-105'
+                            >
+                                <img
+                                    src={castMember.actor.profileUrl ?? ''}
+                                    alt={castMember.actor.name}
+                                    className='w-full aspect-2/3 object-cover object-center'
+                                />
+                                <div
+                                    className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
+                                    <span className='font-medium text-white text-sm line-clamp-2'>
+                                        {castMember.actor.name}
+                                    </span>
+                                </div>
+                            </Link>
                         </motion.div>
                     ))}
                 </motion.div>

@@ -7,7 +7,7 @@ import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import CollapsedMovieCard from './movie-card-collapsed';
 import ExpandedMovieCard from './movie-card-expanded';
 import {useIsMobile} from '@/hooks/use-mobile';
-import {Drawer, DrawerContent} from '@/components/ui/drawer';
+import {useDrawerContent} from '@/contexts/drawer-content-context';
 
 export type MovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -18,11 +18,17 @@ export type MovieCardProps = {
 
 export default function MovieCard({movie, className}: MovieCardProps) {
     const [active, setActive] = useState<boolean>(false);
+    const [shouldPreload, setShouldPreload] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
     const isMobile = useIsMobile();
+    const {openMovie} = useDrawerContent();
 
-    const imgSrc = movie.posterUrl || '/window.svg'; // Now uses posterUrl from translation
+    const imgSrc = movie.posterUrl || '/window.svg';
+
+    const handleInteractionStart = () => {
+        setShouldPreload(true);
+    };
 
     useEffect(() => {
         function onKeyDown(event: KeyboardEvent) {
@@ -31,7 +37,6 @@ export default function MovieCard({movie, className}: MovieCardProps) {
             }
         }
 
-        // Lock body scroll only for desktop modal; Drawer handles its own scroll lock
         if (!isMobile) {
             if (active) {
                 document.body.style.overflow = 'hidden';
@@ -46,25 +51,23 @@ export default function MovieCard({movie, className}: MovieCardProps) {
 
     useOutsideClick(ref, () => setActive(false));
 
+    const handleCardClick = () => {
+        if (isMobile) {
+            openMovie(movie, imgSrc, id);
+        } else {
+            setActive(true);
+        }
+    };
+
     return (
-        <>
-            {/* Expanded view: Desktop modal; Mobile bottom drawer */}
-            {isMobile ? (
-                <Drawer open={active} onOpenChange={setActive}>
-                    <DrawerContent className='p-0 max-h-[90vh] overflow-hidden'>
-                        <div className='overflow-y-auto max-h-full touch-pan-y'>
-                            <ExpandedMovieCard
-                                ref={ref}
-                                movie={movie}
-                                imgSrc={imgSrc}
-                                idSuffix={id}
-                                onClose={() => setActive(false)}
-                                variant='drawer'
-                            />
-                        </div>
-                    </DrawerContent>
-                </Drawer>
-            ) : (
+        <div
+            onMouseEnter={handleInteractionStart}
+            onTouchStart={handleInteractionStart}
+        >
+            {shouldPreload && <link rel="preload" as="image" href={imgSrc}/>}
+
+            {/* Desktop modal only */}
+            {!isMobile && (
                 <AnimatePresence>
                     {active ? (
                         <ExpandedMovieCard
@@ -84,8 +87,8 @@ export default function MovieCard({movie, className}: MovieCardProps) {
                 imgSrc={imgSrc}
                 idSuffix={id}
                 className={className}
-                onClickAction={() => setActive(true)}
+                onClickAction={handleCardClick}
             />
-        </>
+        </div>
     );
 }

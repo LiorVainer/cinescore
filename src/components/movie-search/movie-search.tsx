@@ -84,7 +84,7 @@ export default function MovieSearch() {
     const items = moviesData?.items ?? [];
 
     return (
-        <div className='h-full flex flex-col gap-4'>
+        <div className='h-full flex flex-col gap-4 py-8 overflow-y-auto'>
             <FilterBar
                 search={search}
                 onSearchChange={setSearch}

@@ -38,6 +38,10 @@ declare const messages: {
     "showLess": "Show Less",
     "trailers": "Trailers"
   },
+  "actor": {
+    "notFound": "Actor Not Found",
+    "pageDescription": "View {name}'s profile and filmography"
+  },
   "filters": {
     "sortBy": "Sort by",
     "genre": "Genre",

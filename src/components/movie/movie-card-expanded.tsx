@@ -45,98 +45,217 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                 ref={ref}
                 className={
                     variant === 'drawer'
-                        ? 'w-full flex flex-col lg:flex-row items-stretch rounded-t-xl'
-                        : 'w-[80vw] max-w-[80%] max-h-[80%] flex flex-col lg:flex-row items-stretch rounded-xl bg-background overflow-hidden'
+                        ? 'w-full flex flex-col items-stretch rounded-t-xl relative overflow-hidden'
+                        : 'w-[80vw] max-w-[80vw] max-h-[80vh] flex flex-col lg:flex-row items-stretch rounded-xl bg-background overflow-hidden'
                 }
             >
-                <motion.div
-                    layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.IMAGE(title, idSuffix) : undefined}
-                    className='shrink-0 bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center'
-                >
-                    <Image
-                        height={200}
-                        width={300}
-                        src={imgSrc}
-                        alt={title}
-                        className='w-full lg:min-w-[300px] aspect-[16/9] md:aspect-[2/3] rounded-tl-lg lg:rounded-r-lg lg:rounded-tl-none object-cover object-top'
-                    />
-                </motion.div>
+                {/* Background image with overlay - only for mobile/drawer variant */}
+                {variant === 'drawer' && (
+                    <div
+                        className='absolute inset-0 z-0'
+                        style={{
+                            backgroundImage: `url(${imgSrc})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            filter: 'blur(15px)',
+                            transform: 'scale(1.1)',
+                        }}
+                    >
+                        <div className='absolute inset-0 bg-background/80 dark:bg-background/80'/>
+                    </div>
+                )}
 
-                <div className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0 overflow-y-auto w-full'>
-                    <div className={`flex justify-between items-start gap-2`}>
-                        <div className='flex-1 flex flex-col min-w-0 gap-2'>
-                            <div className='flex flex-col gap-2'>
-                                <div className='flex justify-between gap-2 items-start'>
-                                    <div className='flex-1 min-w-0'>
-                                        <motion.h1
-                                            layoutId={
-                                                layoutIdEnabled
-                                                    ? MOVIERCARD_LAYOUT_ID_GENERATORS.TITLE(title, idSuffix)
-                                                    : undefined
-                                            }
-                                            className={`font-bold text-neutral-700 dark:text-neutral-200 truncate lg:text-xl leading-none`}
-                                            title={title}
-                                        >
-                                            {title}
-                                        </motion.h1>
-                                        {isLocaleLanguageDiffrentFromOriginal && originalLangLabel && (
-                                            <motion.p
-                                                layoutId={
-                                                    layoutIdEnabled
-                                                        ? MOVIERCARD_LAYOUT_ID_GENERATORS.ORIGINAL(title, idSuffix)
-                                                        : undefined
-                                                }
-                                                className={`text-neutral-500 dark:text-neutral-400 text-sm lg:text-base truncate`}
+                {/* Desktop modal layout - side by side */}
+                {variant === 'modal' && (
+                    <>
+                        <motion.div
+                            layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.IMAGE(title, idSuffix) : undefined}
+                            className='shrink-0 flex items-center justify-center relative overflow-hidden'
+                        >
+                            {/* Background image with overlay - only for desktop/modal variant */}
+                            <div
+                                className='absolute inset-0'
+                                style={{
+                                    backgroundImage: `url(${imgSrc})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    filter: 'blur(7px)',
+                                    transform: 'scale(1.1)',
+                                }}
+                            >
+                                <div className='absolute inset-0 bg-white/80 dark:bg-black/80'/>
+                            </div>
+
+                            {/* Main poster image */}
+                            <Image
+                                height={200}
+                                width={300}
+                                src={imgSrc}
+                                alt={title}
+                                className='w-full lg:min-w-[300px] aspect-[16/9] md:aspect-[2/3] rounded-tl-lg lg:rounded-r-lg lg:rounded-tl-none object-cover object-top relative z-10'
+                                priority
+                            />
+                        </motion.div>
+
+                        <div
+                            className='p-6 flex flex-col gap-2 lg:gap-4 flex-1 min-w-0 overflow-y-auto w-full relative z-10'>
+                            <div className={`flex justify-between items-start gap-2`}>
+                                <div className='flex-1 flex flex-col min-w-0 gap-2'>
+                                    <div className='flex flex-col gap-2'>
+                                        <div className='flex justify-between gap-2 items-start'>
+                                            <div className='flex-1 min-w-0'>
+                                                <motion.h1
+                                                    layoutId={
+                                                        layoutIdEnabled
+                                                            ? MOVIERCARD_LAYOUT_ID_GENERATORS.TITLE(title, idSuffix)
+                                                            : undefined
+                                                    }
+                                                    className={`font-bold text-neutral-700 dark:text-neutral-200 truncate lg:text-xl leading-none`}
+                                                    title={title}
+                                                >
+                                                    {title}
+                                                </motion.h1>
+                                                {isLocaleLanguageDiffrentFromOriginal && originalLangLabel && (
+                                                    <motion.p
+                                                        layoutId={
+                                                            layoutIdEnabled
+                                                                ? MOVIERCARD_LAYOUT_ID_GENERATORS.ORIGINAL(title, idSuffix)
+                                                                : undefined
+                                                        }
+                                                        className={`text-neutral-500 dark:text-neutral-400 text-sm lg:text-base truncate`}
+                                                    >
+                                                        {originalTitle} ({originalLangLabel})
+                                                    </motion.p>
+                                                )}
+                                            </div>
+                                            <Button
+                                                className='shrink-0 inline-flex cursor-pointer'
+                                                onClick={() => onClose()}
                                             >
-                                                {originalTitle} ({originalLangLabel})
-                                            </motion.p>
-                                        )}
+                                                <span>{t('close')}</span>
+                                            </Button>
+                                        </div>
+                                        <div className='flex flex-col items-start gap-4'>
+                                            <MovieGenres
+                                                genres={genres}
+                                                idSuffix={idSuffix}
+                                                layoutIdEnabled={layoutIdEnabled}
+                                            />
+                                            <MovieMeta
+                                                title={title}
+                                                idSuffix={idSuffix}
+                                                releaseDate={releaseDate}
+                                                showDate
+                                                className='flex flex-col'
+                                                layoutIdEnabled={layoutIdEnabled}
+                                            />
+                                        </div>
                                     </div>
-                                    {variant === 'modal' && (
-                                        <Button
-                                            className='shrink-0 inline-flex cursor-pointer'
-                                            onClick={() => onClose()}
-                                        >
-                                            <span>{t('close')}</span>
-                                        </Button>
-                                    )}
-                                </div>
-                                <div className='flex flex-col items-start gap-4'>
-                                    <MovieGenres
-                                        genres={genres}
-                                        idSuffix={idSuffix}
-                                        layoutIdEnabled={layoutIdEnabled}
-                                    />
-                                    <MovieMeta
-                                        title={title}
-                                        idSuffix={idSuffix}
-                                        releaseDate={releaseDate}
-                                        showDate
-                                        className='flex flex-col'
-                                        layoutIdEnabled={layoutIdEnabled}
-                                    />
                                 </div>
                             </div>
+
+                            <div className='flex flex-col gap-4'>
+                                <motion.p
+                                    className={`text-neutral-600 dark:text-neutral-400 text-sm lg:text-base`}
+                                    layoutId={
+                                        layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.DESCRIPTION(idSuffix) : undefined
+                                    }
+                                >
+                                    {movie.description}
+                                </motion.p>
+
+                                <MovieStats rating={rating} votes={votes} size='sm' className='mt-2'/>
+
+                                <MovieCastSection cast={cast}/>
+
+                                <MovieTrailersSection trailers={movie.trailers}/>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {/* Mobile drawer layout - poster in flex row with title/metadata */}
+                {variant === 'drawer' && (
+                    <div className='flex flex-col overflow-y-auto relative z-10'>
+                        {/* Top section: poster image + title/metadata in row */}
+                        <div className='flex flex-row gap-4 p-4'>
+
+                            {/* Title and metadata */}
+                            <div className='flex-1 min-w-0 flex flex-col gap-2'>
+                                <div className='flex-1 min-w-0 py-2'>
+                                    <motion.h1
+                                        layoutId={
+                                            layoutIdEnabled
+                                                ? MOVIERCARD_LAYOUT_ID_GENERATORS.TITLE(title, idSuffix)
+                                                : undefined
+                                        }
+                                        className={`font-bold text-neutral-700 dark:text-neutral-200 text-lg leading-tight mb-1`}
+                                        title={title}
+                                    >
+                                        {title}
+                                    </motion.h1>
+                                    {isLocaleLanguageDiffrentFromOriginal && originalLangLabel && (
+                                        <motion.p
+                                            layoutId={
+                                                layoutIdEnabled
+                                                    ? MOVIERCARD_LAYOUT_ID_GENERATORS.ORIGINAL(title, idSuffix)
+                                                    : undefined
+                                            }
+                                            className={`text-neutral-500 dark:text-neutral-400 text-sm`}
+                                        >
+                                            {originalTitle} ({originalLangLabel})
+                                        </motion.p>
+                                    )}
+                                </div>
+                                <MovieGenres
+                                    genres={genres}
+                                    idSuffix={idSuffix}
+                                    layoutIdEnabled={layoutIdEnabled}
+                                />
+                                <MovieMeta
+                                    title={title}
+                                    idSuffix={idSuffix}
+                                    releaseDate={releaseDate}
+                                    showDate
+                                    className='flex flex-col'
+                                    layoutIdEnabled={layoutIdEnabled}
+                                />
+                                <MovieStats rating={rating} votes={votes} size='sm'/>
+
+                                {/* Poster image - portrait 2/3 aspect ratio */}
+                            </div>
+                            <motion.div
+                                layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.IMAGE(title, idSuffix) : undefined}
+                                className='shrink-0'
+                            >
+                                <Image
+                                    height={240}
+                                    width={160}
+                                    src={imgSrc}
+                                    alt={title}
+                                    className='w-32 aspect-[2/3] rounded-lg object-cover object-top'
+                                    priority
+                                />
+                            </motion.div>
+                        </div>
+
+                        {/* Bottom section: description, cast, trailers */}
+                        <div className='flex flex-col gap-4 px-4 pb-4'>
+                            <motion.p
+                                className={`text-neutral-600 dark:text-neutral-400 text-sm`}
+                                layoutId={
+                                    layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.DESCRIPTION(idSuffix) : undefined
+                                }
+                            >
+                                {movie.description}
+                            </motion.p>
+
+                            <MovieCastSection cast={cast}/>
+
+                            <MovieTrailersSection trailers={movie.trailers}/>
                         </div>
                     </div>
-
-                    <div className='flex flex-col gap-4'>
-                        <motion.p
-                            className={`text-neutral-600 dark:text-neutral-400 text-sm lg:text-base`}
-                            layoutId={
-                                layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.DESCRIPTION(idSuffix) : undefined
-                            }
-                        >
-                            {movie.description}
-                        </motion.p>
-
-                        <MovieStats rating={rating} votes={votes} size='sm' className='mt-2'/>
-
-                        <MovieCastSection cast={cast}/>
-
-                        <MovieTrailersSection trailers={movie.trailers}/>
-                    </div>
-                </div>
+                )}
             </motion.div>
         );
 

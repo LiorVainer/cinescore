@@ -35,6 +35,10 @@
     "showLess": "הצג פחות",
     "trailers": "טריילרים"
   },
+  "actor": {
+    "notFound": "Actor Not Found",
+    "pageDescription": "View {name}'s profile and filmography"
+  },
   "filters": {
     "sortBy": "מיין לפי",
     "genre": "ז'אנר",

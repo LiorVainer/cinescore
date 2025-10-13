@@ -10,20 +10,14 @@ import {HebrewAuthLocalization} from '@/constants/auth.const';
 import {Link, useRouter} from '@/i18n/navigation';
 import {useLocale} from 'next-intl';
 import {Direction} from "radix-ui";
+import {getQueryClient} from '@/lib/query/query-client';
+import {DrawerContentProvider} from '@/contexts/drawer-content-context';
+import {UnifiedDrawer} from '@/components/shared/UnifiedDrawer';
 
 export function AppProviders({children}: { children: React.ReactNode }) {
     const locale = useLocale();
     const router = useRouter();
-    const [queryClient] = useState(
-        () =>
-            new QueryClient({
-                defaultOptions: {
-                    queries: {
-                        staleTime: 60 * 1000,
-                    },
-                },
-            })
-    );
+    const queryClient = getQueryClient();
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -48,7 +42,12 @@ export function AppProviders({children}: { children: React.ReactNode }) {
                         enableSystem
                         disableTransitionOnChange
                     >
-                        <NuqsAdapter>{children}</NuqsAdapter>
+                        <NuqsAdapter>
+                            <DrawerContentProvider>
+                                {children}
+                                <UnifiedDrawer/>
+                            </DrawerContentProvider>
+                        </NuqsAdapter>
                     </ThemeProvider>
                 </AuthUIProvider>
                 {/*<ReactQueryDevtools initialIsOpen={false}/>*/}

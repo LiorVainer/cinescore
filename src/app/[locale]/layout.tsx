@@ -74,7 +74,7 @@ export default async function LocaleLayout({
             <AppProviders>
                 <AppNavbar/>
                 <div style={{paddingTop: '3.25rem'}}
-                     className='h-screen'>{children}</div>
+                     className='h-screen lg:px-[10%]'>{children}</div>
             </AppProviders>
         </NextIntlClientProvider>
         </body>
