@@ -12,8 +12,7 @@ export async function getMovieById(movieId: string, locale: string): Promise<Mov
     const language: Language = mapLocaleToLanguage(locale);
     const dal = getDal();
 
-    const movie = await dal.movies.findByIdWithTranslations(movieId, language);
+    const movie = await dal.movies.findByIdWithLanguageTranslation(movieId, language);
 
     return movie;
 }
-

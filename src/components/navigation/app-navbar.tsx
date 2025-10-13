@@ -1,15 +1,16 @@
 'use client';
-import { ModeToggle } from '@/components/mode-toggle';
-import { LanguageToggle } from '@/components/navigation/language-toggle';
-import { SignedIn, SignedOut } from '@daveyplate/better-auth-ui';
-import { MobileNav, MobileNavHeader, Navbar, NavBody } from '@/components/ui/resizable-navbar';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Button } from '@/components/ui/button';
-import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
-import { NavbarLogo } from './navbar-logo';
-import { LogIn } from 'lucide-react';
-import { UserButton } from '@/components/auth/user-button';
+import {Suspense} from 'react';
+import {ModeToggle} from '@/components/mode-toggle';
+import {LanguageToggle} from '@/components/navigation/language-toggle';
+import {SignedIn, SignedOut} from '@daveyplate/better-auth-ui';
+import {MobileNav, MobileNavHeader, Navbar, NavBody} from '@/components/ui/resizable-navbar';
+import {useIsMobile} from '@/hooks/use-mobile';
+import {Button} from '@/components/ui/button';
+import {useTranslations} from 'next-intl';
+import {Link} from '@/i18n/navigation';
+import {NavbarLogo} from './navbar-logo';
+import {LogIn} from 'lucide-react';
+import {UserButton} from '@/components/auth/user-button';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
@@ -43,19 +44,24 @@ export const NavbarContent = () => {
                     <ModeToggle />
                     <LanguageToggle />
                 </div>
-                <SignedIn>
-                    <UserButton />
-                </SignedIn>
+                <Suspense fallback={
+                    <div className='w-20 h-9 bg-muted rounded-full animate-pulse'></div>
+                }>
+                    <SignedIn>
+                        <UserButton />
+                    </SignedIn>
 
-                <SignedOut>
-                    <Link href='/auth/sign-in'>
-                        <Button size='sm' className='rounded-full font-semibold'>
-                            <LogIn className='sm:hidden size-4' />
-                            <span className='hidden sm:inline'>{t('signIn')}</span>
-                        </Button>
-                    </Link>
-                </SignedOut>
+                    <SignedOut>
+                        <Link href='/auth/sign-in'>
+                            <Button size='sm' className='rounded-full font-semibold'>
+                                <LogIn className='sm:hidden size-4' />
+                                <span className='hidden sm:inline'>{t('signIn')}</span>
+                            </Button>
+                        </Link>
+                    </SignedOut>
+                </Suspense>
             </div>
         </nav>
     );
 };
+

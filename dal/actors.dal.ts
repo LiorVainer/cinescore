@@ -1,4 +1,4 @@
-import {PrismaClient, Language, Prisma} from "@prisma/client";
+import {Language, Prisma, PrismaClient} from "@prisma/client";
 
 export class ActorsDAL {
     constructor(private prisma: PrismaClient) {
@@ -54,6 +54,18 @@ export class ActorsDAL {
                 actor: {connect: {id: actorId}},
                 character: data.character ?? null,
                 order: data.order ?? null,
+            },
+        });
+    }
+
+    /**
+     * Fetches an actor by ID with all translations
+     */
+    async findByIdWithTranslations(actorId: string) {
+        return this.prisma.actor.findUnique({
+            where: {id: actorId},
+            include: {
+                translations: true,
             },
         });
     }
