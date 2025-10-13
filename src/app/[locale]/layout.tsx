@@ -7,6 +7,9 @@ import '../globals.css';
 import {AppProviders} from '../providers';
 import {AppNavbar} from '@/components/navigation/app-navbar';
 import {routing} from '@/i18n/routing';
+import {DesktopModal} from '@/components/shared/DesktopModal';
+import {MobileDrawer} from '@/components/shared/MobileDrawer';
+import {LayoutGroup} from 'motion/react';
 
 // Force dynamic rendering for all pages under this layout
 // This is required because the AppNavbar uses auth components that rely on useSearchParams()
@@ -71,10 +74,16 @@ export default async function LocaleLayout({
             // messages={messages}
         >
             <AppProviders>
-                <AppNavbar/>
-                <div style={{paddingTop: '3.25rem'}} className='h-screen lg:px-[10%]'>
-                    {children}
-                </div>
+                {/* Wrap entire app in LayoutGroup to enable shared layout animations */}
+                <LayoutGroup>
+                    <AppNavbar/>
+                    <div style={{paddingTop: '3.25rem'}} className='h-screen lg:px-[10%]'>
+                        {children}
+                    </div>
+                    {/* Render modals once at app level */}
+                    <DesktopModal/>
+                    <MobileDrawer/>
+                </LayoutGroup>
             </AppProviders>
         </NextIntlClientProvider>
         </body>

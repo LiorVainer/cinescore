@@ -1,30 +1,33 @@
 'use client';
 
-import { motion } from 'motion/react';
-import type { MovieWithLanguageTranslation } from '@/models/movies.model';
-import { MovieGenres } from '@/components/movie/movie-genres';
+import {motion, AnimatePresence} from 'motion/react';
+import type {MovieWithLanguageTranslation} from '@/models/movies.model';
+import {MovieGenres} from '@/components/movie/movie-genres';
 import React from 'react';
 import Image from 'next/image';
-import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
+import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
 import MovieStats from '@/components/movie/MovieStats';
-import { MovieMeta } from '@/components/movie/MovieMeta';
+import {MovieMeta} from '@/components/movie/MovieMeta';
+import {BackgroundImageTransition} from "@/components/shared/AnimatedContentContainer";
 
 export type CollapsedMovieCardProps = {
     movie: MovieWithLanguageTranslation;
     imgSrc: string;
     idSuffix: string; // from useId()
     className?: string;
+    containerClassName?: string;
     onClickAction: () => void; // open handler (renamed for Next.js client props rule)
 };
 
 export default function CollapsedMovieCard({
-    imgSrc,
-    idSuffix,
-    movie,
-    className,
-    onClickAction,
-}: CollapsedMovieCardProps) {
-    const { title, releaseDate, rating, votes } = movie;
+                                               imgSrc,
+                                               idSuffix,
+                                               movie,
+                                               className,
+                                               containerClassName,
+                                               onClickAction,
+                                           }: CollapsedMovieCardProps) {
+    const {title, releaseDate, rating, votes} = movie;
 
     return (
         <motion.div
@@ -32,13 +35,39 @@ export default function CollapsedMovieCard({
             key={`card-${title}-${idSuffix}`}
             onClick={onClickAction}
             className={[
-                'flex justify-between items-stretch hover:bg-muted  rounded-xl cursor-pointer border overflow-hidden',
+                'flex justify-between items-stretch hover:bg-muted rounded-xl cursor-pointer border shadow overflow-hidden relative',
                 className,
             ]
                 .filter(Boolean)
                 .join(' ')}
         >
-            <div className='flex w-full items-stretch'>
+            {/* Background image layer */}
+            <AnimatePresence mode='wait'>
+                {imgSrc && (
+                    <motion.div
+                        key={`bg-${idSuffix}`}
+                        className={`absolute inset-0 z-0 overflow-hidden rounded-xl ${containerClassName}`}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
+                        transition={BackgroundImageTransition}
+                    >
+                        <motion.img
+                            src={imgSrc}
+                            alt=''
+                            className='w-full h-full object-cover'
+                            style={{
+                                filter: 'blur(15px)',
+                                transform: 'scale(1.1)',
+                            }}
+                        />
+                        <div className='absolute inset-0 bg-background/80 dark:bg-background/80'/>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Content layer */}
+            <div className='flex w-full items-stretch relative z-10'>
                 <motion.div layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.IMAGE(title, idSuffix)} className='shrink-0'>
                     <Image
                         height={200}
@@ -63,12 +92,12 @@ export default function CollapsedMovieCard({
                                 {title}
                             </motion.h3>
                         </div>
-                        <MovieGenres genres={movie.genres} idSuffix={idSuffix} />
-                        <MovieMeta title={title} idSuffix={idSuffix} releaseDate={releaseDate} />
+                        <MovieGenres genres={movie.genres} idSuffix={idSuffix}/>
+                        <MovieMeta title={title} idSuffix={idSuffix} releaseDate={releaseDate}/>
                     </div>
 
                     <motion.div layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.DESCRIPTION(idSuffix)}>
-                        <MovieStats rating={rating} votes={votes} size='sm' />
+                        <MovieStats rating={rating} votes={votes} size='sm'/>
                     </motion.div>
                 </div>
             </div>

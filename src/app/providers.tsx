@@ -10,10 +10,10 @@ import {Link, useRouter} from '@/i18n/navigation';
 import {useLocale} from 'next-intl';
 import {Direction} from 'radix-ui';
 import {getQueryClient} from '@/lib/query/query-client';
-import {UnifiedDrawer} from '@/components/shared/UnifiedDrawer';
+import {MobileDrawer} from '@/components/shared/MobileDrawer';
 import {MovieProvider} from '@/contexts/movie-context';
 
-export function AppProviders({ children }: { children: React.ReactNode }) {
+export function AppProviders({children}: { children: React.ReactNode }) {
     const locale = useLocale();
     const router = useRouter();
     const queryClient = getQueryClient();
@@ -39,7 +39,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
                         <NuqsAdapter>
                             <MovieProvider>
                                 {children}
-                                <UnifiedDrawer />
+                                <MobileDrawer/>
                             </MovieProvider>
                         </NuqsAdapter>
                     </ThemeProvider>

@@ -1,13 +1,11 @@
 'use client';
 
 import React, {useEffect, useId, useRef, useState} from 'react';
-import {AnimatePresence} from 'motion/react';
 import {useOutsideClick} from '@/hooks/use-outside-click';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import CollapsedMovieCard from './movie-card-collapsed';
-import ExpandedMovieCard from './movie-card-expanded';
 import {useIsMobile} from '@/hooks/use-mobile';
-import {useDrawerState} from '@/hooks/use-drawer-state';
+import {useOverlayState} from '@/hooks/use-overlay-state';
 
 export type MovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -16,13 +14,13 @@ export type MovieCardProps = {
     className?: string;
 };
 
-export default function MovieCard({ movie, className }: MovieCardProps) {
+export default function MovieCard({movie, className}: MovieCardProps) {
     const [active, setActive] = useState<boolean>(false);
     const [shouldPreload, setShouldPreload] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
     const isMobile = useIsMobile();
-    const { openMovie } = useDrawerState();
+    const {openMovie} = useOverlayState();
 
     const imgSrc = movie.posterUrl || '/window.svg';
 
@@ -52,32 +50,12 @@ export default function MovieCard({ movie, className }: MovieCardProps) {
     useOutsideClick(ref, () => setActive(false));
 
     const handleCardClick = () => {
-        if (isMobile) {
-            openMovie(movie.id, movie);
-        } else {
-            setActive(true);
-        }
+        void openMovie(movie.id, movie);
     };
 
     return (
         <div onMouseEnter={handleInteractionStart} onTouchStart={handleInteractionStart}>
-            {shouldPreload && <link rel='preload' as='image' href={imgSrc} />}
-
-            {/* Desktop modal only */}
-            {!isMobile && (
-                <AnimatePresence>
-                    {active ? (
-                        <ExpandedMovieCard
-                            ref={ref}
-                            movie={movie}
-                            imgSrc={imgSrc}
-                            idSuffix={id}
-                            onClose={() => setActive(false)}
-                            variant='modal'
-                        />
-                    ) : null}
-                </AnimatePresence>
-            )}
+            {shouldPreload && <link rel='preload' as='image' href={imgSrc}/>}
 
             <CollapsedMovieCard
                 movie={movie}

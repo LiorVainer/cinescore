@@ -5,19 +5,19 @@ import {useCallback} from 'react';
 import {useMovieContext} from '@/contexts/movie-context';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 
-type DrawerContentType = 'movie' | 'actor';
+type OverlayContentType = 'movie' | 'actor';
 
-const drawerParsers = {
-    drawerType: parseAsStringEnum<DrawerContentType>(['movie', 'actor']),
+const overlayParsers = {
+    entityType: parseAsStringEnum<OverlayContentType>(['movie', 'actor']),
     movieId: parseAsString,
-    tmdbActorId: parseAsString,
+    actorId: parseAsString,
 };
 
-interface UseDrawerStateReturn {
+interface UseOverlayStateReturn {
     isOpen: boolean;
-    drawerType: DrawerContentType | null;
+    entityType: OverlayContentType | null;
     movieId: string | null;
-    tmdbActorId: string | null;
+    actorId: string | null;
     currentMovie: MovieWithLanguageTranslation | null;
     openMovie: (movieId: string, movieData?: MovieWithLanguageTranslation) => Promise<URLSearchParams>;
     openActor: (tmdbActorId: string) => Promise<URLSearchParams>;
@@ -29,14 +29,14 @@ interface UseDrawerStateReturn {
  * Replaces the DrawerContentContext with URL-based state management
  * Also manages movie context data for initial data optimization
  */
-export function useDrawerState(): UseDrawerStateReturn {
-    const [state, setState] = useQueryStates(drawerParsers, {
+export function useOverlayState(): UseOverlayStateReturn {
+    const [state, setState] = useQueryStates(overlayParsers, {
         history: 'push',
         shallow: true,
     });
     const {currentMovie, setCurrentMovie} = useMovieContext();
 
-    const isOpen = state.drawerType !== null;
+    const isOpen = state.entityType !== null;
 
     const openMovie = useCallback(
         (movieId: string, movieData?: MovieWithLanguageTranslation) => {
@@ -45,9 +45,9 @@ export function useDrawerState(): UseDrawerStateReturn {
                 setCurrentMovie(movieData);
             }
             return setState({
-                drawerType: 'movie',
+                entityType: 'movie',
                 movieId,
-                tmdbActorId: null,
+                actorId: null,
             });
         },
         [setState, setCurrentMovie],
@@ -56,9 +56,8 @@ export function useDrawerState(): UseDrawerStateReturn {
     const openActor = useCallback(
         (tmdbActorId: string) => {
             return setState({
-                drawerType: 'actor',
-                tmdbActorId,
-                // Keep movieId to allow going back
+                entityType: 'actor',
+                actorId: tmdbActorId,
             });
         },
         [setState],
@@ -68,17 +67,17 @@ export function useDrawerState(): UseDrawerStateReturn {
         // Clear movie context when closing
         setCurrentMovie(null);
         return setState({
-            drawerType: null,
+            entityType: null,
             movieId: null,
-            tmdbActorId: null,
+            actorId: null,
         });
     }, [setState, setCurrentMovie]);
 
     return {
         isOpen,
-        drawerType: state.drawerType,
+        entityType: state.entityType,
         movieId: state.movieId,
-        tmdbActorId: state.tmdbActorId,
+        actorId: state.actorId,
         currentMovie,
         openMovie,
         openActor,

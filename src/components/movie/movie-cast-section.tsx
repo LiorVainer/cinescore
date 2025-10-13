@@ -6,8 +6,7 @@ import {useLocale, useTranslations} from 'next-intl';
 import {useIsMobile} from '@/hooks/use-mobile';
 import {motion, Variants} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {Link} from '@/i18n/navigation';
-import {useDrawerState} from '@/hooks/use-drawer-state';
+import {useOverlayState} from '@/hooks/use-overlay-state';
 import {useQueryClient} from '@tanstack/react-query';
 import {tmdbActorDetailsOptions} from '@/lib/query/actor/query-options';
 import Image from 'next/image';
@@ -16,33 +15,31 @@ type MovieCastSectionProps = {
     cast: MovieWithLanguageTranslation['cast'];
 };
 
-export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
+export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
     const t = useTranslations('movie');
     const isMobile = useIsMobile();
     const locale = useLocale();
     const [showAllCast, setShowAllCast] = React.useState(false);
-    const { openActor } = useDrawerState();
+    const {openActor} = useOverlayState();
     const queryClient = useQueryClient();
 
-    // Memoize event handlers to prevent recreating on every render
+    // Handle actor click for both mobile and desktop
     const handleActorClick = useCallback(
         (tmdbActorId: number | null, e: React.MouseEvent) => {
-            if (isMobile && tmdbActorId) {
+            if (tmdbActorId) {
                 e.preventDefault();
                 openActor(tmdbActorId.toString());
             }
         },
-        [isMobile, openActor],
+        [openActor],
     );
 
     // Prefetch actor data on hover/touch to reduce loading time
     const handleActorHover = useCallback(
         (tmdbActorId: number) => {
-            if (isMobile) {
-                void queryClient.prefetchQuery(tmdbActorDetailsOptions(tmdbActorId, locale));
-            }
+            void queryClient.prefetchQuery(tmdbActorDetailsOptions(tmdbActorId, locale));
         },
-        [isMobile, queryClient, locale],
+        [queryClient, locale],
     );
 
     const toggleShowAll = useCallback(() => {
@@ -64,7 +61,7 @@ export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
         hidden: {},
         visible: {
             transition: {
-                staggerChildren: 0.04, // Reduced from 0.08 for faster animation
+                staggerChildren: 0.04,
             },
         },
     };
@@ -79,7 +76,7 @@ export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.25, // Reduced from 0.4 for snappier feel
+                duration: 0.25,
                 ease: [0.4, 0, 0.2, 1],
             },
         },
@@ -97,8 +94,7 @@ export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
                 >
                     {displayedCast.map((castMember, index) => (
                         <motion.div key={castMember.id} variants={cardVariants} custom={index}>
-                            <Link
-                                href={`/actors/${castMember.actor.id}`}
+                            <div
                                 onClick={(e) => handleActorClick(castMember.actor.tmdbId, e)}
                                 onTouchStart={() => castMember.actor.tmdbId && handleActorHover(castMember.actor.tmdbId)}
                                 onMouseEnter={() => castMember.actor.tmdbId && handleActorHover(castMember.actor.tmdbId)}
@@ -114,12 +110,13 @@ export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
                                     quality={75}
                                     sizes='(max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw'
                                 />
-                                <div className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
+                                <div
+                                    className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
                                     <span className='font-medium text-white text-sm line-clamp-2'>
                                         {castMember.actor.name}
                                     </span>
                                 </div>
-                            </Link>
+                            </div>
                         </motion.div>
                     ))}
                 </motion.div>

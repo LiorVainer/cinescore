@@ -18,10 +18,10 @@ interface ActorDetailDrawerProps {
     onOpenChange: (open: boolean) => void;
 }
 
-export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailDrawerProps) {
+export function ActorDetailsOverlay({actorId, open, onOpenChange}: ActorDetailDrawerProps) {
     const locale = useLocale();
-    const { data: actor, isLoading, error } = useActorDetail(actorId || '', locale);
-    const { data: session } = authClient.useSession();
+    const {data: actor, isLoading, error} = useActorDetail(actorId || '', locale);
+    const {data: session} = authClient.useSession();
 
     if (!actorId) return null;
 
@@ -32,7 +32,7 @@ export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailD
                     {/* Loading State */}
                     {isLoading && (
                         <div className='flex flex-col items-center justify-center py-12'>
-                            <Loader2 className='h-8 w-8 animate-spin text-muted-foreground mb-2' />
+                            <Loader2 className='h-8 w-8 animate-spin text-muted-foreground mb-2'/>
                             <p className='text-sm text-muted-foreground'>Loading actor details...</p>
                         </div>
                     )}
@@ -51,7 +51,7 @@ export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailD
                             <div className='flex flex-col items-center mb-6'>
                                 {/* Avatar */}
                                 <Avatar className='h-32 w-32 mb-4'>
-                                    <AvatarImage src={actor.profileUrl || undefined} alt={actor.name} />
+                                    <AvatarImage src={actor.profileUrl || undefined} alt={actor.name}/>
                                     <AvatarFallback className='text-3xl'>
                                         {actor.name
                                             .split(' ')
@@ -75,13 +75,13 @@ export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailD
                                     </div>
                                 )}
 
-                                <Separator className='my-4 w-full' />
+                                <Separator className='my-4 w-full'/>
 
                                 {/* Actor Details */}
                                 <div className='space-y-3 w-full'>
                                     {actor.birthday && (
                                         <div className='flex items-center gap-2 text-sm'>
-                                            <CalendarDays className='h-4 w-4 text-muted-foreground' />
+                                            <CalendarDays className='h-4 w-4 text-muted-foreground'/>
                                             <span>
                                                 {new Date(actor.birthday).toLocaleDateString('en-US', {
                                                     year: 'numeric',
@@ -94,14 +94,14 @@ export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailD
 
                                     {actor.placeOfBirth && (
                                         <div className='flex items-center gap-2 text-sm'>
-                                            <MapPin className='h-4 w-4 text-muted-foreground' />
+                                            <MapPin className='h-4 w-4 text-muted-foreground'/>
                                             <span>{actor.placeOfBirth}</span>
                                         </div>
                                     )}
 
                                     {actor.movies && (
                                         <div className='flex items-center gap-2 text-sm'>
-                                            <Film className='h-4 w-4 text-muted-foreground' />
+                                            <Film className='h-4 w-4 text-muted-foreground'/>
                                             <span>{actor.movies.length} Movies</span>
                                         </div>
                                     )}
@@ -142,8 +142,9 @@ export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailD
                                                         className='h-20 w-14 object-cover rounded'
                                                     />
                                                 ) : (
-                                                    <div className='h-20 w-14 bg-muted rounded flex items-center justify-center'>
-                                                        <Film className='h-6 w-6 text-muted-foreground' />
+                                                    <div
+                                                        className='h-20 w-14 bg-muted rounded flex items-center justify-center'>
+                                                        <Film className='h-6 w-6 text-muted-foreground'/>
                                                     </div>
                                                 )}
                                             </div>
@@ -169,7 +170,7 @@ export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailD
                                 {/* Empty State */}
                                 {(!actor.movies || actor.movies.length === 0) && (
                                     <div className='text-center py-8 text-muted-foreground'>
-                                        <Film className='h-10 w-10 mx-auto mb-3 opacity-50' />
+                                        <Film className='h-10 w-10 mx-auto mb-3 opacity-50'/>
                                         <p className='text-sm'>No movies found for this actor.</p>
                                     </div>
                                 )}
