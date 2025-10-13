@@ -7,9 +7,9 @@ import {useIsMobile} from '@/hooks/use-mobile';
 import {motion, Variants} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {Link} from '@/i18n/navigation';
-import {useDrawerContent} from '@/contexts/drawer-content-context';
+import {useDrawerState} from '@/hooks/use-drawer-state';
 import {useQueryClient} from '@tanstack/react-query';
-import {actorDetailOptions} from '@/lib/query/actor/query-options';
+import {tmdbActorDetailsOptions} from '@/lib/query/actor/query-options';
 import Image from 'next/image';
 
 type MovieCastSectionProps = {
@@ -21,15 +21,15 @@ export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
     const isMobile = useIsMobile();
     const locale = useLocale();
     const [showAllCast, setShowAllCast] = React.useState(false);
-    const { openActor } = useDrawerContent();
+    const { openActor } = useDrawerState();
     const queryClient = useQueryClient();
 
     // Memoize event handlers to prevent recreating on every render
     const handleActorClick = useCallback(
-        (actorId: string, e: React.MouseEvent) => {
-            if (isMobile) {
+        (tmdbActorId: number | null, e: React.MouseEvent) => {
+            if (isMobile && tmdbActorId) {
                 e.preventDefault();
-                openActor(actorId);
+                openActor(tmdbActorId.toString());
             }
         },
         [isMobile, openActor],
@@ -37,9 +37,9 @@ export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
 
     // Prefetch actor data on hover/touch to reduce loading time
     const handleActorHover = useCallback(
-        (actorId: string) => {
+        (tmdbActorId: number) => {
             if (isMobile) {
-                void queryClient.prefetchQuery(actorDetailOptions(actorId, locale));
+                void queryClient.prefetchQuery(tmdbActorDetailsOptions(tmdbActorId, locale));
             }
         },
         [isMobile, queryClient, locale],
@@ -99,9 +99,9 @@ export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
                         <motion.div key={castMember.id} variants={cardVariants} custom={index}>
                             <Link
                                 href={`/actors/${castMember.actor.id}`}
-                                onClick={(e) => handleActorClick(castMember.actor.id, e)}
-                                onTouchStart={() => handleActorHover(castMember.actor.id)}
-                                onMouseEnter={() => handleActorHover(castMember.actor.id)}
+                                onClick={(e) => handleActorClick(castMember.actor.tmdbId, e)}
+                                onTouchStart={() => castMember.actor.tmdbId && handleActorHover(castMember.actor.tmdbId)}
+                                onMouseEnter={() => castMember.actor.tmdbId && handleActorHover(castMember.actor.tmdbId)}
                                 className='relative block text-xs overflow-hidden group rounded-lg cursor-pointer transition-transform hover:scale-105'
                             >
                                 <Image

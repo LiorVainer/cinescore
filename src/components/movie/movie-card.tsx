@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useId, useRef, useState } from 'react';
-import { AnimatePresence } from 'motion/react';
-import { useOutsideClick } from '@/hooks/use-outside-click';
-import type { MovieWithLanguageTranslation } from '@/models/movies.model';
+import React, {useEffect, useId, useRef, useState} from 'react';
+import {AnimatePresence} from 'motion/react';
+import {useOutsideClick} from '@/hooks/use-outside-click';
+import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import CollapsedMovieCard from './movie-card-collapsed';
 import ExpandedMovieCard from './movie-card-expanded';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { useDrawerContent } from '@/contexts/drawer-content-context';
+import {useIsMobile} from '@/hooks/use-mobile';
+import {useDrawerState} from '@/hooks/use-drawer-state';
 
 export type MovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -22,7 +22,7 @@ export default function MovieCard({ movie, className }: MovieCardProps) {
     const ref = useRef<HTMLDivElement>(null);
     const id = useId();
     const isMobile = useIsMobile();
-    const { openMovie } = useDrawerContent();
+    const { openMovie } = useDrawerState();
 
     const imgSrc = movie.posterUrl || '/window.svg';
 
@@ -53,7 +53,7 @@ export default function MovieCard({ movie, className }: MovieCardProps) {
 
     const handleCardClick = () => {
         if (isMobile) {
-            openMovie(movie, imgSrc, id);
+            openMovie(movie.id, movie);
         } else {
             setActive(true);
         }

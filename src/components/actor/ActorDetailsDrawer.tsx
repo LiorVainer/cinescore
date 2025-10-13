@@ -1,16 +1,16 @@
 'use client';
 
-import { Drawer, DrawerContent } from '@/components/ui/drawer';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { ActorFollowButton } from '@/components/follows/ActorFollowButton';
-import { FollowType } from '@prisma/client';
-import { CalendarDays, MapPin, Film, Loader2 } from 'lucide-react';
+import {Drawer, DrawerContent} from '@/components/ui/drawer';
+import {Badge} from '@/components/ui/badge';
+import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+import {Separator} from '@/components/ui/separator';
+import {ActorFollowButton} from '@/components/follows/ActorFollowButton';
+import {FollowType} from '@prisma/client';
+import {CalendarDays, Film, Loader2, MapPin} from 'lucide-react';
 import Link from 'next/link';
-import { useActorDetail } from '@/lib/query/actor/hooks';
-import { useLocale } from 'next-intl';
-import { authClient } from '@/lib/auth-client';
+import {useActorDetail} from '@/lib/query/actor/hooks';
+import {useLocale} from 'next-intl';
+import {authClient} from '@/lib/auth-client';
 
 interface ActorDetailDrawerProps {
     actorId: string | null;
@@ -18,7 +18,7 @@ interface ActorDetailDrawerProps {
     onOpenChange: (open: boolean) => void;
 }
 
-export function ActorDetailDrawer({ actorId, open, onOpenChange }: ActorDetailDrawerProps) {
+export function ActorDetailsDrawer({ actorId, open, onOpenChange }: ActorDetailDrawerProps) {
     const locale = useLocale();
     const { data: actor, isLoading, error } = useActorDetail(actorId || '', locale);
     const { data: session } = authClient.useSession();

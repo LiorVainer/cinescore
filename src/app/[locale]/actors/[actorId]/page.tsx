@@ -1,12 +1,12 @@
-import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { getQueryClient } from '@/lib/query';
-import { notFound } from 'next/navigation';
-import { auth } from '@/lib/auth';
-import { userFollowsOptions } from '@/lib/query/follow';
-import { getActorById } from '@/app/actions/actors';
-import { getTranslations } from 'next-intl/server';
-import type { Locale } from 'next-intl';
-import { ActorProfile, ActorBiography, ActorFilmography } from '@/components/actor/ActorDetailShared';
+import {dehydrate, HydrationBoundary} from '@tanstack/react-query';
+import {getQueryClient} from '@/lib/query';
+import {notFound} from 'next/navigation';
+import {auth} from '@/lib/auth';
+import {userFollowsOptions} from '@/lib/query/follow';
+import {getActorById} from '@/app/actions/actors';
+import {getTranslations} from 'next-intl/server';
+import type {Locale} from 'next-intl';
+import {ActorBiography, ActorFilmography, ActorProfile} from '@/components/actor/ActorDetailsShared';
 
 interface ActorPageProps {
     params: Promise<{

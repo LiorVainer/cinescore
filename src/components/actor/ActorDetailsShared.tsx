@@ -1,12 +1,13 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { ActorFollowButton } from '@/components/follows/ActorFollowButton';
-import { FollowType } from '@prisma/client';
-import { CalendarDays, MapPin, Film } from 'lucide-react';
+import {Badge} from '@/components/ui/badge';
+import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+import {Separator} from '@/components/ui/separator';
+import {ActorFollowButton} from '@/components/follows/ActorFollowButton';
+import {FollowType} from '@prisma/client';
+import {CalendarDays, Film, MapPin} from 'lucide-react';
 import Link from 'next/link';
+import {ActorDetailsDto} from "@/models/actors.model";
 
 interface Movie {
     id: string;
@@ -16,18 +17,8 @@ interface Movie {
     rating?: number | null;
 }
 
-interface Actor {
-    id: string;
-    name: string;
-    biography?: string | null;
-    birthday?: Date | null;
-    placeOfBirth?: string | null;
-    profileUrl?: string | null;
-    movies?: Movie[];
-}
-
 interface ActorProfileProps {
-    actor: Actor;
+    actor: ActorDetailsDto;
     userId?: string;
 }
 
@@ -35,7 +26,7 @@ export function ActorProfile({ actor, userId }: ActorProfileProps) {
     return (
         <div className='flex flex-col items-center mb-6'>
             <Avatar className='h-32 w-32 mb-4'>
-                <AvatarImage src={actor.profileUrl || undefined} alt={actor.name} />
+                <AvatarImage src={actor.profilePath || undefined} alt={actor.name} />
                 <AvatarFallback className='text-3xl'>
                     {actor.name
                         .split(' ')
@@ -76,12 +67,12 @@ export function ActorProfile({ actor, userId }: ActorProfileProps) {
                     </div>
                 )}
 
-                {actor.movies && (
-                    <div className='flex items-center gap-2 text-sm'>
-                        <Film className='h-4 w-4 text-muted-foreground' />
-                        <span>{actor.movies.length} Movies</span>
-                    </div>
-                )}
+                {/*{actor.movies && (*/}
+                {/*    <div className='flex items-center gap-2 text-sm'>*/}
+                {/*        <Film className='h-4 w-4 text-muted-foreground' />*/}
+                {/*        <span>{actor.movies.length} Movies</span>*/}
+                {/*    </div>*/}
+                {/*)}*/}
             </div>
         </div>
     );

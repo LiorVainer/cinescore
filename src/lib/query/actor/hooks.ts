@@ -7,8 +7,8 @@
 
 'use client';
 
-import { useSuspenseQuery, useQuery } from '@tanstack/react-query';
-import { actorDetailOptions } from './query-options';
+import {useQueries, useQuery, useSuspenseQuery} from '@tanstack/react-query';
+import {dbActorDetailsOptions, tmdbActorDetailsOptions} from './query-options';
 
 /**
  * Hook to fetch a single actor by ID
@@ -16,8 +16,80 @@ import { actorDetailOptions } from './query-options';
  */
 export function useActorDetail(actorId: string, locale: string, options?: { enabled?: boolean }) {
     return useQuery({
-        ...actorDetailOptions(actorId, locale),
+        ...dbActorDetailsOptions(actorId, locale),
         enabled: options?.enabled ?? true,
+    });
+}
+
+export function useTmdbActorDetails(tmdbActorId: number, locale: string, options?: { enabled?: boolean }) {
+    return useQuery({
+        ...tmdbActorDetailsOptions(tmdbActorId, locale),
+        enabled: options?.enabled ?? true,
+    });
+}
+
+/**
+ * Hook to fetch multiple TMDB actor details in parallel
+ * Automatically handles loading, error states, and caching for all actors
+ *
+ * @param tmdbActorIds - Array of TMDB actor IDs to fetch
+ * @param locale - Locale for translations
+ * @param options - Optional configuration
+ * @returns Array of query results in the same order as the input IDs
+ *
+ * @example
+ * const actorsQueries = useTmdbActorsDetails([123, 456, 789], 'en', { enabled: true });
+ *
+ * // Check if all queries are loading
+ * const isLoading = actorsQueries.some(query => query.isLoading);
+ *
+ * // Get all successfully loaded actor data
+ * const actorsData = actorsQueries.map(query => query.data).filter(Boolean);
+ */
+export function useTmdbActorsDetails(
+    tmdbActorIds: number[],
+    locale: string,
+    options?: { enabled?: boolean }
+) {
+    return useQueries({
+        queries: tmdbActorIds.map((tmdbActorId) => ({
+            ...tmdbActorDetailsOptions(tmdbActorId, locale),
+            enabled: options?.enabled ?? true,
+        })),
+    });
+}
+
+/**
+ * Hook to fetch multiple TMDB actor details with combined result
+ * Returns a single object with aggregated data and loading states
+ *
+ * @param tmdbActorIds - Array of TMDB actor IDs to fetch
+ * @param locale - Locale for translations
+ * @param options - Optional configuration
+ * @returns Object with combined data array and isPending flag
+ *
+ * @example
+ * const { data: actors, isPending } = useTmdbActorsDetailsCombined([123, 456, 789], 'en');
+ *
+ * if (isPending) return <Loading />;
+ * return <ActorsList actors={actors} />;
+ */
+export function useTmdbActorsDetailsCombined(
+    tmdbActorIds: number[],
+    locale: string,
+    options?: { enabled?: boolean }
+) {
+    return useQueries({
+        queries: tmdbActorIds.map((tmdbActorId) => ({
+            ...tmdbActorDetailsOptions(tmdbActorId, locale),
+            enabled: options?.enabled ?? true,
+        })),
+        combine: (results) => ({
+            data: results.map((result) => result.data).filter(Boolean),
+            isPending: results.some((result) => result.isPending),
+            isError: results.some((result) => result.isError),
+            errors: results.map((result) => result.error).filter(Boolean),
+        }),
     });
 }
 
@@ -25,5 +97,5 @@ export function useActorDetail(actorId: string, locale: string, options?: { enab
  * Hook to fetch actor details with Suspense
  */
 export function useSuspenseActorDetail(actorId: string, locale: string) {
-    return useSuspenseQuery(actorDetailOptions(actorId, locale));
+    return useSuspenseQuery(dbActorDetailsOptions(actorId, locale));
 }

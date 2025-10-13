@@ -1,17 +1,17 @@
 'use client';
 
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { ThemeProvider } from 'next-themes';
-import { authClient } from '@/lib/auth-client';
-import { AuthUIProvider } from '@daveyplate/better-auth-ui';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { HebrewAuthLocalization } from '@/constants/auth.const';
-import { Link, useRouter } from '@/i18n/navigation';
-import { useLocale } from 'next-intl';
-import { Direction } from 'radix-ui';
-import { getQueryClient } from '@/lib/query/query-client';
-import { DrawerContentProvider } from '@/contexts/drawer-content-context';
-import { UnifiedDrawer } from '@/components/shared/UnifiedDrawer';
+import {NuqsAdapter} from 'nuqs/adapters/next/app';
+import {ThemeProvider} from 'next-themes';
+import {authClient} from '@/lib/auth-client';
+import {AuthUIProvider} from '@daveyplate/better-auth-ui';
+import {QueryClientProvider} from '@tanstack/react-query';
+import {HebrewAuthLocalization} from '@/constants/auth.const';
+import {Link, useRouter} from '@/i18n/navigation';
+import {useLocale} from 'next-intl';
+import {Direction} from 'radix-ui';
+import {getQueryClient} from '@/lib/query/query-client';
+import {UnifiedDrawer} from '@/components/shared/UnifiedDrawer';
+import {MovieProvider} from '@/contexts/movie-context';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
     const locale = useLocale();
@@ -37,10 +37,10 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
                 >
                     <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
                         <NuqsAdapter>
-                            <DrawerContentProvider>
+                            <MovieProvider>
                                 {children}
                                 <UnifiedDrawer />
-                            </DrawerContentProvider>
+                            </MovieProvider>
                         </NuqsAdapter>
                     </ThemeProvider>
                 </AuthUIProvider>
