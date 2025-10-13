@@ -46,6 +46,9 @@ export default function CollapsedMovieCard({
                         src={imgSrc}
                         alt={title}
                         className='w-24 md:w-32 lg:w-40 rounded-r-lg object-cover object-top'
+                        loading="eager"
+                        sizes="(max-width: 768px) 96px, (max-width: 1024px) 128px, 160px"
+                        quality={75}
                     />
                 </motion.div>
 

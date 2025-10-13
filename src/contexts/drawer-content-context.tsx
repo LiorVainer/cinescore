@@ -1,6 +1,6 @@
 'use client';
 
-import React, {createContext, useContext, useState, ReactNode} from 'react';
+import React, {createContext, useContext, useState, useTransition, ReactNode} from 'react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 
 type DrawerContentType = 'movie' | 'actor';
@@ -19,6 +19,7 @@ interface DrawerContentContextType {
     isOpen: boolean;
     content: DrawerContentState | null;
     direction: NavigationDirection;
+    isPending: boolean; // Add loading state indicator
     openMovie: (movie: MovieWithLanguageTranslation, imgSrc: string, idSuffix: string) => void;
     openActor: (actorId: string) => void;
     goBackToMovie: () => void;
@@ -32,25 +33,32 @@ export function DrawerContentProvider({children}: { children: ReactNode }) {
     const [content, setContent] = useState<DrawerContentState | null>(null);
     const [previousMovieState, setPreviousMovieState] = useState<Omit<DrawerContentState, 'type'> | null>(null);
     const [direction, setDirection] = useState<NavigationDirection>('forward');
+    const [isPending, startTransition] = useTransition();
 
     const openMovie = (movie: MovieWithLanguageTranslation, imgSrc: string, idSuffix: string) => {
         const movieState = {movieData: movie, imgSrc, idSuffix, movieId: movie.id};
         setDirection('forward');
-        setContent({type: 'movie', ...movieState});
-        setPreviousMovieState(movieState);
+        startTransition(() => {
+            setContent({type: 'movie', ...movieState});
+            setPreviousMovieState(movieState);
+        });
         setIsOpen(true);
     };
 
     const openActor = (actorId: string) => {
         setDirection('forward'); // Going forward from movie to actor
-        setContent({type: 'actor', actorId, ...previousMovieState});
+        startTransition(() => {
+            setContent({type: 'actor', actorId, ...previousMovieState});
+        });
         setIsOpen(true);
     };
 
     const goBackToMovie = () => {
         if (previousMovieState?.movieData) {
             setDirection('backward'); // Going backward from actor to movie
-            setContent({type: 'movie', ...previousMovieState});
+            startTransition(() => {
+                setContent({type: 'movie', ...previousMovieState});
+            });
         }
     };
 
@@ -69,6 +77,7 @@ export function DrawerContentProvider({children}: { children: ReactNode }) {
                 isOpen,
                 content,
                 direction,
+                isPending,
                 openMovie,
                 openActor,
                 goBackToMovie,

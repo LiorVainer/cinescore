@@ -7,9 +7,13 @@ import {authClient} from '@/lib/auth-client';
 import {useDrawerContent} from '@/contexts/drawer-content-context';
 import {Button} from '@/components/ui/button';
 import {ActorProfile, ActorBiography, ActorFilmography} from './ActorDetailShared';
+import {useEffect} from 'react';
+import {motion} from 'motion/react';
+import type {MovieWithLanguageTranslation} from "@/models/movies.model";
 
 interface ActorDetailContentProps {
     actorId: string;
+    movieImgSrc?: string;
 }
 
 export function ActorDetailContent({actorId}: ActorDetailContentProps) {
@@ -18,23 +22,17 @@ export function ActorDetailContent({actorId}: ActorDetailContentProps) {
     const {data: session} = authClient.useSession();
     const {goBackToMovie, content} = useDrawerContent();
 
+    // Preload actor profile image as soon as component mounts
+    useEffect(() => {
+        if (actor?.profileUrl) {
+            const img = new Image();
+            img.src = actor.profileUrl;
+        }
+    }, [actor?.profileUrl]);
+
     return (
-        <div className='w-full flex flex-col items-stretch rounded-t-xl relative overflow-hidden'>
-            {/* Blurred background with actor photo */}
-            {actor?.profileUrl && (
-                <div
-                    className='absolute inset-0 z-0'
-                    style={{
-                        backgroundImage: `url(${actor.profileUrl})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        filter: 'blur(15px)',
-                        transform: 'scale(1.1)',
-                    }}
-                >
-                    <div className='absolute inset-0 bg-background/80 dark:bg-background/80'/>
-                </div>
-            )}
+        <div className='w-full flex flex-col items-stretch rounded-t-xl relative overflow-hidden min-h-[60vh]'>
+            {/* Background now handled by UnifiedDrawer - removed duplicate */}
 
             {/* Content */}
             <div className='relative z-10'>
@@ -72,11 +70,15 @@ export function ActorDetailContent({actorId}: ActorDetailContentProps) {
 
                     {/* Actor Content - composed from shared components */}
                     {actor && (
-                        <>
+                        <motion.div
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{duration: 0.3, delay: 0.1}}
+                        >
                             <ActorProfile actor={actor} userId={session?.user?.id}/>
                             {actor.biography && <ActorBiography biography={actor.biography}/>}
                             {actor.movies && <ActorFilmography movies={actor.movies}/>}
-                        </>
+                        </motion.div>
                     )}
                 </div>
             </div>

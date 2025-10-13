@@ -8,6 +8,9 @@ import {motion, Variants} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {Link} from '@/i18n/navigation';
 import {useDrawerContent} from '@/contexts/drawer-content-context';
+import {useQueryClient} from '@tanstack/react-query';
+import {actorDetailOptions} from '@/lib/query/actor/query-options';
+import {useLocale} from 'next-intl';
 
 type MovieCastSectionProps = {
     cast: MovieWithLanguageTranslation['cast'];
@@ -16,8 +19,10 @@ type MovieCastSectionProps = {
 export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
     const t = useTranslations('movie');
     const isMobile = useIsMobile();
+    const locale = useLocale();
     const [showAllCast, setShowAllCast] = React.useState(false);
     const {openActor} = useDrawerContent();
+    const queryClient = useQueryClient();
 
     if (!cast || cast.length === 0) {
         return null;
@@ -61,6 +66,13 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
         }
     };
 
+    // Prefetch actor data on hover/touch to reduce loading time
+    const handleActorHover = (actorId: string) => {
+        if (isMobile) {
+            queryClient.prefetchQuery(actorDetailOptions(actorId, locale));
+        }
+    };
+
     return (
         <div className='flex flex-col gap-2'>
             <h3 className='font-semibold text-sm'>{t('cast')}</h3>
@@ -80,6 +92,8 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
                             <Link
                                 href={`/actors/${castMember.actor.id}`}
                                 onClick={(e) => handleActorClick(castMember.actor.id, e)}
+                                onTouchStart={() => handleActorHover(castMember.actor.id)}
+                                onMouseEnter={() => handleActorHover(castMember.actor.id)}
                                 className='relative block text-xs overflow-hidden group rounded-lg cursor-pointer transition-transform hover:scale-105'
                             >
                                 <img

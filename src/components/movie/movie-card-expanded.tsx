@@ -37,8 +37,6 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
         // Disable shared-element layout transitions inside the mobile drawer to avoid double animations
         const layoutIdEnabled = variant !== 'drawer';
 
-        // Calculate items per row based on grid columns
-
         const Content = (
             <motion.div
                 layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.CARD(title, idSuffix) : undefined}
@@ -49,21 +47,7 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                         : 'w-[80vw] max-w-[80vw] max-h-[80vh] flex flex-col lg:flex-row items-stretch rounded-xl bg-background overflow-hidden'
                 }
             >
-                {/* Background image with overlay - only for mobile/drawer variant */}
-                {variant === 'drawer' && (
-                    <div
-                        className='absolute inset-0 z-0'
-                        style={{
-                            backgroundImage: `url(${imgSrc})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            filter: 'blur(15px)',
-                            transform: 'scale(1.1)',
-                        }}
-                    >
-                        <div className='absolute inset-0 bg-background/80 dark:bg-background/80'/>
-                    </div>
-                )}
+                {/* Background image with overlay - removed for drawer variant, now handled by UnifiedDrawer */}
 
                 {/* Desktop modal layout - side by side */}
                 {variant === 'modal' && (
@@ -73,16 +57,20 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                             className='shrink-0 flex items-center justify-center relative overflow-hidden'
                         >
                             {/* Background image with overlay - only for desktop/modal variant */}
-                            <div
-                                className='absolute inset-0'
-                                style={{
-                                    backgroundImage: `url(${imgSrc})`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    filter: 'blur(7px)',
-                                    transform: 'scale(1.1)',
-                                }}
-                            >
+                            <div className='absolute inset-0 overflow-hidden'>
+                                <Image
+                                    src={imgSrc}
+                                    alt=""
+                                    fill
+                                    priority
+                                    quality={50}
+                                    sizes="(max-width: 1024px) 100vw, 300px"
+                                    className="object-cover"
+                                    style={{
+                                        filter: 'blur(7px)',
+                                        transform: 'scale(1.1)',
+                                    }}
+                                />
                                 <div className='absolute inset-0 bg-white/80 dark:bg-black/80'/>
                             </div>
 
@@ -94,6 +82,8 @@ const ExpandedMovieCard = React.forwardRef<HTMLDivElement, ExpandedMovieCardProp
                                 alt={title}
                                 className='w-full lg:min-w-[300px] aspect-[16/9] md:aspect-[2/3] rounded-tl-lg lg:rounded-r-lg lg:rounded-tl-none object-cover object-top relative z-10'
                                 priority
+                                quality={85}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 300px"
                             />
                         </motion.div>
 
