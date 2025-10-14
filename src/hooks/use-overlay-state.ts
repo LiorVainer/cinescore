@@ -31,7 +31,7 @@ interface UseOverlayStateReturn {
  */
 export function useOverlayState(): UseOverlayStateReturn {
     const [state, setState] = useQueryStates(overlayParsers, {
-        history: 'push',
+        history: 'replace',
         shallow: true,
     });
     const {currentMovie, setCurrentMovie} = useMovieContext();
