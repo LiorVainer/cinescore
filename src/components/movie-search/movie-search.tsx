@@ -9,7 +9,7 @@ import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
 import {FilterBar} from '@/components/movie-search/FilterBar';
 import CollapsedMovieCardSkeleton from '@/components/movie/movie-card-collapsed.skeleton';
 import {useLocale, useTranslations} from 'next-intl';
-import {mapLocaleToLanguage} from "@/constants/languages.const";
+import {mapLocaleToLanguage} from '@/constants/languages.const';
 
 const DEFAULT_SORT = 'rating:desc';
 
@@ -49,14 +49,17 @@ export default function MovieSearch() {
         isFetching,
         isError,
     } = useQuery({
-        queryKey: ['movies-search', {
-            search: debouncedSearch,
-            sort,
-            selectedGenres,
-            page,
-            pageSize,
-            language: currentLanguage
-        }],
+        queryKey: [
+            'movies-search',
+            {
+                search: debouncedSearch,
+                sort,
+                selectedGenres,
+                page,
+                pageSize,
+                language: currentLanguage,
+            },
+        ],
         queryFn: async () =>
             searchMoviesFiltered({
                 search: debouncedSearch,
@@ -84,7 +87,7 @@ export default function MovieSearch() {
     const items = moviesData?.items ?? [];
 
     return (
-        <div className='h-full flex flex-col gap-4'>
+        <div className='h-full flex flex-col gap-4 lg:py-8 overflow-y-auto'>
             <FilterBar
                 search={search}
                 onSearchChange={setSearch}
@@ -97,11 +100,7 @@ export default function MovieSearch() {
                 onClearAll={clearFilters}
             />
 
-            {isError && (
-                <div className='text-destructive'>
-                    {t('errorLoading')}
-                </div>
-            )}
+            {isError && <div className='text-destructive'>{t('errorLoading')}</div>}
 
             {isFetching && items.length === 0 ? (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
@@ -110,19 +109,13 @@ export default function MovieSearch() {
                     ))}
                 </div>
             ) : (
-                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 overflow-y-auto'>
+                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-8 overflow-y-auto'>
                     {items.map((movie) => (
-                        <MovieCard
-                            ctaText={tMovie('details')}
-                            key={movie.id}
-                            movie={movie}
-                        />
+                        <MovieCard ctaText={tMovie('details')} key={movie.id} movie={movie}/>
                     ))}
 
                     {items.length === 0 && !isFetching && (
-                        <div className='text-sm text-muted-foreground'>
-                            {t('noResults')}
-                        </div>
+                        <div className='text-sm text-muted-foreground'>{t('noResults')}</div>
                     )}
                 </div>
             )}

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {Language} from '@prisma/client';
+import { Language } from '@prisma/client';
 
 /**
  * Format a human-friendly relative time in both Hebrew and English

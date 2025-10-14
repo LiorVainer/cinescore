@@ -1,12 +1,6 @@
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 
-export const SORT_VALUES = [
-    'rating:desc',
-    'rating:asc',
-    'votes:desc',
-    'releaseDate:desc',
-    'releaseDate:asc',
-] as const;
+export const SORT_VALUES = ['rating:desc', 'rating:asc', 'votes:desc', 'releaseDate:desc', 'releaseDate:asc'] as const;
 
 export type SortValue = (typeof SORT_VALUES)[number];
 

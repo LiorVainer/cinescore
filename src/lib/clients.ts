@@ -1,6 +1,5 @@
 import { TMDB } from 'tmdb-ts';
 import { ImdbApi } from './imdbapi';
-import { AxiosRequestConfig } from 'axios';
 import { OmdbApi } from './omdbapi';
 
 if (!process.env.TMDB_API_KEY) {

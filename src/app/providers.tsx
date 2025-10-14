@@ -4,26 +4,19 @@ import {NuqsAdapter} from 'nuqs/adapters/next/app';
 import {ThemeProvider} from 'next-themes';
 import {authClient} from '@/lib/auth-client';
 import {AuthUIProvider} from '@daveyplate/better-auth-ui';
-import {useState} from 'react';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {QueryClientProvider} from '@tanstack/react-query';
 import {HebrewAuthLocalization} from '@/constants/auth.const';
 import {Link, useRouter} from '@/i18n/navigation';
 import {useLocale} from 'next-intl';
-import {Direction} from "radix-ui";
+import {Direction} from 'radix-ui';
+import {getQueryClient} from '@/lib/query/query-client';
+import {MobileDrawer} from '@/components/shared/MobileDrawer';
+import {MovieProvider} from '@/contexts/movie-context';
 
 export function AppProviders({children}: { children: React.ReactNode }) {
     const locale = useLocale();
     const router = useRouter();
-    const [queryClient] = useState(
-        () =>
-            new QueryClient({
-                defaultOptions: {
-                    queries: {
-                        staleTime: 60 * 1000,
-                    },
-                },
-            })
-    );
+    const queryClient = getQueryClient();
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -42,13 +35,12 @@ export function AppProviders({children}: { children: React.ReactNode }) {
                         providers: ['google'],
                     }}
                 >
-                    <ThemeProvider
-                        attribute='class'
-                        defaultTheme='system'
-                        enableSystem
-                        disableTransitionOnChange
-                    >
-                        <NuqsAdapter>{children}</NuqsAdapter>
+                    <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
+                        <NuqsAdapter>
+                            <MovieProvider>
+                                {children}
+                            </MovieProvider>
+                        </NuqsAdapter>
                     </ThemeProvider>
                 </AuthUIProvider>
                 {/*<ReactQueryDevtools initialIsOpen={false}/>*/}

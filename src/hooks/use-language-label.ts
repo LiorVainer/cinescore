@@ -1,5 +1,5 @@
-import {AppConfig, Messages, NamespaceKeys, NestedKeyOf, useTranslations} from 'next-intl';
-import {Language} from '@prisma/client';
+import { useTranslations } from 'next-intl';
+import { Language } from '@prisma/client';
 
 /**
  * Hook to get translated language labels
@@ -12,7 +12,7 @@ export function useLanguageLabel() {
         if (!language) return undefined;
 
         // Handle both Language enum and string keys
-        const key = language as Parameters<typeof t>[0]
+        const key = language as Parameters<typeof t>[0];
 
         try {
             return t(key);
@@ -22,4 +22,3 @@ export function useLanguageLabel() {
         }
     };
 }
-

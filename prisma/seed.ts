@@ -6,12 +6,12 @@ import Bluebird from "bluebird";
 
 // Import our optimized processors
 import {
+    type MovieData,
     processMovieData,
-    processMovieTranslations,
     processMovieTrailers,
-    type MovieData
+    processMovieTranslations
 } from "./seeders/movie-processor";
-import {processMovieGenres, cacheGenreTranslations} from "./seeders/genre-processor";
+import {cacheGenreTranslations, processMovieGenres} from "./seeders/genre-processor";
 import {batchProcessActors} from "./seeders/actor-processor";
 import {SEED_CONFIG} from "./seeders/seed-config";
 
@@ -88,7 +88,7 @@ export async function seedNowPlayingMovies() {
         // Step 3: Process basic movie data with reduced concurrency
         const movieDataList = await timeOperation("Processing movie data in parallel", async () => {
             console.log("🔄 Processing movie data with controlled concurrency...");
-            return await Bluebird.map(
+            return Bluebird.map(
                 nowPlaying.results,
                 async (movie, index) => {
                     // Add small delay between movie processing

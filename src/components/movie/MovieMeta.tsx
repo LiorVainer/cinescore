@@ -1,15 +1,15 @@
-import {motion} from 'motion/react';
-import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
-import {RelativeDate} from '@/components/ui/relative-date';
+import { motion } from 'motion/react';
+import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
+import { RelativeDate } from '@/components/ui/relative-date';
 
 export function MovieMeta({
-                              title,
-                              idSuffix,
-                              releaseDate,
-                              showDate = false,
-                              className,
-                              layoutIdEnabled = true,
-                          }: {
+    title,
+    idSuffix,
+    releaseDate,
+    showDate = false,
+    className,
+    layoutIdEnabled = true,
+}: {
     title: string;
     idSuffix: string;
     releaseDate?: Date | string | null;
@@ -42,4 +42,3 @@ export function MovieMeta({
         </div>
     );
 }
-

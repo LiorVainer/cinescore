@@ -1,13 +1,13 @@
 'use server';
 
-import {omdb, tmdb} from '@/lib/clients';
-import {prisma} from '@/lib/prisma';
-import {MoviesDAL} from '@/dal';
-import {Language, Prisma} from '@prisma/client';
-import {MovieWithLanguageTranslation} from '@/models/movies.model';
-import type {ExternalIds} from 'tmdb-ts';
-import type {Movie as OmdbMovie} from '@/lib/omdbapi';
-import {SortValue} from "@/constants/sort.const";
+import { omdb, tmdb } from '@/lib/clients';
+import { prisma } from '@/lib/prisma';
+import { MoviesDAL } from '@/dal';
+import { Language, Prisma } from '@prisma/client';
+import { MovieWithLanguageTranslation } from '@/models/movies.model';
+import type { ExternalIds } from 'tmdb-ts';
+import type { Movie as OmdbMovie } from '@/lib/omdbapi';
+import { SortValue } from '@/constants/sort.const';
 
 export type SearchedMovie = {
     id: number;
@@ -34,22 +34,24 @@ export async function searchMovies(query: string): Promise<SearchedMovie[]> {
     return Promise.all(
         results.results.map(async (tmdbMovie) => {
             try {
-                const external = await tmdb.movies.externalIds(tmdbMovie.id) as ExternalIds;
+                const external = (await tmdb.movies.externalIds(tmdbMovie.id)) as ExternalIds;
 
                 let imdbRating: number | null = null;
                 let imdbVotes: number | null = null;
                 const imdbId: string | null = external.imdb_id ?? null;
 
                 if (imdbId) {
-                    const omdbMovie = await omdb.title.getById({i: imdbId}) as OmdbMovie;
+                    const omdbMovie = (await omdb.title.getById({ i: imdbId })) as OmdbMovie;
                     imdbRating =
-                        omdbMovie.imdbRating && omdbMovie.imdbRating !== 'N/A' ? parseFloat(omdbMovie.imdbRating) : null;
+                        omdbMovie.imdbRating && omdbMovie.imdbRating !== 'N/A'
+                            ? parseFloat(omdbMovie.imdbRating)
+                            : null;
                     imdbVotes =
                         omdbMovie.imdbVotes && omdbMovie.imdbVotes !== 'N/A'
                             ? parseInt(omdbMovie.imdbVotes.replace(/,/g, ''), 10)
                             : null;
 
-                    console.log({omdbMovie})
+                    console.log({ omdbMovie });
                 }
 
                 return {
@@ -89,17 +91,17 @@ export const searchMoviesInDB = async (query: string, language: Language = Langu
             translations: {
                 some: {
                     OR: [
-                        {title: {contains: q, mode: 'insensitive'}},
-                        {originalTitle: {contains: q, mode: 'insensitive'}},
+                        { title: { contains: q, mode: 'insensitive' } },
+                        { originalTitle: { contains: q, mode: 'insensitive' } },
                     ],
                 },
             },
         },
-        orderBy: [{rating: 'desc'}, {votes: 'desc'}],
+        orderBy: [{ rating: 'desc' }, { votes: 'desc' }],
         take: 50,
     });
 
-    console.dir({movies}, {depth: Infinity});
+    console.dir({ movies }, { depth: Infinity });
 
     return movies as MovieWithLanguageTranslation[];
 };
@@ -120,7 +122,7 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
         selectedGenres = [],
         page = 1,
         pageSize = 24,
-        language = Language.he_IL
+        language = Language.he_IL,
     } = filters ?? {};
 
     const q = search.trim();
@@ -132,8 +134,8 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
         where.translations = {
             some: {
                 OR: [
-                    {title: {contains: q, mode: 'insensitive'}},
-                    {originalTitle: {contains: q, mode: 'insensitive'}},
+                    { title: { contains: q, mode: 'insensitive' } },
+                    { originalTitle: { contains: q, mode: 'insensitive' } },
                 ],
             },
         };
@@ -141,16 +143,16 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
 
     if (selectedGenres.length > 0) {
         where.genres = {
-            some: {tmdbId: {in: selectedGenres}}, // Use tmdbId instead of id
+            some: { tmdbId: { in: selectedGenres } }, // Use tmdbId instead of id
         };
     }
 
     // Build orderBy
     const [field, direction] = (sort || 'rating:desc').split(':') as [
-            'rating' | 'votes' | 'releaseDate',
-            'asc' | 'desc',
+        'rating' | 'votes' | 'releaseDate',
+        'asc' | 'desc',
     ];
-    const orderBy = [{[field]: direction}] as Prisma.MovieOrderByWithRelationInput[];
+    const orderBy = [{ [field]: direction }] as Prisma.MovieOrderByWithRelationInput[];
 
     const skip = (Math.max(1, page) - 1) * Math.max(1, pageSize);
     const take = Math.max(1, Math.min(100, pageSize));
@@ -165,7 +167,6 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
         moviesDAL.countMovies(where),
     ]);
 
-
     return {
         items,
         total,
@@ -178,23 +179,23 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
 export const listGenres = async (language: Language = Language.he_IL) => {
     const genres = await prisma.genre.findMany({
         include: {
-            translations: true // Include all translations, not just the requested language
+            translations: true, // Include all translations, not just the requested language
         },
-        orderBy: {tmdbId: 'asc'}
+        orderBy: { tmdbId: 'asc' },
     });
 
     // Transform to the expected GenreOption format
-    return genres.map(genre => {
+    return genres.map((genre) => {
         // Find translation for the requested language, fallback to English, then any available
-        const requestedTranslation = genre.translations.find(t => t.language === language);
-        const englishTranslation = genre.translations.find(t => t.language === Language.en_US);
+        const requestedTranslation = genre.translations.find((t) => t.language === language);
+        const englishTranslation = genre.translations.find((t) => t.language === Language.en_US);
         const anyTranslation = genre.translations[0];
 
         const translation = requestedTranslation || englishTranslation || anyTranslation;
 
         return {
             id: genre.tmdbId || 0, // Use tmdbId for filtering
-            name: translation?.name || `Genre ${genre.tmdbId}` // Use translated name with proper fallback
+            name: translation?.name || `Genre ${genre.tmdbId}`, // Use translated name with proper fallback
         };
     });
 };
