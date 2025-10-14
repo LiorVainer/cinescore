@@ -38,7 +38,6 @@ export function DesktopModal() {
                     onClose={close}
                     variant='modal'
                     containerClassName='rounded-xl'
-                    scrollClassName={'w-[800px]'}
                 />
             </DialogContent>
         </Dialog>
