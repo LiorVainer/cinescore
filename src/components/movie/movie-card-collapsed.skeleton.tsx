@@ -8,7 +8,7 @@ export function CollapsedMovieCardSkeleton({className}: { className?: string }) 
         <div
             className={cn(
                 'flex justify-between items-stretch rounded-xl shadow-md overflow-hidden',
-                'bg-transparent',
+                'bg-background',
                 className,
             )}
         >
