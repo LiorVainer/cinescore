@@ -45,10 +45,10 @@ declare const messages: {
     "loading": "Loading actor details...",
     "errorLoading": "Failed to load actor details",
     "biography": "Biography",
-    "credits": "Credits",
+    "credits": "Career",
     "title": "Title",
     "character": "Character",
-    "releaseDate": "Release Date",
+    "releaseYear": "Release Year",
     "unknown": "Unknown"
   },
   "filters": {

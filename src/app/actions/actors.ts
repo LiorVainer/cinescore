@@ -104,14 +104,13 @@ async function enrichCreditsWithOmdb(
         | PersonTvShowCast
         )[];
 
-    const topCredits = credits
-        .filter((c) => c.popularity > 1)
-        .sort((a, b) => b.popularity - a.popularity)
-        .slice(0, 20);
+    // keep only relevant ones
+    const filteredCredits = credits.filter((c) => c.popularity > 1);
 
-    return Promise.all(
-        topCredits.map(async (c) => {
-            const mediaType = (c as any).title ? 'movie' : 'tv';
+    const enriched: ActorCreditDto[] = await Promise.all(
+        filteredCredits.map(async (c) => {
+            const isMovie = Boolean((c as any).title);
+            const mediaType: 'movie' | 'tv' = isMovie ? 'movie' : 'tv';
             const title = (c as any).title ?? (c as any).name;
             const releaseDate =
                 (c as any).release_date ?? (c as any).first_air_date ?? null;
@@ -150,7 +149,7 @@ async function enrichCreditsWithOmdb(
                     imdbRating,
                     imdbVotes,
                     popularity: c.popularity ?? null,
-                };
+                } satisfies ActorCreditDto; // ✅ ensures full type safety
             } catch {
                 return {
                     id: c.id,
@@ -165,8 +164,18 @@ async function enrichCreditsWithOmdb(
                     imdbRating: null,
                     imdbVotes: null,
                     popularity: c.popularity ?? null,
-                };
+                } satisfies ActorCreditDto;
             }
         })
     );
+
+    // 🧩 Sort by release year (newest first)
+    enriched.sort((a, b) => {
+        const yearA = a.releaseDate ? parseInt(a.releaseDate.slice(0, 4)) || 0 : 0;
+        const yearB = b.releaseDate ? parseInt(b.releaseDate.slice(0, 4)) || 0 : 0;
+        return yearB - yearA;
+    });
+
+    return enriched.slice(0, 20);
 }
+

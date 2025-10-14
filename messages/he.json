@@ -42,10 +42,10 @@
     "loading": "טוען פרטי שחקן...",
     "errorLoading": "שגיאה בטעינת פרטי השחקן",
     "biography": "ביוגרפיה",
-    "credits": "קרדיטים",
+    "credits": "קריירה",
     "title": "כותרת",
     "character": "דמות",
-    "releaseDate": "תאריך יציאה",
+    "releaseYear": "שנת יציאה",
     "unknown": "לא ידוע"
   },
   "filters": {

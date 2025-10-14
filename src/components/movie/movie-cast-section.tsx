@@ -86,7 +86,7 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
     return (
         <div className='flex flex-col gap-2'>
             <h3 className='font-semibold text-sm'>{t('cast')}</h3>
-            <div className='flex flex-col gap-3'>
+            <div className='flex flex-col gap-'>
                 <motion.div
                     className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4'
                     variants={containerVariants}

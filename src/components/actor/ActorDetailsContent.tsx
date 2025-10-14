@@ -65,19 +65,33 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
             <div className='relative z-10 flex-1 overflow-hidden flex flex-col'>
                 {movieId && (
                     <div
-                        className='sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b p-4'>
-                        <Button variant='ghost' size='sm' onClick={handleBack} className='gap-2'>
+                        className="
+      fixed top-0 left-0 right-0 z-50
+      bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60
+      border-b p-4
+    "
+                        style={{
+                            // Ensure it only overlays inside the drawer/modal context, not the whole page
+                            // position: 'sticky', // fallback for Radix portals
+                        }}
+                    >
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleBack}
+                            className="gap-2"
+                        >
                             {isRtl ? (
-                                <ArrowLeft className='h-4 w-4 rotate-180'/>
+                                <ArrowLeft className="h-4 w-4 rotate-180"/>
                             ) : (
-                                <ArrowLeft className='h-4 w-4'/>
+                                <ArrowLeft className="h-4 w-4"/>
                             )}
                             {t('backToMovie')}
                         </Button>
                     </div>
                 )}
 
-                <div className='p-4 md:p-8 overflow-y-auto'>
+                <div className='p-4 md:p-8 overflow-y-auto pt-20'>
                     {/* Loading State */}
                     {isLoading && (
                         <div className='flex flex-col items-center justify-center py-12'>
@@ -120,17 +134,24 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
                                                 <TableRow>
                                                     <TableHead>{t('title')}</TableHead>
                                                     <TableHead>{t('character')}</TableHead>
-                                                    <TableHead>{t('releaseDate')}</TableHead>
+                                                    <TableHead>{t('releaseYear')}</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {actor.credits.map((credit) => (
-                                                    <TableRow key={credit.id}>
-                                                        <TableCell>{credit.title}</TableCell>
-                                                        <TableCell>{credit.character || t('unknown')}</TableCell>
-                                                        <TableCell>{credit.releaseDate || t('unknown')}</TableCell>
-                                                    </TableRow>
-                                                ))}
+                                                {actor.credits.map((credit) => {
+                                                    const year =
+                                                        credit.releaseDate && !isNaN(Date.parse(credit.releaseDate))
+                                                            ? new Date(credit.releaseDate).getFullYear()
+                                                            : t('unknown');
+
+                                                    return (
+                                                        <TableRow key={credit.id}>
+                                                            <TableCell>{credit.title}</TableCell>
+                                                            <TableCell>{credit.character || t('unknown')}</TableCell>
+                                                            <TableCell>{year}</TableCell>
+                                                        </TableRow>
+                                                    )
+                                                })}
                                             </TableBody>
                                         </Table>
                                     </CardContent>
