@@ -79,7 +79,7 @@ export default async function LocaleLayout({
                     <AppNavbar/>
                     <div className="relative min-h-screen lg:px-[10%] overflow-hidden" style={{paddingTop: '3.25rem'}}>
                         {/* ✨ Background layer */}
-                        <div className="fixed inset-0 -z-10 bg-gradient-animated pointer-events-none"/>
+                        <div className="fixed inset-0 -z-10 bg-gradient-static pointer-events-none"/>
 
                         {/* App content */}
                         {children}
