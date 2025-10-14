@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -10,18 +10,18 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { ChevronDownIcon, FilterIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import type { GenreOption } from '@/constants/sort.const';
-import { useTranslations } from 'next-intl';
+import {Input} from '@/components/ui/input';
+import {ChevronDownIcon, FilterIcon} from 'lucide-react';
+import {useMemo, useState} from 'react';
+import type {GenreOption} from '@/constants/sort.const';
+import {useTranslations} from 'next-intl';
 
 export function GenresMultiSelect({
-    genres,
-    selected,
-    onToggle,
-    onClear,
-}: {
+                                      genres,
+                                      selected,
+                                      onToggle,
+                                      onClear,
+                                  }: {
     genres: GenreOption[];
     selected: number[];
     onToggle: (id: number) => void;
@@ -39,14 +39,14 @@ export function GenresMultiSelect({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant='outline' className='gap-2 w-full sm:w-auto justify-between'>
+                <Button variant='outline' className='gap-2 w-full sm:w-auto justify-between bg-transparent'>
                     <span className='inline-flex items-center gap-2'>
-                        <FilterIcon className='size-4' /> {t('title')}
+                        <FilterIcon className='size-4'/> {t('title')}
                     </span>
                     <span className='opacity-60 text-xs'>
-                        {selected.length > 0 ? t('selected', { count: selected.length }) : t('noFilter')}
+                        {selected.length > 0 ? t('selected', {count: selected.length}) : t('noFilter')}
                     </span>
-                    <ChevronDownIcon className='size-4 opacity-60' />
+                    <ChevronDownIcon className='size-4 opacity-60'/>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-64 p-2'>
@@ -58,7 +58,7 @@ export function GenresMultiSelect({
                         placeholder={t('filterPlaceholder')}
                     />
                 </div>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator/>
                 <div className='max-h-72 overflow-y-auto pe-1'>
                     {filtered.map((g) => (
                         <DropdownMenuCheckboxItem
@@ -74,7 +74,7 @@ export function GenresMultiSelect({
                 </div>
                 {selected.length > 0 && (
                     <>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator/>
                         <div className='p-2'>
                             <Button size='sm' variant='ghost' onClick={onClear} className='w-full'>
                                 {t('clearSelection')}
