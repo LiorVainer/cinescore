@@ -7,24 +7,27 @@ import '../globals.css';
 import {AppProviders} from '../providers';
 import {AppNavbar} from '@/components/navigation/app-navbar';
 import {routing} from '@/i18n/routing';
+import {DesktopModal} from '@/components/shared/DesktopModal';
+import {MobileDrawer} from '@/components/shared/MobileDrawer';
+import {LayoutGroup} from 'motion/react';
+
+// Force dynamic rendering for all pages under this layout
+// This is required because the AppNavbar uses auth components that rely on useSearchParams()
+export const dynamic = 'force-dynamic';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
-    display: 'swap'
+    display: 'swap',
 });
 
 const geistMono = Geist_Mono({
     variable: '--font-geist-mono',
     subsets: ['latin'],
-    display: 'swap'
+    display: 'swap',
 });
 
-export async function generateMetadata(
-    props: {
-        params: Promise<{ locale: typeof routing.locales[number] }>;
-    }
-) {
+export async function generateMetadata(props: { params: Promise<{ locale: (typeof routing.locales)[number] }> }) {
     const {locale} = await props.params;
 
     const t = await getTranslations({
@@ -33,10 +36,9 @@ export async function generateMetadata(
     });
 
     return {
-        title: t('title')
+        title: t('title'),
     };
 }
-
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({locale}));
@@ -47,7 +49,7 @@ export default async function LocaleLayout({
                                                params,
                                            }: {
     children: React.ReactNode;
-    params: Promise<{ locale: typeof routing.locales[number] }>;
+    params: Promise<{ locale: (typeof routing.locales)[number] }>;
 }) {
     // Await the params before using its properties
     const {locale} = await params;
@@ -72,9 +74,16 @@ export default async function LocaleLayout({
             // messages={messages}
         >
             <AppProviders>
-                <AppNavbar/>
-                <div style={{paddingTop: '3.25rem'}}
-                     className='h-screen'>{children}</div>
+                {/* Wrap entire app in LayoutGroup to enable shared layout animations */}
+                <LayoutGroup>
+                    <AppNavbar/>
+                    <div style={{paddingTop: '3.25rem'}} className='h-screen lg:px-[10%]'>
+                        {children}
+                    </div>
+                    {/* Render modals once at app level */}
+                    <DesktopModal/>
+                    <MobileDrawer/>
+                </LayoutGroup>
             </AppProviders>
         </NextIntlClientProvider>
         </body>

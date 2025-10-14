@@ -1,12 +1,4 @@
-import {
-    PrismaClient,
-    Prisma,
-    Language,
-    Movie,
-    MovieTranslation,
-    Trailer,
-} from "@prisma/client";
-import {Video} from "tmdb-ts"; // Already using official Video type
+import {Language, Prisma, PrismaClient,} from "@prisma/client";
 import {FullyPopulatedMovie, MovieWithLanguageTranslation} from "@/models/movies.model";
 
 /**
@@ -19,6 +11,50 @@ export class MoviesDAL {
 
     async findByTmdbId(tmdbId: number) {
         return this.prisma.movie.findUnique({where: {tmdbId}});
+    }
+
+    /**
+     * Finds a movie by ID with all translations and related data
+     */
+    async findByIdWithTranslations(movieId: string): Promise<FullyPopulatedMovie | null> {
+        return this.prisma.movie.findUnique({
+            where: {id: movieId},
+            include: {
+                genres: {
+                    include: {
+                        translations: true,
+                    },
+                },
+                trailers: true,
+                translations: true,
+                cast: {
+                    include: {
+                        actor: {
+                            include: {
+                                translations: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        order: 'asc',
+                    },
+                },
+            },
+        });
+    }
+
+    /**
+     * Finds a movie by ID with translation for a specific language
+     */
+    async findByIdWithLanguageTranslation(
+        movieId: string,
+        language: Language
+    ): Promise<MovieWithLanguageTranslation | null> {
+        const movie = await this.findByIdWithTranslations(movieId);
+
+        if (!movie) return null;
+
+        return this.transformToLanguageSpecific(movie, language);
     }
 
     async upsertBase(data: Omit<Prisma.MovieCreateInput, "translations" | "genres" | "cast" | "trailers" | 'imdbId'> & {

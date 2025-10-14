@@ -1,7 +1,7 @@
 'use client';
 
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
-import {Button} from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,13 +10,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {authClient} from '@/lib/auth-client';
-import {Link} from '@/i18n/navigation';
-import {useTranslations} from 'next-intl';
-import {LogOut, Settings} from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
+import { LogOut, Settings } from 'lucide-react';
 
 export const UserButton = () => {
-    const {data: session, isPending} = authClient.useSession();
+    const { data: session, isPending } = authClient.useSession();
     const t = useTranslations('userButton');
 
     const handleSignOut = async () => {
@@ -25,8 +25,8 @@ export const UserButton = () => {
 
     if (isPending) {
         return (
-            <Button variant="ghost" size="icon" className="rounded-full" disabled>
-                <Avatar className="size-8">
+            <Button variant='ghost' size='icon' className='rounded-full' disabled>
+                <Avatar className='size-8'>
                     <AvatarFallback>...</AvatarFallback>
                 </Avatar>
             </Button>
@@ -43,41 +43,35 @@ export const UserButton = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                    <Avatar className="size-8">
-                        <AvatarImage src={user.image || undefined} alt={user.name || user.email}/>
+                <Button variant='ghost' size='icon' className='rounded-full'>
+                    <Avatar className='size-8'>
+                        <AvatarImage src={user.image || undefined} alt={user.name || user.email} />
                         <AvatarFallback>{userInitials}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align='end' className='w-56'>
                 <DropdownMenuLabel>
-                    <div className="flex items-center gap-3">
-                        <Avatar className="size-10">
-                            <AvatarImage src={user.image || undefined} alt={user.name || user.email}/>
+                    <div className='flex items-center gap-3'>
+                        <Avatar className='size-10'>
+                            <AvatarImage src={user.image || undefined} alt={user.name || user.email} />
                             <AvatarFallback>{userInitials}</AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col space-y-1 overflow-hidden">
-                            {user.name && (
-                                <p className="text-sm font-medium leading-none truncate">
-                                    {user.name}
-                                </p>
-                            )}
-                            <p className="text-xs leading-none text-muted-foreground truncate">
-                                {user.email}
-                            </p>
+                        <div className='flex flex-col space-y-1 overflow-hidden'>
+                            {user.name && <p className='text-sm font-medium leading-none truncate'>{user.name}</p>}
+                            <p className='text-xs leading-none text-muted-foreground truncate'>{user.email}</p>
                         </div>
                     </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator/>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href="/account/settings" className="cursor-pointer">
-                        <Settings className="size-4"/>
+                    <Link href='/account/settings' className='cursor-pointer'>
+                        <Settings className='size-4' />
                         <span>{t('settings')}</span>
                     </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <LogOut className="size-4"/>
+                <DropdownMenuItem onClick={handleSignOut} className='cursor-pointer'>
+                    <LogOut className='size-4' />
                     <span>{t('signOut')}</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>

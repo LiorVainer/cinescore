@@ -3,8 +3,8 @@ export const APP_CONFIG = {
     version: '1.0.0',
     description: {
         he: 'אפליקציית ביקורות סרטים',
-        en: 'Movie Reviews Application'
-    }
+        en: 'Movie Reviews Application',
+    },
 };
 
 // Legacy export for backward compatibility

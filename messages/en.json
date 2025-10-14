@@ -35,6 +35,19 @@
     "showLess": "Show Less",
     "trailers": "Trailers"
   },
+  "actor": {
+    "notFound": "Actor Not Found",
+    "pageDescription": "View {name}'s profile and filmography",
+    "backToMovie": "Back to Movie",
+    "loading": "Loading actor details...",
+    "errorLoading": "Failed to load actor details",
+    "biography": "Biography",
+    "credits": "Credits",
+    "title": "Title",
+    "character": "Character",
+    "releaseDate": "Release Date",
+    "unknown": "Unknown"
+  },
   "filters": {
     "sortBy": "Sort by",
     "genre": "Genre",

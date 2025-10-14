@@ -1,8 +1,8 @@
 'use client';
 
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {type SortValue, useSortOptions} from '@/constants/sort.const';
-import {useTranslations} from 'next-intl';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { type SortValue, useSortOptions } from '@/constants/sort.const';
+import { useTranslations } from 'next-intl';
 
 export function SortSelect({ value, onChange }: { value: SortValue; onChange: (v: SortValue) => void }) {
     const sortOptions = useSortOptions();

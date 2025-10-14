@@ -9,17 +9,19 @@ datasource db {
 }
 
 model User {
-  id            String         @id
+  id            String           @id
   name          String
-  email         String         @unique
-  emailVerified Boolean        @default(false)
+  email         String           @unique
+  emailVerified Boolean          @default(false)
   image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @default(now()) @updatedAt
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @default(now()) @updatedAt
   accounts      Account[]
   notifications Notification[]
   sessions      Session[]
-  subscriptions Subscription[]
+  follows       Follow[]
+  interests     Interest[]
+  preferences   UserPreferences?
 
   @@map("user")
 }
@@ -29,7 +31,7 @@ model Session {
   expiresAt DateTime
   token     String   @unique
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
   ipAddress String?
   userAgent String?
   userId    String
@@ -68,32 +70,97 @@ model Verification {
   @@map("verification")
 }
 
-model Subscription {
+enum FollowType {
+  ACTOR
+  GENRE
+}
+
+enum InterestType {
+  ACTOR
+  GENRE
+  RATING
+  DURATION_MIN
+  DURATION_MAX
+}
+
+enum Language {
+  he_IL
+  en_US
+}
+
+enum NotifyMethod {
+  EMAIL
+  // SMS
+  // PUSH
+}
+
+model UserPreferences {
   id        String         @id @default(cuid())
-  userId    String
-  threshold Float
-  genre     String?
+  userId    String         @unique
+  notifyBy  NotifyMethod[] @default([EMAIL])
   createdAt DateTime       @default(now())
   updatedAt DateTime       @default(now()) @updatedAt
-  notifyBy  NotifyMethod[]
   user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([threshold])
-  @@map("subscription")
+  @@map("user_preferences")
+}
+
+model Follow {
+  id        String     @id @default(cuid())
+  userId    String
+  type      FollowType
+  value     String // actor name or genre name
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, value])
+  @@index([type])
+  @@index([userId])
+  @@map("follow")
+}
+
+model Interest {
+  id            String              @id @default(cuid())
+  userId        String
+  name          String // User-friendly name: "High-rated Action with Emma Stone"
+  conditions    InterestCondition[]
+  notifications Notification[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @default(now()) @updatedAt
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("interest")
+}
+
+model InterestCondition {
+  id           String       @id @default(cuid())
+  interestId   String
+  type         InterestType
+  stringValue  String? // For ACTOR/GENRE: the name
+  numericValue Float? // For RATING/DURATION_MIN/DURATION_MAX: the threshold or duration value
+  interest     Interest     @relation(fields: [interestId], references: [id], onDelete: Cascade)
+
+  @@index([interestId])
+  @@map("interest_condition")
 }
 
 model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  movieId   String
-  sentAt    DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String    @id @default(cuid())
+  userId     String
+  movieId    String
+  interestId String? // Which interest triggered this notification
+  sentAt     DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now()) @updatedAt
+  movie      Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interest   Interest? @relation(fields: [interestId], references: [id], onDelete: SetNull)
 
   @@unique([userId, movieId])
   @@index([sentAt])
+  @@index([interestId])
   @@map("notification")
 }
 
@@ -227,15 +294,4 @@ model Cast {
 
   @@unique([movieId, actorId])
   @@map("cast")
-}
-
-enum Language {
-  he_IL
-  en_US
-}
-
-enum NotifyMethod {
-  EMAIL
-  // SMS
-  // PUSH
 }

@@ -1,5 +1,5 @@
-import {motion} from 'motion/react';
-import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
+import { motion } from 'motion/react';
+import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
 
 // Type for genres with translated names from MovieWithLanguageTranslation
 type GenreWithTranslation = {
@@ -14,7 +14,7 @@ export type MovieGenresProps = {
     layoutIdEnabled?: boolean;
 };
 
-export const MovieGenres = ({genres, idSuffix, layoutIdEnabled = true}: MovieGenresProps) => {
+export const MovieGenres = ({ genres, idSuffix, layoutIdEnabled = true }: MovieGenresProps) => {
     return (
         <motion.div
             layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.GENRES(idSuffix) : undefined}
