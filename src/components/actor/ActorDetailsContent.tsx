@@ -68,6 +68,7 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
                         className="
       fixed top-0 left-0 right-0 z-50
       bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60
+      rounded-t-lg
       border-b p-4
     "
                         style={{
