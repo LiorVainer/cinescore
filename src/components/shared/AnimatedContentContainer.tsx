@@ -77,7 +77,7 @@ export function AnimatedContentContainer({
                 {backgroundImageUrl && (
                     <motion.div
                         key={`bg-${drawerType}-${movieId || tmdbActorId}`}
-                        className={`absolute inset-0 z-0 overflow-hidden ${containerClassName}`}
+                        className={`absolute inset-0 z-0 ${containerClassName}`}
                         initial={{opacity: 0}}
                         animate={{opacity: 1}}
                         exit={{opacity: 0}}
@@ -133,7 +133,7 @@ export function AnimatedContentContainer({
                             <motion.div
                                 layout
                                 ref={scrollContainerRef}
-                                className={`h-full overflow-y-auto` /* Ensure proper scrolling */}
+                                className={`h-full` /* Ensure proper scrolling */}
                                 transition={layoutTransition}
                             >
                                 <Suspense fallback={<DrawerLoadingFallback/>}>

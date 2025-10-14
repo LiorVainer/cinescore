@@ -1,7 +1,9 @@
 'use client';
 
 import {ArrowLeft, Loader2} from 'lucide-react';
+import {useQueries} from '@tanstack/react-query';
 import {useActorFullDetails} from '@/lib/query/actor/hooks';
+import {actorFullDetailsOptions} from '@/lib/query/actor/query-options';
 import {useLocale, useTranslations} from 'next-intl';
 import {authClient} from '@/lib/auth-client';
 import {useOverlayState} from '@/hooks/use-overlay-state';
@@ -19,7 +21,21 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
     const locale = useLocale();
     const t = useTranslations('actor');
     const tmdbActorIdNum = parseInt(tmdbActorId, 10);
-    const {data: actor, isLoading, error} = useActorFullDetails(tmdbActorIdNum, locale);
+
+    // Preload all actor details using useQueries
+    const actorQueries = useQueries({
+        queries: [
+            actorFullDetailsOptions(tmdbActorIdNum, locale),
+        ].map((options) => ({
+            queryKey: options.queryKey,
+            queryFn: options.queryFn,
+            staleTime: options.staleTime,
+        })),
+    });
+
+    const actor = actorQueries[0]?.data;
+    const isLoading = actorQueries.some((query) => query.isLoading);
+    const error = actorQueries.some((query) => query.isError);
     const {data: session} = authClient.useSession();
     const {movieId, openMovie} = useOverlayState();
 

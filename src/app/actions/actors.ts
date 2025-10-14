@@ -59,17 +59,11 @@ export async function getActorFullDetails(actorId: number, locale: string): Prom
         const dto = convertPersonDetailsToDto(details as PersonDetails);
         const credits = await enrichCreditsWithOmdb(combinedCredits);
 
-        console.log('🎬 Enriched actor credits:', credits);
-        console.log('🎭 Actor details:', dto);
-
         const knownFor = credits
             ?.filter((c) => !!c.imdbRating)
             .sort((a, b) => (b.imdbRating ?? 0) - (a.imdbRating ?? 0))
             .slice(0, 5)
             .map((c) => c.title);
-
-        // Allow revalidation via tag (for client cache refresh)
-
 
         return {...dto, credits, knownFor};
     } catch (error) {

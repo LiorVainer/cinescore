@@ -15,7 +15,7 @@ import {cva, type VariantProps} from 'class-variance-authority';
 import {cn} from '@/lib/utils';
 
 const expandedMovieCardMobileVariants = cva(
-    'w-full flex flex-col items-stretch rounded-t-xl relative overflow-hidden',
+    'w-full flex flex-col items-stretch rounded-t-xl relative',
     {
         variants: {
             size: {

@@ -14,7 +14,7 @@ import {dbActorDetailsOptions, actorFullDetailsOptions} from './query-options';
  * Hook to fetch a single actor by ID
  * Automatically handles loading, error states, and caching
  */
-export function useActorDetail(actorId: string, locale: string, options?: { enabled?: boolean }) {
+export function useActorDetailsFromDB(actorId: string, locale: string, options?: { enabled?: boolean }) {
     return useQuery({
         ...dbActorDetailsOptions(actorId, locale),
         enabled: options?.enabled ?? true,

@@ -35,7 +35,7 @@ export function MobileDrawer() {
 
     return (
         <Drawer open={isOpen} onOpenChange={(open) => !open && close()}>
-            <DrawerContent className='p-0 overflow-y-hidden'>
+            <DrawerContent className='p-0'>
                 {/* Add visually hidden title for accessibility */}
                 <VisuallyHidden asChild>
                     <DrawerTitle>
@@ -43,16 +43,18 @@ export function MobileDrawer() {
                     </DrawerTitle>
                 </VisuallyHidden>
 
-                <AnimatedContentContainer
-                    drawerType={entityType}
-                    movieId={movieId}
-                    tmdbActorId={actorId}
-                    movieData={movieData}
-                    actorProfilePath={actorProfilePath}
-                    isLoadingMovie={isLoadingMovie}
-                    onClose={close}
-                    variant='drawer'
-                />
+                <div className="max-h-[90vh] overflow-y-auto">
+                    <AnimatedContentContainer
+                        drawerType={entityType}
+                        movieId={movieId}
+                        tmdbActorId={actorId}
+                        movieData={movieData}
+                        actorProfilePath={actorProfilePath}
+                        isLoadingMovie={isLoadingMovie}
+                        onClose={close}
+                        variant='drawer'
+                    />
+                </div>
             </DrawerContent>
         </Drawer>
     );
