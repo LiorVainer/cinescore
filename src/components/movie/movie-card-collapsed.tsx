@@ -35,7 +35,7 @@ export default function CollapsedMovieCard({
             key={`card-${title}-${idSuffix}`}
             onClick={onClickAction}
             className={[
-                'flex justify-between items-stretch hover:bg-muted rounded-xl cursor-pointer border shadow overflow-hidden relative',
+                'flex justify-between items-stretch hover:bg-muted rounded-xl cursor-pointer shadow-md overflow-hidden relative',
                 className,
             ]
                 .filter(Boolean)

@@ -77,7 +77,11 @@ export default async function LocaleLayout({
                 {/* Wrap entire app in LayoutGroup to enable shared layout animations */}
                 <LayoutGroup>
                     <AppNavbar/>
-                    <div style={{paddingTop: '3.25rem'}} className='h-screen lg:px-[10%]'>
+                    <div className="relative min-h-screen lg:px-[10%] overflow-hidden" style={{paddingTop: '3.25rem'}}>
+                        {/* ✨ Background layer */}
+                        <div className="fixed inset-0 -z-10 bg-gradient-animated pointer-events-none"/>
+
+                        {/* App content */}
                         {children}
                     </div>
                     {/* Render modals once at app level */}
