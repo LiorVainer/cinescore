@@ -9,8 +9,7 @@ import {Button} from '@/components/ui/button';
 import {useTranslations} from 'next-intl';
 import {Link} from '@/i18n/navigation';
 import {NavbarLogo} from './navbar-logo';
-import {LucideCircleUserRound} from 'lucide-react';
-import {cn} from '@/lib/utils';
+import {User} from 'lucide-react';
 import {UserButton} from '@/components/auth/user-button';
 
 export const AppNavbar = () => {
@@ -41,7 +40,7 @@ export const NavbarContent = () => {
 
     return (
         <nav className='flex items-center gap-6'>
-            <div className='flex items-center gap-4'>
+            <div className='flex items-center gap-2 md:gap-6'>
                 <div className='flex items-center gap-2'>
                     <ModeToggle />
                     <LanguageToggle />
@@ -55,9 +54,9 @@ export const NavbarContent = () => {
 
                     <SignedOut>
                         <Link href='/auth/sign-in'>
-                            <Button size={isMobile ? 'icon' : 'sm'} className={cn('rounded-full font-semibold p-0', isMobile && 'size-8')}>
-                                <LucideCircleUserRound className='md:hidden size-6' />
-                                <span className='hidden md:inline'>{t('signIn')}</span>
+                            <Button size='sm' className='rounded-full font-semibold' variant={isMobile ? 'outline' : 'default'}>
+                                <User className='sm:hidden size-4' />
+                                <span className='hidden sm:inline'>{t('signIn')}</span>
                             </Button>
                         </Link>
                     </SignedOut>
@@ -66,3 +65,4 @@ export const NavbarContent = () => {
         </nav>
     );
 };
+
