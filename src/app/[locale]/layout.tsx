@@ -10,6 +10,7 @@ import {routing} from '@/i18n/routing';
 import {DesktopModal} from '@/components/shared/DesktopModal';
 import {MobileDrawer} from '@/components/shared/MobileDrawer';
 import {LayoutGroup} from 'motion/react';
+import {Toaster} from "@/components/ui/sonner";
 
 // Force dynamic rendering for all pages under this layout
 // This is required because the AppNavbar uses auth components that rely on useSearchParams()
@@ -85,6 +86,7 @@ export default async function LocaleLayout({
                         {children}
                     </div>
                     {/* Render modals once at app level */}
+                    <Toaster position={'top-center'} richColors/>
                     <DesktopModal/>
                     <MobileDrawer/>
                 </LayoutGroup>

@@ -53,7 +53,15 @@
     "title": "כותרת",
     "character": "דמות",
     "releaseYear": "שנת יציאה",
-    "unknown": "לא ידוע"
+    "unknown": "לא ידוע",
+    "cancel": "ביטול",
+    "signInToFollow": {
+      "title": "התחבר כדי לעקוב",
+      "description": "עליך להיות מחובר כדי לעקוב אחר שחקנים. התחבר כדי לנהל את המעקב ולקבל עדכונים.",
+      "action": "התחבר"
+    },
+    "followingToast": "כעת אתה עוקב אחרי {name}",
+    "unfollowedToast": "הפסקת לעקוב אחרי {name}"
   },
   "filters": {
     "sortBy": "מיין לפי",

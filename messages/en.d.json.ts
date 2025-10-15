@@ -56,7 +56,15 @@ declare const messages: {
     "title": "Title",
     "character": "Character",
     "releaseYear": "Release Year",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "cancel": "Cancel",
+    "signInToFollow": {
+      "title": "Sign in to follow",
+      "description": "You must be signed in to follow actors. Sign in to manage your follows and get updates.",
+      "action": "Sign in"
+    },
+    "followingToast": "You're now following {name}",
+    "unfollowedToast": "You unfollowed {name}"
   },
   "filters": {
     "sortBy": "Sort by",
