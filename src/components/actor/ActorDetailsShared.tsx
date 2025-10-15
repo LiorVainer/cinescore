@@ -1,7 +1,6 @@
 'use client';
 
 import {Badge} from '@/components/ui/badge';
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {ActorImage} from '@/components/actor/actor-image';
 import {Separator} from '@/components/ui/separator';
 import {ActorFollowButton} from '@/components/follows/ActorFollowButton';
@@ -9,6 +8,7 @@ import {FollowType} from '@prisma/client';
 import {CalendarDays, Film, MapPin} from 'lucide-react';
 import Link from 'next/link';
 import {ActorDetailsDto} from "@/models/actors.model";
+import {Skeleton} from '@/components/ui/skeleton';
 
 interface Movie {
     id: string;
@@ -19,7 +19,8 @@ interface Movie {
 }
 
 interface ActorProfileProps {
-    actor: ActorDetailsDto;
+    // accept partial so basic payloads work without full DTO
+    actor: Partial<ActorDetailsDto>;
     userId?: string;
 }
 
@@ -27,14 +28,15 @@ export function ActorProfile({actor, userId}: ActorProfileProps) {
     return (
         <div className='flex flex-col items-center mb-6'>
             <div className='flex flex-col gap-4 items-center'>
-                <ActorImage src={actor.profilePath} alt={actor.name} className='w-30 rounded-lg'/>
+                <ActorImage src={actor.profilePath ?? '/window.svg'} alt={actor.name ?? 'Actor'}
+                            className='w-30 rounded-lg'/>
 
                 <h2 className='text-2xl font-bold text-center mb-2'>{actor.name}</h2>
             </div>
 
             {userId && (
                 <div className='mb-4 w-full'>
-                    <ActorFollowButton userId={userId} type={FollowType.ACTOR} value={actor.name}/>
+                    <ActorFollowButton userId={userId} type={FollowType.ACTOR} value={actor.name ?? ''}/>
                 </div>
             )}
 
@@ -45,7 +47,7 @@ export function ActorProfile({actor, userId}: ActorProfileProps) {
                     <div className='flex items-center gap-2 text-sm'>
                         <CalendarDays className='h-4 w-4 text-muted-foreground'/>
                         <span>
-                            {new Date(actor.birthday).toLocaleDateString('en-US', {
+                            {new Date(actor.birthday as any).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric',
@@ -61,12 +63,7 @@ export function ActorProfile({actor, userId}: ActorProfileProps) {
                     </div>
                 )}
 
-                {/*{actor.movies && (*/}
-                {/*    <div className='flex items-center gap-2 text-sm'>*/}
-                {/*        <Film className='h-4 w-4 text-muted-foreground' />*/}
-                {/*        <span>{actor.movies.length} Movies</span>*/}
-                {/*    </div>*/}
-                {/*)}*/}
+                {/* biography handled by ActorDetailsContent/ActorBasicContent */}
             </div>
         </div>
     );
@@ -141,6 +138,61 @@ export function ActorFilmography({movies}: ActorFilmographyProps) {
                     <p className='text-sm'>No movies found for this actor.</p>
                 </div>
             )}
+        </div>
+    );
+}
+
+// Basic content component that uses only lightweight actor data
+export function ActorBasicContent({basicActor, userId}:{
+    basicActor: { id:number; tmdbId:number; name:string; profilePath:string|null; biography:string|null } | null;
+    userId?: string | undefined;
+}){
+    if(!basicActor) return null;
+
+    return (
+        <div className='space-y-6'>
+            <ActorProfile actor={{
+                name: basicActor.name,
+                profilePath: basicActor.profilePath ?? undefined,
+                biography: basicActor.biography ?? undefined,
+            }} userId={userId}/>
+
+            {basicActor.biography && (
+                <div className='mb-4'>
+                    <h3 className='text-lg font-semibold mb-2'>Biography</h3>
+                    <p className='text-sm text-muted-foreground'>{basicActor.biography}</p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// Skeleton for ActorProfile layout to show while basic data loads
+export function ActorProfileSkeleton() {
+    return (
+        <div className='flex flex-col items-center mb-6 gap-2'>
+            <div className='flex flex-col gap-4 items-center w-full'>
+                <Skeleton className='w-30 h-40 rounded-lg' />
+                <Skeleton className='h-6 w-48 rounded-md' />
+            </div>
+
+            <div className='mb-4 w-full flex justify-center'>
+                <Skeleton className='h-8 w-24 rounded-md' />
+            </div>
+
+            <Separator className='my-4 w-full'/>
+
+            <div className='space-y-3 w-full'>
+                <div className='flex items-center gap-2 text-sm'>
+                    <Skeleton className='h-4 w-6 rounded' />
+                    <Skeleton className='h-4 w-32 rounded' />
+                </div>
+
+                <div className='flex items-center gap-2 text-sm'>
+                    <Skeleton className='h-4 w-6 rounded' />
+                    <Skeleton className='h-4 w-40 rounded' />
+                </div>
+            </div>
         </div>
     );
 }

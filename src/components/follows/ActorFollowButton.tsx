@@ -1,10 +1,11 @@
 'use client';
 
-import { useUserFollows, useCreateFollow, useDeleteFollow } from '@/lib/query/follow';
-import { FollowType } from '@prisma/client';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { UserPlus, UserCheck } from 'lucide-react';
+import {useCreateFollow, useDeleteFollow, useUserFollows} from '@/lib/query/follow';
+import {FollowType} from '@prisma/client';
+import {toast} from 'sonner';
+import {Button} from '@/components/ui/button';
+import {UserCheck, UserPlus} from 'lucide-react';
+import {useTranslations} from 'next-intl';
 
 interface ActorFollowButtonProps {
     userId: string;
@@ -26,6 +27,7 @@ export function ActorFollowButton({
     const { data: follows } = useUserFollows(userId);
     const { mutate: createFollow, isPending: isCreating } = useCreateFollow(userId);
     const { mutate: deleteFollow, isPending: isDeleting } = useDeleteFollow(userId);
+    const t = useTranslations('general');
 
     const existingFollow = follows?.find((f) => f.type === type && f.value === value);
     const isFollowing = !!existingFollow;
@@ -56,17 +58,15 @@ export function ActorFollowButton({
             size={size}
             className={fullWidth ? 'w-full' : ''}
         >
-            {isPending ? (
-                <>Loading...</>
-            ) : isFollowing ? (
+            {isPending ? t('loading') : isFollowing ? (
                 <>
                     <UserCheck className='mr-2 h-4 w-4' />
-                    Following
+                    {t('following')}
                 </>
             ) : (
                 <>
                     <UserPlus className='mr-2 h-4 w-4' />
-                    Follow
+                    {t('follow')}
                 </>
             )}
         </Button>

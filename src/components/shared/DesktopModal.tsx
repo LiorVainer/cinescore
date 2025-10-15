@@ -22,7 +22,7 @@ export function DesktopModal() {
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-            <DialogContent className='p-0 max-w-[95vw] w-[800px] max-h-[75vh] overflow-y-auto border-none'>
+            <DialogContent className='p-0 max-w-[95vw] w-[800px] max-h-[75vh] border-none overflow-hidden'>
                 <VisuallyHidden asChild>
                     <DrawerTitle>
                         {entityType === 'movie' ? movieData?.title : entityType === 'actor' ? 'Actor Details' : 'Content'}

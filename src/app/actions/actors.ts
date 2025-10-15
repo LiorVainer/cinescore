@@ -7,13 +7,7 @@ import {TMDB} from "@/constants/movies/api";
 import {ActorCreditDto, ActorDetailsDto} from "@/models/actors.model";
 import {mapLocalToTmdbLanguage} from "@/constants/languages.const";
 
-import {revalidateTag} from 'next/cache';
-import {
-    PersonDetails,
-    PersonCombinedCredits,
-    PersonMovieCast,
-    PersonTvShowCast,
-} from 'tmdb-ts';
+import {PersonCombinedCredits, PersonDetails, PersonMovieCast, PersonTvShowCast,} from 'tmdb-ts';
 
 /**
  * Fetches an actor by ID with translations and filmography
@@ -68,6 +62,28 @@ export async function getActorFullDetails(actorId: number, locale: string): Prom
         return {...dto, credits, knownFor};
     } catch (error) {
         console.error('❌ Failed to fetch full actor details:', error);
+        return null;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// NEW: BASIC DETAILS SERVER ACTION
+// Returns a small payload used for lists /previews (no credits, no alsoKnownAs)
+// -----------------------------------------------------------------------------
+
+export async function getActorBasicDetail(actorId: number, locale: string): Promise<{
+    id: number;
+    tmdbId: number;
+    name: string;
+    profilePath: string | null;
+    biography: string | null;
+} | null> {
+    try {
+        const details = await tmdb.people.details(actorId, undefined, locale);
+
+        return convertPersonDetailsToDto(details as PersonDetails);
+    } catch (error) {
+        console.error('❌ Failed to fetch basic actor details:', error);
         return null;
     }
 }
@@ -178,4 +194,3 @@ async function enrichCreditsWithOmdb(
 
     return enriched.slice(0, 20);
 }
-

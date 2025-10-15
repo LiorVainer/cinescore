@@ -8,13 +8,13 @@
 'use client';
 
 import {useQueries, useQuery, useSuspenseQuery} from '@tanstack/react-query';
-import {dbActorDetailsOptions, actorFullDetailsOptions} from './query-options';
+import {dbActorDetailsOptions, actorFullDetailsOptions, actorBasicDetailsOptions} from './query-options';
 
 /**
  * Hook to fetch a single actor by ID
  * Automatically handles loading, error states, and caching
  */
-export function useActorDetailsFromDB(actorId: string, locale: string, options?: { enabled?: boolean }) {
+export function useActorDetail(actorId: string, locale: string, options?: { enabled?: boolean }) {
     return useQuery({
         ...dbActorDetailsOptions(actorId, locale),
         enabled: options?.enabled ?? true,
@@ -29,7 +29,17 @@ export function useActorFullDetails(tmdbActorId: number, locale: string, options
 }
 
 /**
- * Hook to fetch multiple TMDB actor details in parallel
+ * Hook to fetch the basic (lightweight) details for an actor (used in lists/prefetch)
+ */
+export function useActorBasicDetail(tmdbActorId: number, locale: string, options?: { enabled?: boolean }) {
+    return useQuery({
+        ...actorBasicDetailsOptions(tmdbActorId, locale),
+        enabled: options?.enabled ?? true,
+    });
+}
+
+/**
+ * Hook to fetch multiple TMDB actor basic details in parallel
  * Automatically handles loading, error states, and caching for all actors
  *
  * @param tmdbActorIds - Array of TMDB actor IDs to fetch
@@ -53,14 +63,14 @@ export function useTmdbActorsDetails(
 ) {
     return useQueries({
         queries: tmdbActorIds.map((tmdbActorId) => ({
-            ...actorFullDetailsOptions(tmdbActorId, locale),
+            ...actorBasicDetailsOptions(tmdbActorId, locale),
             enabled: options?.enabled ?? true,
         })),
     });
 }
 
 /**
- * Hook to fetch multiple TMDB actor details with combined result
+ * Hook to fetch multiple TMDB actor basic details with combined result
  * Returns a single object with aggregated data and loading states
  *
  * @param tmdbActorIds - Array of TMDB actor IDs to fetch
@@ -81,7 +91,7 @@ export function useTmdbActorsDetailsCombined(
 ) {
     return useQueries({
         queries: tmdbActorIds.map((tmdbActorId) => ({
-            ...actorFullDetailsOptions(tmdbActorId, locale),
+            ...actorBasicDetailsOptions(tmdbActorId, locale),
             enabled: options?.enabled ?? true,
         })),
         combine: (results) => ({

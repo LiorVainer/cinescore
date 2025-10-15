@@ -6,7 +6,7 @@
  */
 
 import {queryOptions} from '@tanstack/react-query';
-import {getActorByIdFromDB, getActorFullDetails} from '@/app/actions/actors';
+import {getActorByIdFromDB, getActorFullDetails, getActorBasicDetail} from '@/app/actions/actors';
 import {actorKeys} from './query-keys';
 
 /**
@@ -24,6 +24,15 @@ export function actorFullDetailsOptions(tmdbActorId: number, locale: string) {
     return queryOptions({
         queryKey: actorKeys.tmdbDetails(tmdbActorId, locale),
         queryFn: () => getActorFullDetails(tmdbActorId, locale),
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+}
+
+// Lightweight/basic actor details used for lists/prefetching (no credits or heavy enrichment)
+export function actorBasicDetailsOptions(tmdbActorId: number, locale: string) {
+    return queryOptions({
+        queryKey: actorKeys.tmdbBasic(tmdbActorId, locale),
+        queryFn: () => getActorBasicDetail(tmdbActorId, locale),
         staleTime: 1000 * 60 * 5, // 5 minutes
     });
 }

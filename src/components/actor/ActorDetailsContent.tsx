@@ -1,17 +1,16 @@
 'use client';
 
-import {ArrowLeft, Loader2} from 'lucide-react';
-import {useQueries} from '@tanstack/react-query';
-import {useActorFullDetails} from '@/lib/query/actor/hooks';
-import {actorFullDetailsOptions} from '@/lib/query/actor/query-options';
+import {ArrowLeft} from 'lucide-react';
+import {useActorBasicDetail, useActorFullDetails} from '@/lib/query/actor/hooks';
 import {useLocale, useTranslations} from 'next-intl';
 import {authClient} from '@/lib/auth-client';
 import {useOverlayState} from '@/hooks/use-overlay-state';
 import {Button} from '@/components/ui/button';
-import {ActorBiography, ActorProfile} from './ActorDetailsShared';
+import {ActorProfile, ActorProfileSkeleton} from './ActorDetailsShared';
 import React, {useEffect} from 'react';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
+import {Skeleton} from '@/components/ui/skeleton';
 
 interface ActorDetailContentProps {
     tmdbActorId: string;
@@ -22,20 +21,21 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
     const t = useTranslations('actor');
     const tmdbActorIdNum = parseInt(tmdbActorId, 10);
 
-    // Preload all actor details using useQueries
-    const actorQueries = useQueries({
-        queries: [
-            actorFullDetailsOptions(tmdbActorIdNum, locale),
-        ].map((options) => ({
-            queryKey: options.queryKey,
-            queryFn: options.queryFn,
-            staleTime: options.staleTime,
-        })),
-    });
+    // Read basic actor details from cache (populated by useTmdbActorsDetails in cast) or fetch if missing
+    const {
+        data: basicActor,
+        isLoading: isBasicLoading,
+        isError: basicError
+    } = useActorBasicDetail(tmdbActorIdNum, locale, {enabled: true});
 
-    const actor = actorQueries[0]?.data;
-    const isLoading = actorQueries.some((query) => query.isLoading);
-    const error = actorQueries.some((query) => query.isError);
+    // Fetch full details (credits, knownFor) only inside this detail component
+    const {
+        data: fullActor,
+        isLoading: isFullLoading,
+        isError: fullError
+    } = useActorFullDetails(tmdbActorIdNum, locale, {enabled: true});
+
+    const actor = fullActor ?? basicActor; // prefer full data when available
     const {data: session} = authClient.useSession();
     const {movieId, openMovie} = useOverlayState();
 
@@ -56,7 +56,14 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
         }
     }, [movieId, openMovie]);
 
-    console.log('ActorDetailsContent render', {tmdbActorId, actor, isLoading, error});
+    console.log('ActorDetailsContent render', {
+        tmdbActorId,
+        actor,
+        isBasicLoading,
+        isFullLoading,
+        basicError,
+        fullError
+    });
 
     return (
         <div
@@ -92,72 +99,66 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
                     </div>
                 )}
 
-                <div className='p-4 md:p-8 overflow-y-auto pt-20'>
-                    {/* Loading State */}
-                    {isLoading && (
-                        <div className='flex flex-col items-center justify-center py-12'>
-                            <Loader2 className='h-8 w-8 animate-spin text-muted-foreground mb-2'/>
-                            <p className='text-sm text-muted-foreground'>{t('loading')}</p>
-                        </div>
+                <div className='p-4 md:p-8 overflow-y-auto pt-24 md:pt-24'>
+                    {/* Basic content: show immediately if available, otherwise basic skeleton */}
+                    {isBasicLoading ? (
+                        <ActorProfileSkeleton/>
+                    ) : (
+                        <ActorProfile actor={basicActor} userId={session?.user?.id}/>
                     )}
 
-                    {/* Error State */}
-                    {error && (
+                    {isFullLoading ? (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>{t('credits')}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className='flex flex-col gap-3'>
+                                    <Skeleton className='h-4 w-1/2'/>
+                                    <Skeleton className='h-4 w-3/4'/>
+                                    <Skeleton className='h-4 w-1/3'/>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ) : fullActor?.credits && fullActor.credits.length > 0 ? (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>{t('credits')}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader dir={'rtl'}>
+                                        <TableRow>
+                                            <TableHead>{t('title')}</TableHead>
+                                            <TableHead>{t('character')}</TableHead>
+                                            <TableHead>{t('releaseYear')}</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {fullActor.credits.map((credit) => {
+                                            const year =
+                                                credit.releaseDate && !isNaN(Date.parse(credit.releaseDate))
+                                                    ? new Date(credit.releaseDate).getFullYear()
+                                                    : t('unknown');
+
+                                            return (
+                                                <TableRow key={credit.id}>
+                                                    <TableCell>{credit.title}</TableCell>
+                                                    <TableCell>{credit.character || t('unknown')}</TableCell>
+                                                    <TableCell>{year}</TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    ) : null}
+
+                    {/* Error states */}
+                    {(basicError || fullError) && (
                         <div className='flex flex-col items-center justify-center py-12'>
                             <p className='text-sm text-destructive'>{t('errorLoading')}</p>
-                        </div>
-                    )}
-
-                    {/* Actor Content - composed from shared components */}
-                    {actor && (
-                        <div className='space-y-6'>
-                            <ActorProfile actor={actor} userId={session?.user?.id}/>
-
-                            {actor.biography && (
-                                <Card className='mb-4'>
-                                    <CardHeader>
-                                        <CardTitle>{t('biography')}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className='text-sm'>{actor.biography}</p>
-                                    </CardContent>
-                                </Card>
-                            )}
-
-                            {actor.credits && actor.credits.length > 0 && (
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>{t('credits')}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <Table>
-                                            <TableHeader dir={'rtl'}>
-                                                <TableRow>
-                                                    <TableHead>{t('title')}</TableHead>
-                                                    <TableHead>{t('character')}</TableHead>
-                                                    <TableHead>{t('releaseYear')}</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {actor.credits.map((credit) => {
-                                                    const year =
-                                                        credit.releaseDate && !isNaN(Date.parse(credit.releaseDate))
-                                                            ? new Date(credit.releaseDate).getFullYear()
-                                                            : t('unknown');
-
-                                                    return (
-                                                        <TableRow key={credit.id}>
-                                                            <TableCell>{credit.title}</TableCell>
-                                                            <TableCell>{credit.character || t('unknown')}</TableCell>
-                                                            <TableCell>{year}</TableCell>
-                                                        </TableRow>
-                                                    )
-                                                })}
-                                            </TableBody>
-                                        </Table>
-                                    </CardContent>
-                                </Card>
-                            )}
                         </div>
                     )}
                 </div>

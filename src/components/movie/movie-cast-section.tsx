@@ -7,9 +7,7 @@ import {useIsMobile} from '@/hooks/use-mobile';
 import {motion, Variants} from 'motion/react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
 import {useOverlayState} from '@/hooks/use-overlay-state';
-import {useQueryClient} from '@tanstack/react-query';
-import {actorFullDetailsOptions} from '@/lib/query/actor/query-options';
-import Image from 'next/image';
+import {useTmdbActorsDetails} from '@/lib/query/actor/hooks';
 import {ActorImage} from "@/components/actor/actor-image";
 
 type MovieCastSectionProps = {
@@ -22,7 +20,11 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
     const locale = useLocale();
     const [showAllCast, setShowAllCast] = React.useState(false);
     const {openActor} = useOverlayState();
-    const queryClient = useQueryClient();
+
+    // Prepare list of tmdb actor ids for batch load
+    const tmdbIds = React.useMemo(() => cast.map((c) => c.actor.tmdbId).filter(Boolean) as number[], [cast]);
+
+    const basicResults = useTmdbActorsDetails(tmdbIds, locale, {enabled: tmdbIds.length > 0});
 
     // Handle actor click for both mobile and desktop
     const handleActorClick = useCallback(
@@ -33,14 +35,6 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
             }
         },
         [openActor],
-    );
-
-    // Prefetch actor data on hover/touch to reduce loading time
-    const handleActorHover = useCallback(
-        (tmdbActorId: number) => {
-            void queryClient.prefetchQuery(actorFullDetailsOptions(tmdbActorId, locale));
-        },
-        [queryClient, locale],
     );
 
     const toggleShowAll = useCallback(() => {
@@ -93,28 +87,36 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
                     initial='hidden'
                     animate='visible'
                 >
-                    {displayedCast.map((castMember, index) => (
-                        <motion.div key={castMember.id} variants={cardVariants} custom={index}>
-                            <div
-                                onClick={(e) => handleActorClick(castMember.actor.tmdbId, e)}
-                                onTouchStart={() => castMember.actor.tmdbId && handleActorHover(castMember.actor.tmdbId)}
-                                onMouseEnter={() => castMember.actor.tmdbId && handleActorHover(castMember.actor.tmdbId)}
-                                className='relative block text-xs overflow-hidden group rounded-lg cursor-pointer transition-transform hover:scale-105'
-                            >
-                                <ActorImage
-                                    src={castMember.actor.profileUrl ?? '/window.svg'}
-                                    alt={castMember.actor.name}
-                                    loading={index < itemsPerRow ? 'eager' : 'lazy'}
-                                />
+                    {displayedCast.map((castMember, index) => {
+                        const tmdbId = castMember.actor.tmdbId;
+                        // basicResults align with filtered tmdbIds array; find index
+                        const basicIndex = tmdbIds.indexOf(tmdbId as number);
+                        const basic = basicIndex >= 0 ? basicResults[basicIndex]?.data : null;
+
+                        const imageSrc = basic?.profilePath ?? castMember.actor.profileUrl ?? '/window.svg';
+                        const nameLabel = basic?.name ?? castMember.actor.name;
+
+                        return (
+                            <motion.div key={castMember.id} variants={cardVariants} custom={index}>
                                 <div
-                                    className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
-                                    <span className='font-medium text-white text-sm line-clamp-2'>
-                                        {castMember.actor.name}
-                                    </span>
+                                    onClick={(e) => handleActorClick(tmdbId, e)}
+                                    className='relative block text-xs overflow-hidden group rounded-lg cursor-pointer transition-transform hover:scale-105'
+                                >
+                                    <ActorImage
+                                        src={imageSrc}
+                                        alt={nameLabel}
+                                        loading={index < itemsPerRow ? 'eager' : 'lazy'}
+                                    />
+                                    <div
+                                        className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
+                                        <span className='font-medium text-white text-sm line-clamp-2'>
+                                            {nameLabel}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        );
+                    })}
                 </motion.div>
                 {hasMoreCast && (
                     <Button variant='outline' size='sm' onClick={toggleShowAll} className='w-full rounded-lg'>

@@ -9,5 +9,6 @@ export const actorKeys = {
     all: ['actors'] as const,
     allDetails: () => [...actorKeys.all, 'details'] as const,
     tmdbDetails: (tmdbId: number, locale: string) => [...actorKeys.allDetails(), 'tmdb', tmdbId, locale] as const,
+    tmdbBasic: (tmdbId: number, locale: string) => [...actorKeys.allDetails(), 'tmdb-basic', tmdbId, locale] as const,
     dbDetails: (id: string, locale: string) => [...actorKeys.allDetails(), 'db', id, locale] as const,
 };

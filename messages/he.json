@@ -2,6 +2,13 @@
   "metadata": {
     "title": "סטארזי"
   },
+  "general": {
+    "loading": "טוען...",
+    "error": "שגיאה",
+    "retry": "נסה שוב",
+    "follow": "עקוב",
+    "following": "עוקב"
+  },
   "nav": {
     "signIn": "התחבר",
     "language": "שפה",

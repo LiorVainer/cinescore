@@ -5,6 +5,13 @@ declare const messages: {
   "metadata": {
     "title": "Starzi"
   },
+  "general": {
+      "loading": "Loading...",
+      "error": "Error",
+      "retry": "Retry",
+      "follow": "Follow",
+      "following": "Following"
+  },
   "nav": {
     "signIn": "Login",
     "language": "Language",
