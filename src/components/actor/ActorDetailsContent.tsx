@@ -101,10 +101,10 @@ export const ActorDetailsContent = React.memo(function ActorDetailContent({tmdbA
 
                 <div className='p-4 md:p-8 overflow-y-auto pt-24 md:pt-24'>
                     {/* Basic content: show immediately if available, otherwise basic skeleton */}
-                    {isBasicLoading ? (
+                    {isBasicLoading || !basicActor ? (
                         <ActorProfileSkeleton/>
                     ) : (
-                        <ActorProfile actor={basicActor} userId={session?.user?.id}/>
+                        <ActorProfile actor={basicActor} />
                     )}
 
                     {isFullLoading ? (

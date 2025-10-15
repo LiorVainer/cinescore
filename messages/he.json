@@ -56,9 +56,9 @@
     "unknown": "לא ידוע",
     "cancel": "ביטול",
     "signInToFollow": {
-      "title": "התחבר כדי לעקוב",
-      "description": "עליך להיות מחובר כדי לעקוב אחר שחקנים. התחבר כדי לנהל את המעקב ולקבל עדכונים.",
-      "action": "התחבר"
+      "title": "רוצה לעקוב אחרי {actorName}?",
+      "description": "התחבר ותתחיל לקבל עדכונים כשעולה סרט חדש של {actorName} — בלי לפספס.",
+      "action": "התחבר עכשיו"
     },
     "followingToast": "כעת אתה עוקב אחרי {name}",
     "unfollowedToast": "הפסקת לעקוב אחרי {name}"

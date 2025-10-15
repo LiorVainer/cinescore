@@ -7,17 +7,17 @@
 
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { createFollow, deleteFollow } from '@/app/actions/follows';
-import { userFollowsOptions, userFollowsByTypeOptions } from './query-options';
-import { followKeys } from './query-keys';
-import type { FollowType } from '@prisma/client';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {createFollow, deleteFollow} from '@/app/actions/follows';
+import {userFollowsByTypeOptions, userFollowsOptions} from './query-options';
+import {followKeys} from './query-keys';
+import type {FollowType} from '@prisma/client';
 
 /**
  * Hook to fetch all follows for a user
  */
-export function useUserFollows(userId: string) {
-    return useQuery(userFollowsOptions(userId));
+export function useUserFollows(userId?: string) {
+    return useQuery({...userFollowsOptions(userId!), enabled: !!userId});
 }
 
 /**
@@ -31,7 +31,7 @@ export function useUserFollowsByType(userId: string, type: 'ACTOR' | 'GENRE') {
  * Hook to create a new follow
  * Automatically invalidates the follows cache on success
  */
-export function useCreateFollow(userId: string) {
+export function useCreateFollow(userId?: string) {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -44,9 +44,11 @@ export function useCreateFollow(userId: string) {
         },
         onSuccess: () => {
             // Invalidate and refetch follows
-            queryClient.invalidateQueries({
-                queryKey: followKeys.byUser(userId),
-            });
+            if (userId) {
+                queryClient.invalidateQueries({
+                    queryKey: followKeys.byUser(userId),
+                });
+            }
         },
     });
 }
@@ -55,7 +57,7 @@ export function useCreateFollow(userId: string) {
  * Hook to delete a follow
  * Supports optimistic updates for instant UI feedback
  */
-export function useDeleteFollow(userId: string) {
+export function useDeleteFollow(userId?: string) {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -68,6 +70,8 @@ export function useDeleteFollow(userId: string) {
         },
         onMutate: async (followId) => {
             // Cancel outgoing refetches
+            if (!userId) throw new Error('User not authenticated');
+
             await queryClient.cancelQueries({
                 queryKey: followKeys.byUser(userId),
             });
@@ -84,15 +88,14 @@ export function useDeleteFollow(userId: string) {
         },
         onError: (err, variables, context) => {
             // Rollback on error
-            if (context?.previousFollows) {
+            if (userId  && context?.previousFollows) {
                 queryClient.setQueryData(followKeys.byUser(userId), context.previousFollows);
             }
         },
         onSettled: () => {
-            // Always refetch after error or success
-            queryClient.invalidateQueries({
-                queryKey: followKeys.byUser(userId),
-            });
+            if (userId) {
+                queryClient.invalidateQueries({ queryKey: followKeys.byUser(userId) });
+            }
         },
     });
 }

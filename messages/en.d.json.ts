@@ -59,9 +59,9 @@ declare const messages: {
     "unknown": "Unknown",
     "cancel": "Cancel",
     "signInToFollow": {
-      "title": "Sign in to follow",
-      "description": "You must be signed in to follow actors. Sign in to manage your follows and get updates.",
-      "action": "Sign in"
+      "title": "Want to follow {actorName}?",
+      "description": "Sign in to get notified whenever a new movie featuring {actorName} is released — never miss a premiere.",
+      "action": "Sign in now"
     },
     "followingToast": "You're now following {name}",
     "unfollowedToast": "You unfollowed {name}"

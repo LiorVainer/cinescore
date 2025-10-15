@@ -2,6 +2,7 @@
 
 import React from 'react';
 import {useCreateFollow, useDeleteFollow, useUserFollows} from '@/lib/query/follow';
+import {useRouter} from '@/i18n/navigation';
 import {FollowType} from '@prisma/client';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
@@ -20,7 +21,6 @@ import {
 } from '@/components/ui/dialog';
 
 interface ActorFollowButtonProps {
-    userId: string;
     type: FollowType;
     value: string;
     variant?: 'default' | 'outline' | 'secondary';
@@ -29,28 +29,31 @@ interface ActorFollowButtonProps {
 }
 
 export function ActorFollowButton({
-    userId,
     type,
     value,
     variant = 'default',
     size = 'default',
     fullWidth = true,
 }: ActorFollowButtonProps) {
-    const { data: follows } = useUserFollows(userId);
-    const { mutate: createFollow, isPending: isCreating } = useCreateFollow(userId);
-    const { mutate: deleteFollow, isPending: isDeleting } = useDeleteFollow(userId);
     // Use actor namespace for follow-related translations; fall back to general where appropriate
     const t = useTranslations('actor');
     const tGeneral = useTranslations('general');
 
+
+    const { data: session } = authClient.useSession();
+    const userId = session?.user.id
+    const { mutate: createFollow, isPending: isCreating } = useCreateFollow(userId);
+    const { mutate: deleteFollow, isPending: isDeleting } = useDeleteFollow(userId);
+    const { data: follows } = useUserFollows(userId);
+
     const existingFollow = follows?.find((f) => f.type === type && f.value === value);
     const isFollowing = !!existingFollow;
     const isPending = isCreating || isDeleting;
-
-    const { data: session } = authClient.useSession();
+    const router = useRouter();
 
     const handleToggle = () => {
-        if (!session?.user) {
+        // Only proceed if we have a signed-in user
+        if (!userId) {
             // no-op here; UI will open dialog via DialogTrigger when unauthenticated
             return;
         }
@@ -118,8 +121,8 @@ export function ActorFollowButton({
 
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{t('signInToFollow.title')}</DialogTitle>
-                    <DialogDescription>{t('signInToFollow.description')}</DialogDescription>
+                    <DialogTitle>{t('signInToFollow.title', {actorName: value})}</DialogTitle>
+                    <DialogDescription>{t('signInToFollow.description', {actorName: value})}</DialogDescription>
                 </DialogHeader>
 
                 <DialogFooter>
@@ -133,22 +136,7 @@ export function ActorFollowButton({
                         {/* Use authClient's sign-in action if available, otherwise open auth redirect */}
                         <Button
                             className='flex-1'
-                            onClick={() => {
-                                // prefer client-side `authClient.signIn()` if available
-                                // better-auth's client exposes `openSignIn()` or redirect; attempt generic signIn
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                // @ts-ignore
-                                if (typeof authClient.openSignIn === 'function') {
-                                    // @ts-ignore
-                                    authClient.openSignIn();
-                                } else if (typeof authClient.signIn === 'function') {
-                                    // @ts-ignore
-                                    authClient.signIn();
-                                } else {
-                                    // fallback: navigate to /sign-in
-                                    window.location.href = '/sign-in';
-                                }
-                            }}
+                            onClick={() => router.push('/auth/sign-in')} // Adjust as needed for your auth flow
                         >
                             {t('signInToFollow.action')}
                         </Button>

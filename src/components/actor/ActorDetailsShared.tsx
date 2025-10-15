@@ -21,10 +21,9 @@ interface Movie {
 interface ActorProfileProps {
     // accept partial so basic payloads work without full DTO
     actor: Partial<ActorDetailsDto>;
-    userId?: string;
 }
 
-export function ActorProfile({actor, userId}: ActorProfileProps) {
+export function ActorProfile({actor}: ActorProfileProps) {
     return (
         <div className='flex flex-col items-center mb-6'>
             <div className='flex flex-col gap-4 items-center'>
@@ -34,11 +33,9 @@ export function ActorProfile({actor, userId}: ActorProfileProps) {
                 <h2 className='text-2xl font-bold text-center mb-2'>{actor.name}</h2>
             </div>
 
-            {userId && (
                 <div className='mb-4 w-full'>
-                    <ActorFollowButton userId={userId} type={FollowType.ACTOR} value={actor.name ?? ''}/>
+                    <ActorFollowButton type={FollowType.ACTOR} value={actor.name ?? ''}/>
                 </div>
-            )}
 
             <Separator className='my-4 w-full'/>
 
@@ -47,7 +44,7 @@ export function ActorProfile({actor, userId}: ActorProfileProps) {
                     <div className='flex items-center gap-2 text-sm'>
                         <CalendarDays className='h-4 w-4 text-muted-foreground'/>
                         <span>
-                            {new Date(actor.birthday as any).toLocaleDateString('en-US', {
+                            {new Date(actor.birthday).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric',
@@ -155,7 +152,7 @@ export function ActorBasicContent({basicActor, userId}:{
                 name: basicActor.name,
                 profilePath: basicActor.profilePath ?? undefined,
                 biography: basicActor.biography ?? undefined,
-            }} userId={userId}/>
+            }}/>
 
             {basicActor.biography && (
                 <div className='mb-4'>
