@@ -7,8 +7,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const title = 'Starzi';
     const description =
         'Starzi helps you discover which movies are truly worth watching. Follow your favorite actors, track ratings, and get alerts when great new films hit cinemas.';
-    const ogImage = `/og.png?v=${VERSION}`;
-
+    const ogImageWide = `${siteUrl}/og.png?v=${VERSION}`;
+    const ogImageSquare = `${siteUrl}/og-square.png?v=${VERSION}`;
     return {
         title,
         description,
@@ -22,10 +22,17 @@ export async function generateMetadata(): Promise<Metadata> {
             locale: 'en_US',
             images: [
                 {
-                    url: ogImage,
+                    url: ogImageWide,
                     width: 1200,
                     height: 630,
-                    alt: 'Starzi preview image',
+                    alt: 'Starzi – Discover what movies are worth your time',
+                    type: 'image/png',
+                },
+                {
+                    url: ogImageSquare,
+                    width: 1200,
+                    height: 1200,
+                    alt: 'Starzi – Discover what movies are worth your time (WhatsApp)',
                     type: 'image/png',
                 },
             ],
@@ -36,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
             description,
             images: [
                 {
-                    url: ogImage,
+                    url: ogImageWide,
                     alt: 'Starzi preview image',
                 },
             ],
