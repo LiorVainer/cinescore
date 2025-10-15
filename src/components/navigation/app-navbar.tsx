@@ -54,7 +54,7 @@ export const NavbarContent = () => {
 
                     <SignedOut>
                         <Link href='/auth/sign-in'>
-                            <Button size='sm' className='rounded-full font-semibold' variant={isMobile ? 'outline' : 'default'}>
+                            <Button size='sm' className='rounded-full font-semibold'>
                                 <User className='sm:hidden size-4' />
                                 <span className='hidden sm:inline'>{t('signIn')}</span>
                             </Button>
