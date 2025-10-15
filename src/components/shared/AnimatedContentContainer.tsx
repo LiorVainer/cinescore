@@ -50,6 +50,7 @@ export function AnimatedContentContainer({
     }, [drawerType, movieId, tmdbActorId]);
 
     const backgroundImageUrl = useMemo(() => {
+        console.log({drawerType, movieData, actorProfilePath});
         if (drawerType === 'movie' && movieData) return movieData.posterUrl;
         if (drawerType === 'actor' && actorProfilePath) return actorProfilePath;
         return null;

@@ -1,7 +1,7 @@
 import {useMemo} from 'react';
 import {useQuery} from '@tanstack/react-query';
 import {useLocale} from 'next-intl';
-import {useActorFullDetails, useTmdbActorsDetails} from '@/lib/query/actor/hooks';
+import {useActorBasicDetail, useTmdbActorsDetails} from '@/lib/query/actor/hooks';
 import {getMovieById} from '@/app/actions/movies';
 import {useOverlayState} from './use-overlay-state';
 
@@ -27,7 +27,7 @@ export function useOverlayContent() {
 
     // Fetch actor data for background image
     const tmdbActorIdNum = actorId ? parseInt(actorId, 10) : null;
-    const {data: actorData} = useActorFullDetails(tmdbActorIdNum || 0, locale, {
+    const {data: actorData} = useActorBasicDetail(tmdbActorIdNum || 0, locale, {
         enabled: !!tmdbActorIdNum && entityType === 'actor',
     });
 
