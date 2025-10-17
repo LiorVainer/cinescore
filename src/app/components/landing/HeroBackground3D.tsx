@@ -107,7 +107,7 @@ export function HeroBackground3D({ posters }: Props) {
             </motion.div>
 
             {/* Original fade overlay */}
-            <div className='absolute inset-0 bg-gradient-to-b from-transparent via-black/70 to-black pointer-events-none' />
+            <div className='absolute inset-0 bg-gradient-to-t from-transparent via-black/30 to-black pointer-events-none' />
         </div>
     );
 }
