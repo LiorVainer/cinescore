@@ -1,24 +1,31 @@
 'use client';
-import {Suspense} from 'react';
-import {ModeToggle} from '@/components/mode-toggle';
-import {LanguageToggle} from '@/components/navigation/language-toggle';
-import {SignedIn, SignedOut} from '@daveyplate/better-auth-ui';
-import {MobileNav, MobileNavHeader, Navbar, NavBody} from '@/components/ui/resizable-navbar';
-import {useIsMobile} from '@/hooks/use-mobile';
-import {Button} from '@/components/ui/button';
-import {useTranslations} from 'next-intl';
-import {Link} from '@/i18n/navigation';
-import {NavbarLogo} from './navbar-logo';
-import {User} from 'lucide-react';
-import {UserButton} from '@/components/auth/user-button';
+import { Suspense } from 'react';
+import { ModeToggle } from '@/components/mode-toggle';
+import { LanguageToggle } from '@/components/navigation/language-toggle';
+import { SignedIn, SignedOut } from '@daveyplate/better-auth-ui';
+import { MobileNav, MobileNavHeader, Navbar, NavBody } from '@/components/ui/resizable-navbar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
+import { NavbarLogo } from './navbar-logo';
+import { User } from 'lucide-react';
+import { UserButton } from '@/components/auth/user-button';
+import { cn } from '@/lib/utils';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
+    const pathname = usePathname();
 
     return (
         <Navbar position='fixed'>
             {!isMobile ? (
-                <NavBody className='container flex h-16 items-center justify-between'>
+                <NavBody
+                    className={cn(
+                        'container flex h-16 items-center justify-between',
+                        pathname === '/' && 'bg-transparent',
+                    )}
+                >
                     <NavbarLogo />
                     <NavbarContent />
                 </NavBody>
@@ -45,9 +52,7 @@ export const NavbarContent = () => {
                     <ModeToggle />
                     <LanguageToggle />
                 </div>
-                <Suspense fallback={
-                    <div className='w-20 h-9 bg-muted rounded-full animate-pulse'></div>
-                }>
+                <Suspense fallback={<div className='w-20 h-9 bg-muted rounded-full animate-pulse'></div>}>
                     <SignedIn>
                         <UserButton />
                     </SignedIn>
@@ -65,4 +70,3 @@ export const NavbarContent = () => {
         </nav>
     );
 };
-

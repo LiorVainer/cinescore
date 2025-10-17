@@ -66,6 +66,12 @@ declare const messages: {
     "followingToast": "You're now following {name}",
     "unfollowedToast": "You unfollowed {name}"
   },
+  "landing": {
+    "title": "Discover movies worth your time",
+    "subtitle": "See what’s playing, track IMDb ratings, and get alerts for new releases you’ll love.",
+    "cta_now_playing": "See Now Playing",
+    "cta_subscribe": "Get Alerts"
+  },
   "filters": {
     "sortBy": "Sort by",
     "genre": "Genre",

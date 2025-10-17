@@ -180,6 +180,50 @@ export class MoviesDAL {
     }
 
     /**
+     * New: Get poster URLs for the best-rated movies.
+     * Queries `movieTranslation` directly, prefers `language` if provided, orders by movie.rating and movie.votes.
+     */
+    async getBestRatedMoviePosters(limit = 12, language?: Language): Promise<string[]> {
+        // First, try to get translations in the preferred language (if provided)
+        const preferredWhere: any = { posterUrl: { not: null } };
+        if (language) preferredWhere.language = language;
+
+        const preferred = await this.prisma.movieTranslation.findMany({
+            where: preferredWhere,
+            include: { movie: true },
+            orderBy: [
+                { movie: { rating: 'desc' } },
+                { movie: { votes: 'desc' } },
+            ],
+            take: limit,
+        });
+
+        const posters: string[] = preferred.map(p => p.posterUrl!).filter(Boolean);
+
+        if (posters.length >= limit) return posters.slice(0, limit);
+
+        // Fill remaining slots with translations from other languages, excluding movies already included
+        const excludedMovieIds = preferred.map(p => p.movieId);
+
+        const additional = await this.prisma.movieTranslation.findMany({
+            where: {
+                posterUrl: { not: null },
+                movie: { id: { notIn: excludedMovieIds.length ? excludedMovieIds : undefined } },
+            },
+            include: { movie: true },
+            orderBy: [
+                { movie: { rating: 'desc' } },
+                { movie: { votes: 'desc' } },
+            ],
+            take: limit - posters.length,
+        });
+
+        posters.push(...additional.map(a => a.posterUrl!).filter(Boolean));
+
+        return posters.slice(0, limit);
+    }
+
+    /**
      * Transforms a fully populated movie to language-specific format
      */
     private transformToLanguageSpecific(

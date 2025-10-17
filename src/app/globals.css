@@ -28,6 +28,8 @@
     --color-border: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
+
+    --radius: var(--radius);
 }
 
 /* Hebrew Font Classes */
@@ -264,6 +266,13 @@
 
     .app-shadow-xl {
         box-shadow: var(--shadow-xl)
+    }
+
+    .h-screen-minus-navbar {
+        height: calc(100vh - 3.25rem);
+    }
+    .min-h-screen-minus-navbar {
+        min-height: calc(100vh - 3.25rem);
     }
 
     /* === 🌗 Improved Theme-Aware Animated Gradient === */
