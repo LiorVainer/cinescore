@@ -10,21 +10,17 @@ import { Link, usePathname } from '@/i18n/navigation';
 import { NavbarLogo } from './navbar-logo';
 import { User } from 'lucide-react';
 import { UserButton } from '@/components/auth/user-button';
-import { cn } from '@/lib/utils';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
     const pathname = usePathname();
 
+    console.log({ pathname });
+
     return (
-        <Navbar position='fixed'>
+        <Navbar position='fixed' className={(pathname === '/' && 'backdrop-blur-none') ?? ''}>
             {!isMobile ? (
-                <NavBody
-                    className={cn(
-                        'container flex h-16 items-center justify-between',
-                        pathname === '/' && 'bg-transparent',
-                    )}
-                >
+                <NavBody className={'container flex h-16 items-center justify-between'}>
                     <NavbarLogo />
                     <NavbarContent />
                 </NavBody>

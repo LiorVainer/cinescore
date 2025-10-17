@@ -1,14 +1,14 @@
 'use client';
 
-import {motion, AnimatePresence} from 'motion/react';
-import type {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {MovieGenres} from '@/components/movie/movie-genres';
+import { AnimatePresence, motion } from 'motion/react';
+import type { MovieWithLanguageTranslation } from '@/models/movies.model';
+import { MovieGenres } from '@/components/movie/movie-genres';
 import React from 'react';
 import Image from 'next/image';
-import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
+import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
 import MovieStats from '@/components/movie/MovieStats';
-import {MovieMeta} from '@/components/movie/MovieMeta';
-import {BackgroundImageTransition} from "@/components/shared/AnimatedContentContainer";
+import { MovieMeta } from '@/components/movie/MovieMeta';
+import { BackgroundImageTransition } from '@/components/shared/AnimatedContentContainer';
 
 export type CollapsedMovieCardProps = {
     movie: MovieWithLanguageTranslation;
@@ -20,14 +20,14 @@ export type CollapsedMovieCardProps = {
 };
 
 export default function CollapsedMovieCard({
-                                               imgSrc,
-                                               idSuffix,
-                                               movie,
-                                               className,
-                                               containerClassName,
-                                               onClickAction,
-                                           }: CollapsedMovieCardProps) {
-    const {title, releaseDate, rating, votes} = movie;
+    imgSrc,
+    idSuffix,
+    movie,
+    className,
+    containerClassName,
+    onClickAction,
+}: CollapsedMovieCardProps) {
+    const { title, releaseDate, rating, votes } = movie;
 
     return (
         <motion.div
@@ -47,9 +47,9 @@ export default function CollapsedMovieCard({
                     <motion.div
                         key={`bg-${idSuffix}`}
                         className={`absolute inset-0 z-0 overflow-hidden rounded-xl ${containerClassName}`}
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        exit={{opacity: 0}}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         transition={BackgroundImageTransition}
                     >
                         <motion.img
@@ -61,7 +61,7 @@ export default function CollapsedMovieCard({
                                 transform: 'scale(1.1)',
                             }}
                         />
-                        <div className='absolute inset-0 bg-background/80 dark:bg-background/80'/>
+                        <div className='absolute inset-0 bg-background/70' />
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -92,12 +92,12 @@ export default function CollapsedMovieCard({
                                 {title}
                             </motion.h3>
                         </div>
-                        <MovieGenres genres={movie.genres} idSuffix={idSuffix}/>
-                        <MovieMeta title={title} idSuffix={idSuffix} releaseDate={releaseDate}/>
+                        <MovieGenres genres={movie.genres} idSuffix={idSuffix} />
+                        <MovieMeta title={title} idSuffix={idSuffix} releaseDate={releaseDate} />
                     </div>
 
                     <motion.div layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.DESCRIPTION(idSuffix)}>
-                        <MovieStats rating={rating} votes={votes} size='sm'/>
+                        <MovieStats rating={rating} votes={votes} size='sm' />
                     </motion.div>
                 </div>
             </div>

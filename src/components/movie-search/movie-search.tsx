@@ -1,15 +1,16 @@
 'use client';
 
-import {useEffect, useState} from 'react';
-import {SortValue} from '@/constants/sort.const';
-import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {useDebounce} from '@/lib/useDebounce';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { SortValue } from '@/constants/sort.const';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useDebounce } from '@/lib/useDebounce';
 import MovieCard from '@/components/movie/movie-card';
-import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
-import {FilterBar} from '@/components/movie-search/FilterBar';
+import { listGenres, searchMoviesFiltered } from '@/app/actions/searchMovies';
+import { FilterBar } from '@/components/movie-search/FilterBar';
 import CollapsedMovieCardSkeleton from '@/components/movie/movie-card-collapsed.skeleton';
-import {useLocale, useTranslations} from 'next-intl';
-import {mapLocaleToLanguage} from '@/constants/languages.const';
+import { useLocale, useTranslations } from 'next-intl';
+import { mapLocaleToLanguage } from '@/constants/languages.const';
 
 const DEFAULT_SORT = 'rating:desc';
 
@@ -35,7 +36,7 @@ export default function MovieSearch() {
     }, [debouncedSearch, sort, selectedGenresKey]);
 
     // Genres via server action + TanStack Query (now language-aware)
-    const {data: genresData} = useQuery({
+    const { data: genresData } = useQuery({
         queryKey: ['genres', currentLanguage],
         queryFn: async () => listGenres(currentLanguage),
         staleTime: 1000 * 60 * 60, // 1 hour
@@ -104,20 +105,47 @@ export default function MovieSearch() {
 
             {isFetching && items.length === 0 ? (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
-                    {Array.from({length: 9}).map((_, i) => (
-                        <CollapsedMovieCardSkeleton key={i}/>
+                    {Array.from({ length: 9 }).map((_, i) => (
+                        <CollapsedMovieCardSkeleton key={i} />
                     ))}
                 </div>
             ) : (
-                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-8 overflow-y-auto'>
+                <motion.div
+                    key={debouncedSearch + sort + selectedGenresKey + page} // re-trigger animation on filter change
+                    className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-8'
+                    variants={{
+                        hidden: {},
+                        show: {
+                            transition: {
+                                staggerChildren: 0.07,
+                                delayChildren: 0.05,
+                            },
+                        },
+                    }}
+                    initial='hidden'
+                    animate='show'
+                >
                     {items.map((movie) => (
-                        <MovieCard ctaText={tMovie('details')} key={movie.id} movie={movie}/>
+                        <motion.div
+                            key={movie.id}
+                            variants={{
+                                hidden: { opacity: 0, y: 20, scale: 0.98 },
+                                show: {
+                                    opacity: 1,
+                                    y: 0,
+                                    scale: 1,
+                                    transition: { type: 'spring', stiffness: 100, damping: 18 },
+                                },
+                            }}
+                        >
+                            <MovieCard ctaText={tMovie('details')} movie={movie} />
+                        </motion.div>
                     ))}
 
                     {items.length === 0 && !isFetching && (
                         <div className='text-sm text-muted-foreground'>{t('noResults')}</div>
                     )}
-                </div>
+                </motion.div>
             )}
         </div>
     );
