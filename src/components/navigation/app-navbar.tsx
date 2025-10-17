@@ -1,6 +1,5 @@
 'use client';
 import { Suspense } from 'react';
-import { ModeToggle } from '@/components/mode-toggle';
 import { LanguageToggle } from '@/components/navigation/language-toggle';
 import { SignedIn, SignedOut } from '@daveyplate/better-auth-ui';
 import { MobileNav, MobileNavHeader, Navbar, NavBody } from '@/components/ui/resizable-navbar';
@@ -49,7 +48,7 @@ export const NavbarContent = () => {
         <nav className='flex items-center gap-6'>
             <div className='flex items-center gap-2 md:gap-6'>
                 <div className='flex items-center gap-2'>
-                    <ModeToggle />
+                    {/*<ModeToggle />*/}
                     <LanguageToggle />
                 </div>
                 <Suspense fallback={<div className='w-20 h-9 bg-muted rounded-full animate-pulse'></div>}>

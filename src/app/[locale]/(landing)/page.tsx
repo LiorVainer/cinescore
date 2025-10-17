@@ -16,8 +16,8 @@ export default async function LandingPage({ params }: Props) {
     const t = await getTranslations('landing');
 
     return (
-        <main className='relative flex flex-col overflow-hidden h-full justify-center items-center text-center'>
-            <section className='relative z-10 flex flex-col items-center justify-center text-center px-6 py-24 md:py-40'>
+        <main className='relative flex flex-col overflow-hidden h-full justify-center items-center'>
+            <section className='relative z-10 flex flex-col items-center justify-center text-start px-12 py-24 md:py-40'>
                 <h1 className='text-5xl md:text-6xl font-extrabold tracking-tight max-w-3xl font-hebrew'>
                     {t('title')}
                 </h1>

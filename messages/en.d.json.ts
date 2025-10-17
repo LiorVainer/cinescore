@@ -70,7 +70,7 @@ declare const messages: {
     "title": "Discover movies worth your time",
     "subtitle": "See what’s playing, track IMDb ratings, and get alerts for new releases you’ll love.",
     "cta_now_playing": "See Now Playing",
-    "cta_subscribe": "Get Alerts"
+    "cta_subscribe": "Register for updates"
   },
   "filters": {
     "sortBy": "Sort by",

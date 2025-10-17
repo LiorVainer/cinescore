@@ -303,13 +303,15 @@
     }
 
     .dark .bg-gradient-static {
-        background-image: radial-gradient(100% 100% at 20% 80%, color-mix(in oklch, var(--primary) 25%, white 5%) 14%, transparent),
-        radial-gradient(100% 100% at 80% 20%, color-mix(in oklch, var(--accent) 30%, white 5%) 18%, transparent),
-        linear-gradient(to bottom right,
-                color-mix(in oklch, var(--background) 90%, white 10%),
-                color-mix(in oklch, var(--secondary) 85%, white 15%)
+        background: radial-gradient(
+                circle at 50% 70%,
+                color-mix(in oklch, var(--accent) 45%, black 5%) 0%,
+                color-mix(in oklch, var(--accent) 25%, white 20%) 40%,
+                color-mix(in oklch, var(--accent) 10%, black 65%) 70%,
+                black 95%
         );
-        background-blend-mode: screen;
+        opacity: 0.85;
+        mix-blend-mode: screen;
     }
 }
 
