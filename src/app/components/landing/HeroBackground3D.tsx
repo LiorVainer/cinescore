@@ -36,7 +36,7 @@ const posterVariants = {
         scale: 1,
         transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
     },
-};
+} as const;
 
 export function HeroBackground3D({ posters }: Props) {
     // const userAgent = (await headers()).get("user-agent") || "";

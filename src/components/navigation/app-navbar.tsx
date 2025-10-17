@@ -18,7 +18,7 @@ export const AppNavbar = () => {
     console.log({ pathname });
 
     return (
-        <Navbar position='fixed' className={(pathname === '/' && 'backdrop-blur-none') ?? ''}>
+        <Navbar position='fixed' className={pathname === '/' ? 'backdrop-blur-none' : ''}>
             {!isMobile ? (
                 <NavBody className={'container flex h-16 items-center justify-between'}>
                     <NavbarLogo />
