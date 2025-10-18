@@ -16,3 +16,21 @@ export async function getMovieById(movieId: string, locale: string): Promise<Mov
 
     return movie;
 }
+
+/**
+ * Fetch top rated movies (by imdb rating) with language-aware translations.
+ */
+export async function getTopRatedMovies(locale: string, limit = 5): Promise<MovieWithLanguageTranslation[]> {
+    const language: Language = mapLocaleToLanguage(locale);
+    const dal = getDal();
+
+    const movies = await dal.movies.getMoviesWithLanguageTranslation(language, {
+        orderBy: [
+            {rating: 'desc'},
+            {votes: 'desc'},
+        ],
+        take: limit,
+    });
+
+    return movies.slice(0, limit);
+}
