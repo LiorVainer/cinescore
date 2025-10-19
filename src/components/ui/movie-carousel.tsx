@@ -229,10 +229,9 @@ export function MovieCarousel({movies}: MovieCarouselProps) {
         <div ref={containerRef} className="relative w-full overflow-visible mx-auto" aria-labelledby={`carousel-heading-${id}`}>
             <ul
                 ref={listRef}
-                className={`flex items-stretch h-fit ${measured ? 'transition-transform duration-700 ease-in-out' : 'overflow-x-auto'}`}
+                className={`flex items-stretch h-fit gap-8 ${measured ? 'transition-transform duration-700 ease-in-out' : 'overflow-x-auto'}`}
                 style={{
                     transform: measured ? `translateX(${translateX}px)` : 'none',
-                    gap: '1rem',
                     padding: 0,
                     margin: 0,
                     border: '2px solid rgba(99,102,241,0.08)', // stronger debug border
