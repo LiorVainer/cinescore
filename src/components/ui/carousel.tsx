@@ -1,6 +1,7 @@
 "use client";
 import {IconArrowNarrowRight} from "@tabler/icons-react";
 import {useState, useRef, useId, useEffect} from "react";
+import { useLocale } from "next-intl";
 
 interface SlideData {
     title: string;
@@ -137,6 +138,13 @@ const CarouselControl = ({
                              title,
                              handleClick,
                          }: CarouselControlProps) => {
+    const locale = useLocale();
+    const isRTL = locale === 'he';
+
+    if (isRTL) {
+        type = type === "previous" ? "next" : "previous";
+    }
+
     return (
         <button
             className={`w-10 h-10 flex items-center mx-2 justify-center bg-neutral-200 dark:bg-neutral-800 border-3 border-transparent rounded-full focus:border-[#6D64F7] focus:outline-none hover:-translate-y-0.5 active:translate-y-0.5 transition duration-200 ${
@@ -174,6 +182,8 @@ export function Carousel({slides}: CarouselProps) {
     };
 
     const id = useId();
+    const locale = useLocale();
+    const isRTL = locale === 'he';
 
     return (
         <div
@@ -183,7 +193,7 @@ export function Carousel({slides}: CarouselProps) {
             <ul
                 className="absolute flex mx-[-4vmin] transition-transform duration-1000 ease-in-out"
                 style={{
-                    transform: `translateX(-${current * (100 / slides.length)}%)`,
+                    transform: `translateX(${isRTL ? '' : '-'}${current * (100 / slides.length)}%)`,
                 }}
             >
                 {slides.map((slide, index) => (

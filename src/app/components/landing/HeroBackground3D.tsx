@@ -43,7 +43,7 @@ export function HeroBackground3D({ posters }: Props) {
     // const isMobile = /mobile|android|iphone|ipad/i.test(userAgent);
     const isMobile = useIsMobile();
 
-    const itemsPerRow = isMobile ? 3 : 5;
+    const itemsPerRow = isMobile ? 5 : 5;
     const rowOffset = 5;
 
     const rows: string[][] = [];
@@ -64,7 +64,7 @@ export function HeroBackground3D({ posters }: Props) {
                     transformStyle: 'preserve-3d',
                     transformOrigin: 'top right',
                     transform:
-                        'perspective(1200px) translateX(5%) translateY(-5%) rotateY(-14deg) rotateX(2deg) scale(1)',
+                        'perspective(1200px) translateX(5%) translateY(-5%) rotateY(-20deg) rotateX(2deg) scale(1)',
                     minHeight: '120vh',
                 }}
                 variants={containerVariants}
@@ -78,7 +78,7 @@ export function HeroBackground3D({ posters }: Props) {
                     return (
                         <motion.div
                             key={rowIndex}
-                            className={`grid gap-2 w-full max-w-none ${isMobile ? 'grid-cols-3' : 'grid-cols-5'}`}
+                            className={`grid gap-2 w-full max-w-none grid-cols-5`}
                             style={{
                                 transform: `translateX(${offsetX}%) translateZ(${
                                     (rowIndex % 3) * 6
