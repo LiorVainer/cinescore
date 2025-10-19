@@ -81,7 +81,7 @@ const Slide = ({slide, index, current, handleSlideClick}: SlideProps) => {
             {/* debug index badge */}
             <div className="absolute top-2 left-2 z-40 bg-indigo-600 text-white text-xs font-medium px-2 py-1 rounded">#{index + 1}</div>
 
-            <div className="relative p-2 transition-opacity duration-500 ease-in-out w-full h-full">
+            <div className="relative transition-opacity duration-500 ease-in-out w-full h-full">
                 <MovieVerticalCard
                     title={slide.title}
                     posterUrl={slide.posterUrl}
