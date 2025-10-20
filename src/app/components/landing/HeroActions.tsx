@@ -29,7 +29,7 @@ export function HeroActions() {
                 <Button
                     size='lg'
                     variant='outline'
-                    className='border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all'
+                    className='border border-primary text-primary hover:bg-primary hover:text-foreground transition-all'
                 >
                     {t('cta_subscribe')}
                 </Button>

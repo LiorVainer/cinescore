@@ -64,7 +64,7 @@ export function HeroBackground3D({ posters }: Props) {
                     transformStyle: 'preserve-3d',
                     transformOrigin: 'top right',
                     transform:
-                        'perspective(1200px) translateX(5%) translateY(-5%) rotateY(-20deg) rotateX(2deg) scale(1)',
+                        'perspective(1200px) translateX(5%) translateY(-5%) rotateY(-30deg) rotateX(2deg) scale(1)',
                     minHeight: '120vh',
                 }}
                 variants={containerVariants}

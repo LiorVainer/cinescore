@@ -26,7 +26,7 @@ export function TopRatedCarousel({movies}: TopRatedCarouselProps) {
     if (isEmpty) {
         // Debug fallback so you can see the carousel and controls even when no movies are returned
         return (
-            <div className="w-full">
+            <div className="">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold">Top Rated (demo)</h2>
                 </div>
@@ -45,9 +45,9 @@ export function TopRatedCarousel({movies}: TopRatedCarouselProps) {
     }));
 
     return (
-        <div className="w-full">
+        <div className="w-80 md:w-[50%]">
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">{t('top_rated_title')}</h2>
+                <h2 className="text-lg font-bold text-background">{t('top_rated_title')}</h2>
             </div>
 
             <MovieCarousel movies={slides} />

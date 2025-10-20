@@ -93,7 +93,7 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
 
     return (
         <div
-            className="w-full"
+            className=""
             style={{
                 direction: isRTL ? "rtl" : "ltr",
             }}
@@ -101,7 +101,7 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
             {/* Movie list */}
             <ul
                 ref={listRef}
-                className="flex overflow-x-auto no-scrollbar py-2 px-1 gap-3 scroll-smooth touch-pan-x"
+                className="flex overflow-x-auto no-scrollbar py-2 px-1 gap-4 md:gap-8 scroll-smooth touch-pan-x"
                 style={{
                     scrollSnapType: "x mandatory",
                     listStyle: "none",
@@ -121,7 +121,7 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
                             posterUrl={slide.posterUrl}
                             imdbRating={slide.imdbRating}
                             onClick={slide.onClick}
-                            className="w-full h-full"
+                            className="h-full"
                         />
                     </li>
                 ))}
