@@ -50,9 +50,9 @@ export default async function LocaleLayout({
         <html
             lang={locale}
             dir={locale === 'he' ? 'rtl' : 'ltr'}
-            className={`${geistSans.variable} ${geistMono.variable} dark`}
+            className={`dark ${geistSans.variable} ${geistMono.variable}`}
         >
-            <body className={locale === 'he' ? 'font-hebrew' : 'font-sans'}>
+            <body className={`dark ${locale === 'he' ? 'font-hebrew' : 'font-sans'}`}>
                 <NextIntlClientProvider locale={locale} messages={messages}>
                     <AppProviders>
                         {/* page groups render here */}
