@@ -7,7 +7,9 @@
     "error": "שגיאה",
     "retry": "נסה שוב",
     "follow": "עקוב",
-    "following": "עוקב"
+    "following": "עוקב",
+    "next": "הבא",
+    "previous": "הקודם"
   },
   "nav": {
     "signIn": "התחבר",

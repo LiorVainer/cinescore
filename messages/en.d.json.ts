@@ -10,7 +10,9 @@ declare const messages: {
       "error": "Error",
       "retry": "Retry",
       "follow": "Follow",
-      "following": "Following"
+      "following": "Following",
+      "next": "Next",
+      "previous": "Previous"
   },
   "nav": {
     "signIn": "Login",

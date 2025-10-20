@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
-import { useLocale } from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import MovieVerticalCard from "@/components/movie/MovieVerticalCard";
 
 // 🔍 Detect mobile
@@ -83,8 +83,11 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
         list.scrollBy({ left: adjusted, behavior: "smooth" });
     };
 
+    const t = useTranslations('general');
+
     const handlePrev = () => scrollByCards(-visibleCards);
     const handleNext = () => scrollByCards(visibleCards);
+
 
     if (!movies?.length) return null;
 
@@ -132,29 +135,29 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
                     onClick={handlePrev}
                     aria-label="Previous"
                     animate={{
-                        opacity: canScrollPrev ? 1 : 0.3,
+                        opacity: canScrollPrev ? 1 : 0,
                         pointerEvents: canScrollPrev ? "auto" : "none",
                     }}
                     transition={{ duration: 0.3 }}
-                    className="px-5 py-2 bg-black text-white rounded-md flex items-center justify-center gap-2"
+                    className="px-5 py-2 bg-black text-white rounded-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                     <IconArrowNarrowRight
                         className={`w-5 h-5 ${isRTL ? "" : "rotate-180"}`}
                     />
-                    <span>{isRTL ? "הקודם" : "Previous"}</span>
+                    <span>{t('previous')}</span>
                 </motion.button>
 
                 <motion.button
                     onClick={handleNext}
                     aria-label="Next"
                     animate={{
-                        opacity: canScrollNext ? 1 : 0.3,
+                        opacity: canScrollNext ? 1 : 0,
                         pointerEvents: canScrollNext ? "auto" : "none",
                     }}
                     transition={{ duration: 0.3 }}
-                    className="px-5 py-2 bg-black text-white rounded-md flex items-center justify-center gap-2"
+                    className="px-5 py-2 bg-black text-white rounded-md flex items-center justify-center gap-2 cursor-pointer"
                 >
-                    <span>{isRTL ? "הבא" : "Next"}</span>
+                    <span>{t('next')}</span>
                     <IconArrowNarrowRight
                         className={`w-5 h-5 ${isRTL ? "rotate-180" : ""}`}
                     />
