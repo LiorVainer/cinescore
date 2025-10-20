@@ -2,17 +2,15 @@
 
 import React, {useEffect} from 'react';
 import type {MovieWithLanguageTranslation} from '@/models/movies.model';
-import MovieCarousel from '@/components/ui/movie-carousel';
+import {MovieCarousel} from '@/components/ui/movie-carousel';
+import {useTranslations} from "next-intl";
 
 type TopRatedCarouselProps = {
     movies: MovieWithLanguageTranslation[];
 };
 
 export function TopRatedCarousel({movies}: TopRatedCarouselProps) {
-    // Debug log so you can see in the browser console whether this component mounted and what it received
-    useEffect(() => {
-        console.debug('[TopRatedCarousel] mounted, movies length=', movies?.length);
-    }, [movies]);
+    const t = useTranslations('landing');
 
     // If there are no movies (or while debugging), render a small set of demo slides
     const demoSlides = [
@@ -29,10 +27,6 @@ export function TopRatedCarousel({movies}: TopRatedCarouselProps) {
         // Debug fallback so you can see the carousel and controls even when no movies are returned
         return (
             <div className="w-full">
-                <div className="mb-4">
-                    <div className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold">CAROUSEL DEBUG — TopRatedCarousel mounted (demo)</div>
-                </div>
-
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold">Top Rated (demo)</h2>
                 </div>
@@ -53,7 +47,7 @@ export function TopRatedCarousel({movies}: TopRatedCarouselProps) {
     return (
         <div className="w-full">
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">Top Rated</h2>
+                <h2 className="text-lg font-semibold">{t('top_rated_title')}</h2>
             </div>
 
             <MovieCarousel movies={slides} />
