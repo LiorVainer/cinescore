@@ -126,9 +126,7 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
 
             {/* Button row below the list */}
             <div
-                className={`mt-3 flex items-center justify-between ${
-                    isRTL ? "flex-row-reverse" : ""
-                }`}
+                className={`mt-3 flex items-center justify-between`}
             >
                 <motion.button
                     onClick={handlePrev}

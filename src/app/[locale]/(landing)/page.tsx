@@ -21,7 +21,7 @@ export default async function LandingPage({params}: Props) {
     const topMovies = await getTopRatedMovies(locale, 5);
 
     return (
-        <main className='relative flex flex-col overflow-y-auto overflow-x-hidden h-full w-screen px-6 py-24 md:py-40 gap-20'>
+        <main className='relative flex flex-col overflow-y-auto overflow-x-hidden h-full w-screen px-6 md:px-12 py-24 md:py-40 gap-20'>
             <section
                 className='relative z-10 flex flex-col items-center justify-center text-center'>
                 <h1 className='text-5xl md:text-6xl font-extrabold tracking-tight max-w-3xl font-hebrew'>
