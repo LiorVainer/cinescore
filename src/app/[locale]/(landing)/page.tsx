@@ -31,11 +31,9 @@ export default async function LandingPage({params}: Props) {
             </section>
 
             {/* Notice: remove items-center to let width expand */}
-            <div className="relative w-screen flex flex-col items-center  overflow-hidden">
                 <section className="relative w-[260vw] md:w-[140vw] bg-gradient-to-t from-primary to-primary/80 px-6 md:px-12 py-12 md:py-16 rounded-t-[400px] sm:rounded-t-full flex flex-col justify-center items-center">
                     <TopRatedCarousel movies={topMovies} />
                 </section>
-            </div>
         </main>
     );
 }

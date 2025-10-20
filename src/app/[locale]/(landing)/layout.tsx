@@ -31,7 +31,7 @@ export default async function LandingLayout({
             </div>
 
             {/* === Actual landing page content === */}
-            <div className='relative h-screen overflow-hidden' style={{paddingTop: '3.25rem'}}>
+            <div className='relative h-screen' style={{paddingTop: '3.25rem'}}>
                 {children}
             </div>
         </>
