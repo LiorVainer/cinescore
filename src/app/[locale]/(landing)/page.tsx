@@ -21,7 +21,7 @@ export default async function LandingPage({params}: Props) {
     const topMovies = await getTopRatedMovies(locale, 5);
 
     return (
-        <main className="relative flex flex-col overflow-x-hidden overflow-y-auto h-full w-screen items-center justify-between gap-20">
+        <main className="relative flex flex-col overflow-x-hidden overflow-y-auto h-full w-screen items-center justify-between  gap-16 md:gap-20">
             <section className="relative z-10 flex flex-col items-center justify-center text-center px-6 md:px-12 py-12 md:py-24">
                 <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight max-w-3xl font-hebrew">
                     {t('title')}
@@ -31,7 +31,7 @@ export default async function LandingPage({params}: Props) {
             </section>
 
             {/* Notice: remove items-center to let width expand */}
-                <section className="relative w-[260vw] md:w-[140vw] bg-gradient-to-t from-primary to-primary/80 px-6 md:px-12 py-12 md:py-16 rounded-t-[400px] sm:rounded-t-full flex flex-col justify-center items-center">
+                <section className="relative w-[260vw] md:w-[140vw] bg-gradient-to-t border-t-6 border-white bg-primary px-6 md:px-12 py-12 md:py-16 rounded-t-full flex flex-col justify-center items-center shadow-[inset_0_-40px_60px_rgba(0,0,0,0.6)]">
                     <TopRatedCarousel movies={topMovies} />
                 </section>
         </main>
