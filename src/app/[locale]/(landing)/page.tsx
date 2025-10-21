@@ -31,7 +31,7 @@ export default async function LandingPage({params}: Props) {
             </section>
 
             {/* Notice: remove items-center to let width expand */}
-                <section className="relative w-[260vw] md:w-[140vw] bg-gradient-to-t border-t-6 border-white bg-primary px-6 md:px-12 py-12 md:py-16 rounded-t-full flex flex-col justify-center items-center shadow-[inset_0_-40px_60px_rgba(0,0,0,0.6)]">
+                <section className="relative w-[240vw] md:w-[140vw] border-t-6 border-white bg-primary px-6 md:px-12 py-16 rounded-t-full flex flex-col justify-center items-center shadow-[inset_0_20px_30px_rgba(0,0,0,0.6)]">
                     <TopRatedCarousel movies={topMovies} />
                 </section>
         </main>
