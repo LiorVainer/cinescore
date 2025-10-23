@@ -42,6 +42,7 @@
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
     "@radix-ui/react-visually-hidden": "^1.2.3",
+    "@sentry/core": "^10.21.0",
     "@sentry/nextjs": "10",
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-query": "^5.90.2",
@@ -54,6 +55,8 @@
     "dayjs": "^1.11.18",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.23.22",
+    "import-in-the-middle": "^2.0.0",
+    "inngest": "^3.44.3",
     "lucide-react": "^0.483.0",
     "motion": "^12.23.22",
     "next": "15.4.7",
@@ -66,6 +69,7 @@
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
     "recharts": "^2.15.1",
+    "require-in-the-middle": "^8.0.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
@@ -113,7 +117,9 @@
   },
   "pnpm": {
     "overrides": {
-      "keyv": "4.5.4"
+      "keyv": "4.5.4",
+      "require-in-the-middle": "8.0.1",
+      "import-in-the-middle": "2.0.0"
     }
   }
 }

@@ -11,6 +11,10 @@ const withNextIntl = createNextIntlPlugin({
 });
 
 const nextConfig: NextConfig = {
+    serverExternalPackages: [
+        'require-in-the-middle',
+        'import-in-the-middle'
+    ],
     /* config options here */
     experimental: {
         typedEnv: true,
