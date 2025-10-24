@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
     const cronLogger = logger.scope('api:cron:catalog-refresh');
     const authHeader = request.headers.get('authorization');
-    const fromVercel = authHeader !== `Bearer ${process.env.CRON_SECRET}`
+    const fromVercel = authHeader === `Bearer ${process.env.CRON_SECRET}`
 
     if (!fromVercel) {
         cronLogger.warn('Missing CRON_SECRET header or invalid value');
