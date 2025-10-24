@@ -93,15 +93,35 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
 
     return (
         <div
-            className=""
+            className="flex gap-2 md:gap-4 justify-center"
             style={{
                 direction: isRTL ? "rtl" : "ltr",
             }}
         >
-            {/* Movie list */}
+            <motion.button
+                onClick={handlePrev}
+                aria-label="Previous"
+                animate={{
+                    opacity: canScrollPrev ? 1 : 0,
+                    scale: canScrollPrev ? 1 : 0.8,
+                    x: canScrollPrev ? 0 : isRTL ? 10 : -10, // slide out slightly
+                }}
+                transition={{
+                    duration: 0.35,
+                    ease: "easeInOut",
+                }}
+                className="px-2 bg-black text-white rounded-md flex items-center justify-center gap-2 cursor-pointer"
+                style={{
+                    pointerEvents: canScrollPrev ? "auto" : "none",
+                }}
+            >
+                <IconArrowNarrowRight
+                    className={`w-5 h-5 ${isRTL ? "" : "rotate-180"}`}
+                />
+            </motion.button>
             <ul
                 ref={listRef}
-                className="flex overflow-x-auto no-scrollbar py-2 px-1 gap-4 md:gap-8 scroll-smooth touch-pan-x"
+                className="flex overflow-x-auto no-scrollbar px-1 gap-4 md:gap-8 scroll-smooth touch-pan-x items-center flex-1 "
                 style={{
                     scrollSnapType: "x mandatory",
                     listStyle: "none",
@@ -112,7 +132,7 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
                         key={i}
                         className="flex-none snap-start"
                         style={{
-                            width: `calc(${100 / (isMobile ? 2 : 5)}% - 0.5rem)`,
+                            // width: `calc(${100 / (isMobile ? 2 : 5)}% - 0.5rem)`,
                             flex: `0 0 calc(${100 / (isMobile ? 2 : 5)}% - 0.5rem)`,
                         }}
                     >
@@ -127,42 +147,28 @@ export function MovieCarousel({ movies }: MovieCarouselProps) {
                 ))}
             </ul>
 
-            {/* Button row below the list */}
-            <div
-                className={`mt-3 flex items-center justify-between`}
+            <motion.button
+                onClick={handleNext}
+                aria-label="Next"
+                animate={{
+                    opacity: canScrollNext ? 1 : 0,
+                    scale: canScrollNext ? 1 : 0.8,
+                    x: canScrollNext ? 0 : isRTL ? -10 : 10,
+                }}
+                transition={{
+                    duration: 0.35,
+                    ease: "easeInOut",
+                }}
+                className="px-2 bg-black text-white rounded-md flex items-center justify-center gap-2 cursor-pointer"
+                style={{
+                    pointerEvents: canScrollNext ? "auto" : "none",
+                }}
             >
-                <motion.button
-                    onClick={handlePrev}
-                    aria-label="Previous"
-                    animate={{
-                        opacity: canScrollPrev ? 1 : 0,
-                        pointerEvents: canScrollPrev ? "auto" : "none",
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="px-5 py-2 bg-black text-white rounded-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                    <IconArrowNarrowRight
-                        className={`w-5 h-5 ${isRTL ? "" : "rotate-180"}`}
-                    />
-                    <span>{t('previous')}</span>
-                </motion.button>
+                <IconArrowNarrowRight
+                    className={`w-5 h-5 ${isRTL ? "rotate-180" : ""}`}
+                />
+            </motion.button>
 
-                <motion.button
-                    onClick={handleNext}
-                    aria-label="Next"
-                    animate={{
-                        opacity: canScrollNext ? 1 : 0,
-                        pointerEvents: canScrollNext ? "auto" : "none",
-                    }}
-                    transition={{ duration: 0.3 }}
-                    className="px-5 py-2 bg-black text-white rounded-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                    <span>{t('next')}</span>
-                    <IconArrowNarrowRight
-                        className={`w-5 h-5 ${isRTL ? "rotate-180" : ""}`}
-                    />
-                </motion.button>
-            </div>
         </div>
     );
 }

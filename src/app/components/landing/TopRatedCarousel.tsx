@@ -45,8 +45,8 @@ export function TopRatedCarousel({movies}: TopRatedCarouselProps) {
     }));
 
     return (
-        <div className="w-80 md:w-[50%]">
-            <div className="flex items-center justify-between mb-4">
+        <div className="w-[100vw] px-4 md:w-[45%]f flex flex-col gap-8 md:px-[20vw]">
+            <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-background">{t('top_rated_title')}</h2>
             </div>
 
