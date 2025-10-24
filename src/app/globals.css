@@ -329,8 +329,3 @@
         mix-blend-mode: screen;
     }
 }
-
-
-/* === 🎞️ Animated Gradient Backgrounds (Theme-Aware) === */
-@layer utilities {
-}

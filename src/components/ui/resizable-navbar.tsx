@@ -144,7 +144,7 @@ export const NavBody = ({children, className, visible}: NavBodyProps) => {
             }}
             className={cn(
                 "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 pe-6 lg:flex",
-                visible && "bg-muted/80",
+                visible && "bg-muted/40",
                 className,
             )}
         >
@@ -185,11 +185,34 @@ export const NavItems = ({items, className, onItemClick}: NavItemsProps) => {
     );
 };
 
+// file: src/styles/gradients.ts
+export const spotlightGradient = `
+  radial-gradient(
+    68.54% 68.72% at 55.02% 31.46%,
+    color-mix(in oklch, var(--primary) 40%, transparent 60%) 0%,
+    color-mix(in oklch, var(--primary) 20%, transparent 80%) 40%,
+    transparent 80%
+  ),
+  radial-gradient(
+    50% 50% at 50% 50%,
+    color-mix(in oklch, var(--primary) 25%, transparent 75%) 0%,
+    color-mix(in oklch, var(--primary) 10%, transparent 90%) 70%,
+    transparent 100%
+  ),
+  radial-gradient(
+    50% 50% at 50% 50%,
+    color-mix(in oklch, var(--primary) 20%, transparent 80%) 0%,
+    color-mix(in oklch, var(--primary) 5%, transparent 95%) 70%,
+    transparent 100%
+  )
+`;
+
+
 export const MobileNav = ({children, className, visible}: MobileNavProps) => {
     return (
         <motion.div
             animate={{
-                backdropFilter: visible ? "blur(5px)" : "none",
+                backdropFilter: visible ? "blur(12px)" : "none",
                 boxShadow: visible
                     ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
                     : "none",
@@ -203,9 +226,23 @@ export const MobileNav = ({children, className, visible}: MobileNavProps) => {
                 stiffness: 200,
                 damping: 50,
             }}
+      //       style={{
+      //           background: visible
+      //               ? `
+      //       linear-gradient(
+      //   to right,
+      //   color-mix(in oklch, var(--primary) 20%, transparent 5%) 0%,
+      //   color-mix(in oklch, var(--primary) 60%, transparent 10%) 40%,
+      //   color-mix(in oklch, var(--primary) 60%, transparent 10%) 80%,
+      //   color-mix(in oklch, var(--primary) 20%, transparent 5%) 100%
+      // )
+      //     `
+      //               : "transparent",
+      //           backgroundBlendMode: "overlay",
+      //       }}
             className={cn(
                 "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden rounded-full",
-                visible && "bg-muted/80",
+                visible && "bg-muted/40",
                 className,
             )}
         >

@@ -57,7 +57,7 @@ export const MovieTrailersSection = ({ trailers }: MovieTrailersSectionProps) =>
                         <ThumbnailButton
                             youtubeId={trailer.youtubeId!}
                             title={trailer.title}
-                            className='aspect-video h-24 shrink-0'
+                            className='aspect-video h-32 shrink-0'
                         />
                     </motion.div>
                 ))}

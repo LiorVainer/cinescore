@@ -43,7 +43,7 @@ export function HeroBackground3D({ posters }: Props) {
     // const isMobile = /mobile|android|iphone|ipad/i.test(userAgent);
     const isMobile = useIsMobile();
 
-    const itemsPerRow = isMobile ? 3 : 5;
+    const itemsPerRow = isMobile ? 5 : 5;
     const rowOffset = 5;
 
     const rows: string[][] = [];
@@ -54,20 +54,21 @@ export function HeroBackground3D({ posters }: Props) {
     return (
         <div className='absolute inset-0 overflow-hidden bg-black'>
             <motion.div
-                className='
-          absolute top-0 right-0
-          flex flex-col items-center gap-2
-          opacity-45 blur-[0.8px]
-          w-[180vw] sm:w-[160vw] md:w-[180vw]
-        '
-                style={{
-                    transformStyle: 'preserve-3d',
-                    transformOrigin: 'top right',
-                    transform:
-                        'perspective(1200px) translateX(5%) translateY(-5%) rotateY(-14deg) rotateX(2deg) scale(1)',
-                    minHeight: '120vh',
-                }}
+                className={`
+      absolute top-0 right-0
+    flex flex-col items-center gap-2
+    opacity-45 blur-[0.8px]
+    w-[180vw] sm:w-[160vw] md:w-[280vw]
+    min-h-[120vh]
+    transform-gpu origin-top-right
+    [transform-style:preserve-3d]
+  `}
                 variants={containerVariants}
+                style={{
+                    transform: isMobile
+                        ? "perspective(600px) translateX(6%) translateY(2%) rotateY(-18deg) rotateX(3deg) scale(0.85)"
+                        : "perspective(1800px) translateX(2%) translateY(-2%) rotateY(-25deg) rotateX(2deg) scale(0.75)",
+                }}
                 initial='hidden'
                 animate='show'
             >
@@ -78,7 +79,7 @@ export function HeroBackground3D({ posters }: Props) {
                     return (
                         <motion.div
                             key={rowIndex}
-                            className={`grid gap-2 w-full max-w-none ${isMobile ? 'grid-cols-3' : 'grid-cols-5'}`}
+                            className={`grid gap-2 w-full max-w-none grid-cols-5`}
                             style={{
                                 transform: `translateX(${offsetX}%) translateZ(${
                                     (rowIndex % 3) * 6
