@@ -10,10 +10,34 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             {/* === Page Content === */}
             <div className='relative min-h-screen overflow-hidden' style={{ paddingTop: '3.25rem' }}>
                 <Spotlight
-                    gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(50, 100%, 80%, .10) 0, hsla(50, 100%, 60%, .04) 50%, hsla(50, 100%, 40%, 0) 80%)"
-                    gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(50, 100%, 80%, .06) 0, hsla(50, 100%, 60%, .02) 80%, transparent 100%)"
-                    gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(50, 100%, 80%, .04) 0, hsla(50, 100%, 40%, .02) 80%, transparent 100%)"
+                    gradientFirst={`
+    radial-gradient(
+      68.54% 68.72% at 55.02% 31.46%,
+      color-mix(in oklch, var(--primary) 40%, transparent 60%) 0%,
+      color-mix(in oklch, var(--primary) 20%, transparent 80%) 40%,
+      transparent 80%
+    )
+  `}
+                    gradientSecond={`
+    radial-gradient(
+      50% 50% at 50% 50%,
+      color-mix(in oklch, var(--primary) 25%, transparent 75%) 0%,
+      color-mix(in oklch, var(--primary) 10%, transparent 90%) 70%,
+      transparent 100%
+    )
+  `}
+                    gradientThird={`
+    radial-gradient(
+      50% 50% at 50% 50%,
+      color-mix(in oklch, var(--primary) 20%, transparent 80%) 0%,
+      color-mix(in oklch, var(--primary) 5%, transparent 95%) 70%,
+      transparent 100%
+    )
+  `}
                 />
+
+
+
 
 
                 {children}
