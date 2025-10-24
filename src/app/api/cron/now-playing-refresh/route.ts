@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     const fromVercel = authHeader !== `Bearer ${process.env.CRON_SECRET}`
 
     if (!fromVercel) {
-        cronLogger.warn('Missing x-vercel-cron header');
+        cronLogger.warn('Missing CRON_SECRET header or invalid value');
         return new NextResponse('Unauthorized', { status: 401 });
     }
 
