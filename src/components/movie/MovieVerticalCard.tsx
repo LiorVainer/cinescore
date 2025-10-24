@@ -40,7 +40,6 @@ export function MovieVerticalCard({
 
             <div className="absolute inset-x-0 top-0 p-2 bg-gradient-to-b from-black/85 to-transparent">
                 <div className="flex items-center justify-between gap-2">
-                    <span className="text-white text-sm font-medium line-clamp-2">{title}</span>
                     {typeof imdbRating === 'number' && (
                         <span
                             className="inline-flex items-center gap-1 bg-black/50 px-2 py-0.5 rounded text-white text-xs">
