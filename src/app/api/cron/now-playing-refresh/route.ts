@@ -10,12 +10,13 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
     const cronLogger = logger.scope('api:cron:catalog-refresh');
-    const fromVercel = request.headers.get('x-vercel-cron');
+    const authHeader = request.headers.get('authorization');
+    const fromVercel = authHeader !== `Bearer ${process.env.CRON_SECRET}`
 
-    // if (!fromVercel) {
-    //     cronLogger.warn('Missing x-vercel-cron header');
-    //     return new NextResponse('Unauthorized', { status: 401 });
-    // }
+    if (!fromVercel) {
+        cronLogger.warn('Missing x-vercel-cron header');
+        return new NextResponse('Unauthorized', { status: 401 });
+    }
 
     try {
         return await withSentryTransaction(
