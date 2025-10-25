@@ -6,7 +6,7 @@ export type SortValue = (typeof SORT_VALUES)[number];
 
 export type GenreOption = { id: number; name: string };
 
-export function useSortOptions() {
+export function useSortOptions(): { value: SortValue; label: string }[] {
     const t = useTranslations('sort');
 
     return [
@@ -15,5 +15,6 @@ export function useSortOptions() {
         { value: 'votes:desc', label: t('votesDesc') },
         { value: 'releaseDate:desc', label: t('releaseDateDesc') },
         { value: 'releaseDate:asc', label: t('releaseDateAsc') },
-    ] as const;
+    ];
 }
+

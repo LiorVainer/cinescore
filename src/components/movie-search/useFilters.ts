@@ -15,7 +15,7 @@ import {SORT_VALUES, SortValue} from '@/constants/sort.const';
 import type {Language} from '@prisma/client';
 import type {MovieFilters} from '@/app/actions/searchMovies';
 
-const DEFAULT_SORT: SortValue = 'rating:desc';
+const DEFAULT_SORT: SortValue = 'rating:desc' as const ;
 const DEFAULT_PAGE_SIZE = 24;
 const DEFAULT_PAGE = 1;
 
@@ -30,7 +30,7 @@ type RawFilters = {
 const filterParsers = {
     search: parseAsString.withDefault(''),
     actor: parseAsString.withDefault(''),
-    sort: parseAsStringEnum(SORT_VALUES).withDefault(DEFAULT_SORT),
+    sort: parseAsStringEnum<SortValue>([...SORT_VALUES]).withDefault(DEFAULT_SORT),
     genres: parseAsArrayOf(parseAsInteger).withDefault([]),
     page: parseAsInteger.withDefault(DEFAULT_PAGE),
 } satisfies UseQueryStatesKeysMap<RawFilters>;
@@ -80,7 +80,6 @@ export function useFiltersState(language: Language): FiltersState {
                 }),
                 {
                     ...DEFAULT_SET_OPTIONS,
-                    limit: debounce(400),
                 },
             ),
         [setRawFilters],
@@ -96,7 +95,6 @@ export function useFiltersState(language: Language): FiltersState {
                 }),
                 {
                     ...DEFAULT_SET_OPTIONS,
-                    limit: debounce(400),
                 },
             ),
         [setRawFilters],
