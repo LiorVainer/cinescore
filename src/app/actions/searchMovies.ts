@@ -1,13 +1,13 @@
 'use server';
 
-import { omdb, tmdb } from '@/lib/clients';
-import { prisma } from '@/lib/prisma';
-import { MoviesDAL } from '@/dal';
-import { Language, Prisma } from '@prisma/client';
-import { MovieWithLanguageTranslation } from '@/models/movies.model';
-import type { ExternalIds } from 'tmdb-ts';
-import type { Movie as OmdbMovie } from '@/lib/omdbapi';
-import { SortValue } from '@/constants/sort.const';
+import {omdb, tmdb} from '@/lib/clients';
+import {prisma} from '@/lib/prisma';
+import {MoviesDAL} from '@/dal';
+import {Language, Prisma} from '@prisma/client';
+import {MovieWithLanguageTranslation} from '@/models/movies.model';
+import type {ExternalIds} from 'tmdb-ts';
+import type {Movie as OmdbMovie} from '@/lib/omdbapi';
+import {SortValue} from '@/constants/sort.const';
 
 export type SearchedMovie = {
     id: number;
@@ -108,6 +108,9 @@ export const searchMoviesInDB = async (query: string, language: Language = Langu
 
 export type MovieFilters = {
     search?: string;
+    searchDebounced?: string;
+    actorName?: string;
+    actorNameDebounced?: string;
     sort?: SortValue;
     selectedGenres?: number[];
     page?: number;
@@ -118,6 +121,9 @@ export type MovieFilters = {
 export const searchMoviesFiltered = async (filters: MovieFilters) => {
     const {
         search = '',
+        searchDebounced,
+        actorName = '',
+        actorNameDebounced,
         sort = 'rating:desc',
         selectedGenres = [],
         page = 1,
@@ -125,10 +131,11 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
         language = Language.he_IL,
     } = filters ?? {};
 
-    const q = search.trim();
+    const q = (searchDebounced ?? search).trim();
+    const actorQuery = (actorNameDebounced ?? actorName ?? '').trim();
 
     // Build where
-    const where: any = {};
+    const where: Prisma.MovieWhereInput = {};
 
     if (q.length > 0) {
         where.translations = {
@@ -145,6 +152,26 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
         where.genres = {
             some: { tmdbId: { in: selectedGenres } }, // Use tmdbId instead of id
         };
+    }
+
+    if (actorQuery.length > 0) {
+        try {
+            const actorSearch = await tmdb.search.people({ query: actorQuery, language: 'he-IL' });
+            const actorMatch = actorSearch.results[0];
+            if (actorMatch) {
+                const credits = await tmdb.people.movieCredits(actorMatch.id);
+                const movieIds = (credits.cast ?? []).map((entry) => entry.id).filter((id): id is number => typeof id === 'number');
+                if (movieIds.length > 0) {
+                    where.tmdbId = { in: movieIds };
+                } else {
+                    where.tmdbId = { in: [-1] }; // ensures empty result set when actor has no credits
+                }
+            } else {
+                where.tmdbId = { in: [-1] };
+            }
+        } catch (error) {
+            console.error('searchMoviesFiltered: failed to resolve actor filter', error);
+        }
     }
 
     // Build orderBy
