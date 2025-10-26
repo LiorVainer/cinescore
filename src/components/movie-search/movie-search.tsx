@@ -1,68 +1,36 @@
 'use client';
 
-import {motion} from 'framer-motion';
-import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import { motion } from 'framer-motion';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import MovieCard from '@/components/movie/movie-card';
-import {listGenres, searchMoviesFiltered} from '@/app/actions/searchMovies';
-import {FilterBar} from '@/components/movie-search/FilterBar';
+import { listGenres, searchMoviesFiltered } from '@/app/actions/searchMovies';
+import { FilterBar } from '@/components/movie-search/FilterBar';
 import CollapsedMovieCardSkeleton from '@/components/movie/movie-card-collapsed.skeleton';
-import {useTranslations} from 'next-intl';
-import {FiltersProvider, useFilters} from '@/components/movie-search/FiltersContext';
-import {SelectedGenreChips} from "@/components/movie-search/SelectedGenreChips";
+import { useTranslations } from 'next-intl';
+import { FiltersProvider, useFilters } from '@/components/movie-search/FiltersContext';
+import { SelectedGenreChips } from '@/components/movie-search/SelectedGenreChips';
 
 export function MovieSearchContent() {
     const t = useTranslations('search');
     const tMovie = useTranslations('movie');
 
     const {
-        setSearch,
-        setActorName,
-        setSort,
         toggleGenre,
-        clearGenres,
-        clearAll,
         selectedGenres,
         language,
         page,
-        pageSize,
         sort,
         searchDebounced,
-        actorDebounced,
-        filters,
+        data: moviesData,
+        isLoading: isFetching,
+        isError,
     } = useFilters();
 
     const selectedGenresKey = selectedGenres.join(',');
 
-
-    const {
-        data: moviesData,
-        isFetching,
-        isError,
-    } = useQuery({
-        queryKey: [
-            'movies-search',
-            {
-                search: searchDebounced,
-                actor: actorDebounced,
-                sort,
-                selectedGenres,
-                page,
-                pageSize,
-                language,
-            },
-        ],
-        queryFn: () =>
-            searchMoviesFiltered({
-                ...filters,
-                search: searchDebounced,
-                actorName: actorDebounced,
-            }),
-        placeholderData: keepPreviousData,
-    });
-
     const items = moviesData?.items ?? [];
 
-    const {data: genresData} = useQuery({
+    const { data: genresData } = useQuery({
         queryKey: ['genres', language],
         queryFn: () => listGenres(language),
         staleTime: 1000 * 60 * 60,
@@ -80,7 +48,7 @@ export function MovieSearchContent() {
 
             {isFetching && items.length === 0 ? (
                 <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8'>
-                    {Array.from({length: 9}).map((_, i) => (
+                    {Array.from({ length: 9 }).map((_, i) => (
                         <CollapsedMovieCardSkeleton key={i} />
                     ))}
                 </div>
@@ -104,12 +72,12 @@ export function MovieSearchContent() {
                         <motion.div
                             key={movie.id}
                             variants={{
-                                hidden: {opacity: 0, y: 20, scale: 0.98},
+                                hidden: { opacity: 0, y: 20, scale: 0.98 },
                                 show: {
                                     opacity: 1,
                                     y: 0,
                                     scale: 1,
-                                    transition: {type: 'spring', stiffness: 100, damping: 18},
+                                    transition: { type: 'spring', stiffness: 100, damping: 18 },
                                 },
                             }}
                         >

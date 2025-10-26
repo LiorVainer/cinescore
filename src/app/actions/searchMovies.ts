@@ -1,13 +1,13 @@
 'use server';
 
-import {omdb, tmdb} from '@/lib/clients';
-import {prisma} from '@/lib/prisma';
-import {MoviesDAL} from '@/dal';
-import {Language, Prisma} from '@prisma/client';
-import {MovieWithLanguageTranslation} from '@/models/movies.model';
-import type {ExternalIds} from 'tmdb-ts';
-import type {Movie as OmdbMovie} from '@/lib/omdbapi';
-import {SortValue} from '@/constants/sort.const';
+import { omdb, tmdb } from '@/lib/clients';
+import { prisma } from '@/lib/prisma';
+import { MoviesDAL } from '@/dal';
+import { Language, Prisma } from '@prisma/client';
+import { MovieWithLanguageTranslation } from '@/models/movies.model';
+import type { ExternalIds } from 'tmdb-ts';
+import type { Movie as OmdbMovie } from '@/lib/omdbapi';
+import { SortValue } from '@/constants/sort.const';
 
 export type SearchedMovie = {
     id: number;
@@ -160,7 +160,9 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
             const actorMatch = actorSearch.results[0];
             if (actorMatch) {
                 const credits = await tmdb.people.movieCredits(actorMatch.id);
-                const movieIds = (credits.cast ?? []).map((entry) => entry.id).filter((id): id is number => typeof id === 'number');
+                const movieIds = (credits.cast ?? [])
+                    .map((entry) => entry.id)
+                    .filter((id): id is number => typeof id === 'number');
                 if (movieIds.length > 0) {
                     where.tmdbId = { in: movieIds };
                 } else {

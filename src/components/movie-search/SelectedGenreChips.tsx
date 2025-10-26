@@ -28,7 +28,7 @@ export function SelectedGenreChips({
                         key={id}
                         variant='secondary'
                         onClick={() => onRemove(id)}
-                        className='flex items-center gap-1'
+                        className='flex items-center gap-1 px-0 ps-2 cursor-pointer'
                     >
                         {g.name}
                         <button className='p-1' aria-label={t('removeGenre', { name: g.name })}>

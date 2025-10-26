@@ -1,10 +1,10 @@
 'use client';
 
-import {MovieSearchContent} from './movie-search';
-import {FilterBar} from "@/components/movie-search/FilterBar";
-import {useFilters} from "@/components/movie-search/FiltersContext";
-import {useQuery} from "@tanstack/react-query";
-import {listGenres} from "@/app/actions/searchMovies";
+import { MovieSearchContent } from './movie-search';
+import { FilterBar } from '@/components/movie-search/FilterBar';
+import { useFilters } from '@/components/movie-search/FiltersContext';
+import { useQuery } from '@tanstack/react-query';
+import { listGenres } from '@/app/actions/searchMovies';
 
 export function SearchModalContent() {
     const {
@@ -26,7 +26,7 @@ export function SearchModalContent() {
         clearAll,
     } = useFilters();
 
-    const {data: genresData} = useQuery({
+    const { data: genresData } = useQuery({
         queryKey: ['genres', language],
         queryFn: () => listGenres(language),
         staleTime: 1000 * 60 * 60,
@@ -35,7 +35,7 @@ export function SearchModalContent() {
     const genres = genresData ?? [];
 
     return (
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-4 w-full'>
             <FilterBar
                 search={search}
                 onSearchChange={(value) => {

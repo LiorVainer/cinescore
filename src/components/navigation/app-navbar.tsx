@@ -26,7 +26,7 @@ export const AppNavbar = () => {
                 </NavBody>
             ) : (
                 <MobileNav>
-                    <MobileNavHeader className='flex items-center gap-6'>
+                    <MobileNavHeader className='flex items-center gap-4'>
                         <NavbarLogo />
                         <NavbarContent />
                     </MobileNavHeader>
