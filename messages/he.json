@@ -14,7 +14,8 @@
   "nav": {
     "signIn": "התחבר",
     "language": "שפה",
-    "details": "פרטים"
+    "details": "פרטים",
+    "search": "חיפוש"
   },
   "userButton": {
     "settings": "הגדרות",
@@ -28,7 +29,9 @@
     "placeholder": "חפש סרטים...",
     "loading": "מחפש...",
     "noResults": "לא נמצאו תוצאות לפי הסינון הנוכחי.",
-    "errorLoading": "שגיאה בטעינת הנתונים. נסה שוב."
+    "errorLoading": "שגיאה בטעינת הנתונים. נסה שוב.",
+    "actorPlaceholder": "סנן לפי שחקן...",
+    "modalTitle": "חיפוש סרטים"
   },
   "rating": {
     "votes": "{count, plural, =0 {אין הצבעות} one {הצבעה #} other {# הצבעות}}"
@@ -70,13 +73,14 @@
     "subtitle": "ראה אילו סרטים מוקרנים, עקוב אחרי דירוגי IMDb וקבל התראות על סרטים חדשים שתאהב.",
     "cta_now_playing": "ראה מה מוקרן עכשיו",
     "cta_subscribe": "הירשם לקבלת התראות",
-    "top_rated_title": "הדירוגים הגבוהים ביותר"
+    "top_rated_title": "מדורגים הכי גבוה"
   },
   "filters": {
     "sortBy": "מיין לפי",
     "genre": "ז'אנר",
     "clear": "נקה",
-    "clearAll": "נקה הכל"
+    "clearAll": "נקה הכל",
+    "actor": "שחקן"
   },
   "genres": {
     "title": "ז'אנרים",

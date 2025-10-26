@@ -1,32 +1,32 @@
 'use client';
-import { Suspense } from 'react';
-import { LanguageToggle } from '@/components/navigation/language-toggle';
-import { SignedIn, SignedOut } from '@daveyplate/better-auth-ui';
-import { MobileNav, MobileNavHeader, Navbar, NavBody } from '@/components/ui/resizable-navbar';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { Button } from '@/components/ui/button';
-import { useTranslations } from 'next-intl';
-import { Link, usePathname } from '@/i18n/navigation';
-import { NavbarLogo } from './navbar-logo';
-import { User } from 'lucide-react';
-import { UserButton } from '@/components/auth/user-button';
+import {Suspense} from 'react';
+import {LanguageToggle} from '@/components/navigation/language-toggle';
+import {SignedIn, SignedOut} from '@daveyplate/better-auth-ui';
+import {MobileNav, MobileNavHeader, Navbar, NavBody} from '@/components/ui/resizable-navbar';
+import {useIsMobile} from '@/hooks/use-mobile';
+import {Button} from '@/components/ui/button';
+import {useTranslations} from 'next-intl';
+import {Link, usePathname} from '@/i18n/navigation';
+import {NavbarLogo} from './navbar-logo';
+import {User} from 'lucide-react';
+import {UserButton} from '@/components/auth/user-button';
+import {SearchLauncher} from '@/components/movie-search/SearchLauncher';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
     const pathname = usePathname();
 
-    console.log({ pathname });
 
     return (
         <Navbar position='fixed' className={pathname === '/' ? 'backdrop-blur-none' : ''}>
             {!isMobile ? (
-                <NavBody className={'container flex h-16 items-center justify-between'}>
+                <NavBody className={'container flex h-16 items-center justify-between gap-8'}>
                     <NavbarLogo />
                     <NavbarContent />
                 </NavBody>
             ) : (
                 <MobileNav>
-                    <MobileNavHeader>
+                    <MobileNavHeader className='flex items-center gap-4'>
                         <NavbarLogo />
                         <NavbarContent />
                     </MobileNavHeader>
@@ -38,10 +38,11 @@ export const AppNavbar = () => {
 
 export const NavbarContent = () => {
     const t = useTranslations('nav');
-    const isMobile = useIsMobile();
+    const pathname = usePathname(); // ✅ get the current route
 
     return (
-        <nav className='flex items-center gap-6'>
+        <nav className='flex items-center gap-4 md:gap-6 flex-1 justify-end'>
+            {pathname === '/now-playing' && <SearchLauncher />}
             <div className='flex items-center gap-2 md:gap-6'>
                 <div className='flex items-center gap-2'>
                     {/*<ModeToggle />*/}

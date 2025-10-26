@@ -17,7 +17,8 @@ declare const messages: {
   "nav": {
     "signIn": "Login",
     "language": "Language",
-    "details": "Details"
+    "details": "Details",
+    "search": "Search"
   },
   "userButton": {
     "settings": "Settings",
@@ -31,7 +32,9 @@ declare const messages: {
     "placeholder": "Search movies...",
     "loading": "Searching...",
     "noResults": "No results found for the current filter.",
-    "errorLoading": "Error loading data. Please try again."
+    "errorLoading": "Error loading data. Please try again.",
+    "actorPlaceholder": "Filter by actor name...",
+    "modalTitle": "Search movies"
   },
   "rating": {
     "votes": "{count, plural, =0 {no votes} one {# vote} other {# votes}}"
@@ -78,6 +81,7 @@ declare const messages: {
   "filters": {
     "sortBy": "Sort by",
     "genre": "Genre",
+    "actor": "Actor",
     "clear": "Clear",
     "clearAll": "Clear All"
   },

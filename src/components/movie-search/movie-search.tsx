@@ -1,105 +1,48 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { SortValue } from '@/constants/sort.const';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useDebounce } from '@/lib/useDebounce';
 import MovieCard from '@/components/movie/movie-card';
 import { listGenres, searchMoviesFiltered } from '@/app/actions/searchMovies';
 import { FilterBar } from '@/components/movie-search/FilterBar';
 import CollapsedMovieCardSkeleton from '@/components/movie/movie-card-collapsed.skeleton';
-import { useLocale, useTranslations } from 'next-intl';
-import { mapLocaleToLanguage } from '@/constants/languages.const';
+import { useTranslations } from 'next-intl';
+import { FiltersProvider, useFilters } from '@/components/movie-search/FiltersContext';
+import { SelectedGenreChips } from '@/components/movie-search/SelectedGenreChips';
 
-const DEFAULT_SORT = 'rating:desc';
-
-export default function MovieSearch() {
+export function MovieSearchContent() {
     const t = useTranslations('search');
-    const locale = useLocale();
-    const currentLanguage = mapLocaleToLanguage(locale);
     const tMovie = useTranslations('movie');
 
-    // Filters state
-    const [search, setSearch] = useState('');
-    const debouncedSearch = useDebounce(search, 400);
+    const {
+        toggleGenre,
+        selectedGenres,
+        language,
+        page,
+        sort,
+        searchDebounced,
+        data: moviesData,
+        isLoading: isFetching,
+        isError,
+    } = useFilters();
 
-    const [sort, setSort] = useState<SortValue>(DEFAULT_SORT);
-    const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
     const selectedGenresKey = selectedGenres.join(',');
-    const [page, setPage] = useState(1);
-    const pageSize = 24;
 
-    // Reset page when core filters change
-    useEffect(() => {
-        setPage(1);
-    }, [debouncedSearch, sort, selectedGenresKey]);
+    const items = moviesData?.items ?? [];
 
-    // Genres via server action + TanStack Query (now language-aware)
     const { data: genresData } = useQuery({
-        queryKey: ['genres', currentLanguage],
-        queryFn: async () => listGenres(currentLanguage),
-        staleTime: 1000 * 60 * 60, // 1 hour
+        queryKey: ['genres', language],
+        queryFn: () => listGenres(language),
+        staleTime: 1000 * 60 * 60,
     });
 
     const genres = genresData ?? [];
 
-    // Movies via server action + TanStack Query (now language-aware)
-    const {
-        data: moviesData,
-        isFetching,
-        isError,
-    } = useQuery({
-        queryKey: [
-            'movies-search',
-            {
-                search: debouncedSearch,
-                sort,
-                selectedGenres,
-                page,
-                pageSize,
-                language: currentLanguage,
-            },
-        ],
-        queryFn: async () =>
-            searchMoviesFiltered({
-                search: debouncedSearch,
-                sort,
-                selectedGenres,
-                page,
-                pageSize,
-                language: currentLanguage,
-            }),
-        placeholderData: keepPreviousData,
-    });
-
-    // Handlers
-    const toggleGenre = (id: number) => {
-        setSelectedGenres((prev) => (prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id]));
-    };
-
-    const clearFilters = () => {
-        setSearch('');
-        setSort(DEFAULT_SORT);
-        setSelectedGenres([]);
-        setPage(1);
-    };
-
-    const items = moviesData?.items ?? [];
-
     return (
         <div className='h-full flex flex-col gap-4 lg:py-8 scrollable'>
-            <FilterBar
-                search={search}
-                onSearchChange={setSearch}
-                sort={sort}
-                onSortChange={setSort}
-                genres={genres}
-                selectedGenres={selectedGenres}
-                onToggleGenre={toggleGenre}
-                onClearGenres={() => setSelectedGenres([])}
-                onClearAll={clearFilters}
-            />
+            <div className='w-full'>
+                <SelectedGenreChips genres={genres} selected={selectedGenres} onRemove={toggleGenre} />
+            </div>
 
             {isError && <div className='text-destructive'>{t('errorLoading')}</div>}
 
@@ -111,7 +54,7 @@ export default function MovieSearch() {
                 </div>
             ) : (
                 <motion.div
-                    key={debouncedSearch + sort + selectedGenresKey + page} // re-trigger animation on filter change
+                    key={searchDebounced + sort + selectedGenresKey + page}
                     className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-8'
                     variants={{
                         hidden: {},
@@ -148,5 +91,13 @@ export default function MovieSearch() {
                 </motion.div>
             )}
         </div>
+    );
+}
+
+export default function MovieSearch() {
+    return (
+        <FiltersProvider>
+            <MovieSearchContent />
+        </FiltersProvider>
     );
 }
