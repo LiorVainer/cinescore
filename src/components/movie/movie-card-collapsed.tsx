@@ -67,21 +67,21 @@ export default function CollapsedMovieCard({
             </AnimatePresence>
 
             {/* Content layer */}
-            <div className='flex w-full items-stretch relative z-10'>
+            <div className='flex w-full items-stretch relative z-10 h-full'>
                 <motion.div layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.IMAGE(title, idSuffix)} className='shrink-0'>
                     <Image
                         height={200}
                         width={300}
                         src={imgSrc}
                         alt={title}
-                        className='w-24 md:w-32 lg:w-40 rounded-r-lg object-cover object-top'
+                        className='w-24 md:w-32 lg:w-40 rounded-r-lg object-cover object-top aspect-[2/3]'
                         loading='eager'
                         sizes='(max-width: 768px) 96px, (max-width: 1024px) 128px, 160px'
                         quality={75}
                     />
                 </motion.div>
 
-                <div className='flex-1 min-w-0 p-4 box-border flex flex-col justify-between h-full'>
+                <div className='flex-1 min-w-0 p-4 box-border flex flex-col justify-between h-full justify-between gap-4'>
                     <div className='flex flex-col gap-2'>
                         <div className='flex justify-between items-center'>
                             <motion.h3

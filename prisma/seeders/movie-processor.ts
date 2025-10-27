@@ -1,5 +1,5 @@
-import { tmdb } from '@/lib/clients';
-import { Language, Prisma } from '@prisma/client';
+import { imdb, omdb, tmdb } from '@/lib/clients';
+import { MovieStatus, Language, Prisma } from '@prisma/client';
 import Bluebird from 'bluebird';
 import type { DAL } from '@/dal';
 import * as Sentry from '@sentry/nextjs';
@@ -8,6 +8,7 @@ import { withSentrySpan } from '@/lib/sentry/withSpan';
 import { SEED_CONFIG } from './seed-config';
 
 import type { Movie, MovieDetails, Video, ExternalIds } from 'tmdb-ts';
+import { extractImdbRatings } from '@/lib/imdb.utils';
 
 type TmdbVideosResponse = {
     results: Video[];
@@ -42,7 +43,11 @@ const movieDataLogger = logger.scope('processor:movie-data');
 const movieTranslationsLogger = logger.scope('processor:movie-translations');
 const movieTrailersLogger = logger.scope('processor:movie-trailers');
 
-export async function processMovieData(movie: MovieProcessInput, dal: DAL): Promise<MovieData | null> {
+export async function processMovieData(
+    movie: MovieProcessInput,
+    dal: DAL,
+    status: MovieStatus,
+): Promise<MovieData | null> {
     const spanMetadata = {
         tmdbId: movie.id,
         title: movie.title,
@@ -58,24 +63,38 @@ export async function processMovieData(movie: MovieProcessInput, dal: DAL): Prom
             try {
                 const existing = await dal.movies.findByTmdbId(movie.id);
                 if (existing) {
-                    const existingContext = {
-                        movie: {
-                            tmdbId: movie.id,
-                            title: movie.title,
+                    // 🧩 Only fetch OMDB data — no TMDB calls
+                    const omdbMovie = await omdb.title.getById({ i: existing.imdbId });
+                    const imdbapiMovie = await imdb.titles.imDbApiServiceGetTitle({ titleId: existing.imdbId });
+
+                    const { votes: currentImdbVotes, rating: currentImdbRating } = extractImdbRatings(
+                        imdbapiMovie,
+                        omdbMovie,
+                    );
+
+                    // Optional optimization: only update if changed
+                    if (existing.rating !== currentImdbRating || existing.votes !== currentImdbVotes) {
+                        await dal.movies.updateRating(existing.imdbId, {
+                            rating: currentImdbRating,
+                            votes: currentImdbVotes,
+                        });
+
+                        movieDataLogger.info('Updated existing movie OMDB stats', {
                             imdbId: existing.id,
-                        },
-                    };
-
-                    movieDataLogger.info('Movie already exists; skipping base upsert', existingContext.movie);
-                    Sentry.logger.info('catalog.movie.skip_existing', existingContext.movie);
-
-                    Sentry.withScope((scope) => {
-                        scope.setLevel('info');
-                        scope.setTag('processor', 'movie-data');
-                        scope.setTag('reason', 'already-exists');
-                        scope.setContext('movie', existingContext.movie);
-                        Sentry.captureMessage('catalog.movie.skip_existing');
-                    });
+                            rating: currentImdbRating,
+                            votes: currentImdbVotes,
+                        });
+                        Sentry.logger.info('catalog.movie.omdb_updated', {
+                            ...spanMetadata,
+                            imdbId: existing.id,
+                            rating: currentImdbRating,
+                            votes: currentImdbVotes,
+                        });
+                    } else {
+                        movieDataLogger.info('OMDB stats unchanged, skipping update', {
+                            imdbId: existing.id,
+                        });
+                    }
 
                     return null;
                 }
@@ -88,14 +107,22 @@ export async function processMovieData(movie: MovieProcessInput, dal: DAL): Prom
                     tmdb.movies.credits(movie.id),
                 ]);
 
-                const imdbId = ext.imdb_id ?? `tmdb-${movie.id}`;
+                const omdbMovie = await omdb.title.getById({ i: ext.imdb_id });
+                const imdbapiMovie = await imdb.titles.imDbApiServiceGetTitle({ titleId: ext.imdb_id });
+
+                const { votes: currentImdbVotes, rating: currentImdbRating } = extractImdbRatings(
+                    imdbapiMovie,
+                    omdbMovie,
+                );
 
                 const movieCreateInput: Prisma.MovieCreateInput & { imdbId: string } = {
-                    id: imdbId,
-                    imdbId,
+                    id: ext.imdb_id,
+                    imdbId: ext.imdb_id,
                     tmdbId: movie.id,
-                    rating: detailsEn.vote_average ?? null,
-                    votes: detailsEn.vote_count ?? null,
+                    status,
+                    rating: currentImdbRating,
+                    votes: currentImdbVotes,
+                    runtime: detailsEn.runtime,
                     releaseDate: detailsEn.release_date ? new Date(detailsEn.release_date) : null,
                     originalLanguage: detailsEn.original_language === 'he' ? Language.he_IL : Language.en_US,
                 };
@@ -105,11 +132,11 @@ export async function processMovieData(movie: MovieProcessInput, dal: DAL): Prom
                 const movieContext = {
                     movie: {
                         tmdbId: movie.id,
-                        imdbId,
+                        imdbId: ext.imdb_id,
                         title: movie.title,
                         releaseDate: detailsEn.release_date ?? null,
-                        voteAverage: detailsEn.vote_average ?? null,
-                        voteCount: detailsEn.vote_count ?? null,
+                        voteAverageRating: currentImdbRating ?? null,
+                        voteCount: currentImdbVotes ?? null,
                     },
                     tmdb: {
                         externalIds: {
@@ -135,7 +162,7 @@ export async function processMovieData(movie: MovieProcessInput, dal: DAL): Prom
                 return {
                     id: movie.id,
                     title: movie.title,
-                    imdbId,
+                    imdbId: ext.imdb_id,
                     tmdbId: movie.id,
                     baseMovie,
                     detailsEn,

@@ -9,13 +9,13 @@ discriminated union, providing compile-time type safety throughout your entire a
 
 ## 📁 Files Modified
 
-### **1. `src/types/interests.d.ts`** ✅
+### **1. `src/types/trigger.d.ts`** ✅
 
 This file now properly uses TypeScript's `declare module` syntax to augment the `@prisma/client` module globally.
 
 ### **2. `tsconfig.json`** ✅
 
-Added `src/types/interests.d.ts` to the `include` array so TypeScript automatically picks up the type declarations.
+Added `src/types/trigger.d.ts` to the `include` array so TypeScript automatically picks up the type declarations.
 
 ---
 
@@ -137,7 +137,7 @@ No type assertions needed - TypeScript **automatically narrows** the types based
 ### **In DAL:**
 
 ```typescript
-// dal/interests.dal.ts
+// dal/triggers.dal.ts
 async
 findByUser(userId
 :
@@ -156,7 +156,7 @@ string
 ### **In Server Actions:**
 
 ```typescript
-// app/actions/interests.ts
+// app/actions/triggers.ts
 const interests = await dal.interests.findByUser(user.id);
 
 // All conditions are properly typed
@@ -186,7 +186,7 @@ function ConditionBadge({condition}: { condition: InterestCondition }) {
 
 ## 🔍 How TypeScript Finds It
 
-1. **File Location**: `src/types/interests.d.ts`
+1. **File Location**: `src/types/trigger.d.ts`
 2. **tsconfig.json**: Explicitly includes this file in the `include` array
 3. **Module Augmentation**: The `declare module '@prisma/client'` syntax tells TypeScript to **merge** our types with
    Prisma's

@@ -20,7 +20,7 @@ model User {
   notifications Notification[]
   sessions      Session[]
   follows       Follow[]
-  interests     Interest[]
+  triggers      Trigger[]
   preferences   UserPreferences?
 
   @@map("user")
@@ -75,12 +75,17 @@ enum FollowType {
   GENRE
 }
 
-enum InterestType {
+enum TriggerConditionType {
   ACTOR
   GENRE
   RATING
   DURATION_MIN
   DURATION_MAX
+}
+
+enum MovieStatus {
+  NOW_PLAYING
+  UPCOMING
 }
 
 enum Language {
@@ -120,57 +125,59 @@ model Follow {
   @@map("follow")
 }
 
-model Interest {
-  id            String              @id @default(cuid())
+model Trigger {
+  id            String             @id @default(cuid())
   userId        String
   name          String // User-friendly name: "High-rated Action with Emma Stone"
-  conditions    InterestCondition[]
+  conditions    TriggerCondition[]
   notifications Notification[]
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @default(now()) @updatedAt
-  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @default(now()) @updatedAt
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@map("interest")
+  @@map("trigger")
 }
 
-model InterestCondition {
-  id           String       @id @default(cuid())
-  interestId   String
-  type         InterestType
+model TriggerCondition {
+  id           String               @id @default(cuid())
+  triggerId    String
+  type         TriggerConditionType
   stringValue  String? // For ACTOR/GENRE: the name
   numericValue Float? // For RATING/DURATION_MIN/DURATION_MAX: the threshold or duration value
-  interest     Interest     @relation(fields: [interestId], references: [id], onDelete: Cascade)
+  trigger      Trigger              @relation(fields: [triggerId], references: [id], onDelete: Cascade)
 
-  @@index([interestId])
-  @@map("interest_condition")
+  @@index([triggerId])
+  @@map("trigger_condition")
 }
 
 model Notification {
-  id         String    @id @default(cuid())
-  userId     String
-  movieId    String
-  interestId String? // Which interest triggered this notification
-  sentAt     DateTime  @default(now())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now()) @updatedAt
-  movie      Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  interest   Interest? @relation(fields: [interestId], references: [id], onDelete: SetNull)
+  id        String   @id @default(cuid())
+  userId    String
+  movieId   String
+  triggerId String? // Which trigger triggered this notification
+  sentAt    DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trigger   Trigger? @relation(fields: [triggerId], references: [id], onDelete: SetNull)
 
   @@unique([userId, movieId])
   @@index([sentAt])
-  @@index([interestId])
+  @@index([triggerId])
   @@map("notification")
 }
 
 model Movie {
+  tmdbId           Int                @unique
   id               String             @id
-  imdbId           String?            @unique
-  tmdbId           Int?               @unique
+  imdbId           String             @unique
   originalLanguage Language?
   rating           Float?
   votes            Int?
+  runtime          Int                @default(0)
+  status           MovieStatus        @default(NOW_PLAYING)
   releaseDate      DateTime?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @default(now()) @updatedAt
@@ -192,7 +199,8 @@ model MovieTranslation {
   title         String
   description   String?
   originalTitle String?
-  posterUrl     String? // ✅ poster can differ by language
+  posterUrl     String?
+  backdropUrl   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now()) @updatedAt
   movie         Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)

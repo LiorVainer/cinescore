@@ -116,7 +116,7 @@ model Interest {
   user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@map("interest")
+  @@map("trigger")
 }
 
 model InterestCondition {
@@ -151,7 +151,7 @@ model Notification {
   id         String    @id @default(cuid())
   userId     String    
   movieId    String    
-  interestId String?   // Which interest triggered this notification
+  interestId String?   // Which trigger triggered this notification
   sentAt     DateTime  @default(now())
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
@@ -249,14 +249,14 @@ USER ACTION                          →  DATABASE CHANGES
 Following the existing DAL pattern in `dal/` folder, created Data Access Layer classes for the new tables.
 
 - ✅ Created `dal/follows.dal.ts` - `FollowDAL` class
-- ✅ Created `dal/interests.dal.ts` - `InterestDAL` class
+- ✅ Created `dal/triggers.dal.ts` - `InterestDAL` class
 - ✅ Created `dal/user-preferences.dal.ts` - `UserPreferencesDAL` class
 - ✅ Updated `dal/index.ts` to export new DALs
 
 **File Structure:**
 
 ```typescript
-// dal/interests.dal.ts
+// dal/triggers.dal.ts
 export class InterestDAL {
     async create(data: {
         userId: string;
@@ -1272,7 +1272,7 @@ import {
     useCreateInterest,
     useUpdateInterest,
     useDeleteInterest
-} from '@/lib/query/interest';
+} from '@/lib/query/trigger';
 ```
 
 **Example Page Implementation:**
@@ -1281,7 +1281,7 @@ import {
 // src/app/[locale]/interests/page.tsx
 import {HydrationBoundary, dehydrate} from '@tanstack/react-query';
 import {getQueryClient} from '@/lib/query';
-import {userInterestsOptions} from '@/lib/query/interest';
+import {userInterestsOptions} from '@/lib/query/trigger';
 import {InterestsList} from '@/components/interests/InterestsList';
 import {auth} from '@/lib/auth';
 
@@ -1306,7 +1306,7 @@ export default async function InterestsPage() {
 // src/components/interests/InterestsList.tsx
 'use client';
 
-import {useUserInterests, useDeleteInterest} from '@/lib/query/interest';
+import {useUserInterests, useDeleteInterest} from '@/lib/query/trigger';
 import {toast} from 'sonner';
 import {InterestCard} from './InterestCard';
 
@@ -1346,7 +1346,7 @@ export function InterestsList({userId}: { userId: string }) {
 // src/components/interests/InterestDialog.tsx
 'use client';
 
-import {useCreateInterest} from '@/lib/query/interest';
+import {useCreateInterest} from '@/lib/query/trigger';
 import {InterestType} from '@prisma/client';
 import {toast} from 'sonner';
 import {useState} from 'react';

@@ -1,10 +1,10 @@
 'use server';
 
-import { FollowType, InterestType } from '@prisma/client';
+import { FollowType, TriggerConditionType } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 import { getDal, getUserSession, ActionResult } from '@/lib/server-utils';
 import { FollowDTO } from '@/models/follows.model';
-import { InterestDTO } from '@/models/interests.model';
+import { TriggerDTO } from '@/models/triggers.model';
 import { CACHE_TAGS } from '@/constants/cache-tags.const';
 
 // ============================================================================
@@ -14,7 +14,7 @@ import { CACHE_TAGS } from '@/constants/cache-tags.const';
 export async function createFollow(data: {
     type: FollowType;
     value: string;
-}): Promise<ActionResult<{ follow: FollowDTO; interest: InterestDTO }>> {
+}): Promise<ActionResult<{ follow: FollowDTO; trigger: TriggerDTO }>> {
     try {
         const user = await getUserSession();
         const dal = getDal();
@@ -31,15 +31,15 @@ export async function createFollow(data: {
         // Create Follow record
         const follow = await dal.follows.create(user.id, data.type, data.value);
 
-        // Auto-create Interest with single condition
-        const interestName = data.type === FollowType.ACTOR ? `${data.value} movies` : `${data.value} movies`;
+        // Auto-create Trigger with single condition
+        const triggerName = data.type === FollowType.ACTOR ? `${data.value} movies` : `${data.value} movies`;
 
-        const interest = await dal.interests.create({
+        const trigger = await dal.triggers.create({
             userId: user.id,
-            name: interestName,
+            name: triggerName,
             conditions: [
                 {
-                    type: data.type === FollowType.ACTOR ? InterestType.ACTOR : InterestType.GENRE,
+                    type: data.type === FollowType.ACTOR ? TriggerConditionType.ACTOR : TriggerConditionType.GENRE,
                     stringValue: data.value,
                     numericValue: null,
                 },
@@ -48,7 +48,7 @@ export async function createFollow(data: {
 
         // Revalidate cache
         revalidateTag(CACHE_TAGS.USER_FOLLOWS);
-        revalidateTag(CACHE_TAGS.USER_INTERESTS);
+        revalidateTag(CACHE_TAGS.USER_TRIGGERS);
 
         return {
             success: true,
@@ -60,18 +60,18 @@ export async function createFollow(data: {
                     createdAt: follow.createdAt,
                     updatedAt: follow.updatedAt,
                 },
-                interest: {
-                    id: interest.id,
-                    name: interest.name,
-                    conditions: interest.conditions.map((c) => ({
+                trigger: {
+                    id: trigger.id,
+                    name: trigger.name,
+                    conditions: trigger.conditions.map((c) => ({
                         id: c.id,
-                        interestId: c.interestId,
+                        triggerId: c.triggerId,
                         type: c.type,
                         stringValue: c.stringValue,
                         numericValue: c.numericValue,
-                    })) as InterestDTO['conditions'],
-                    createdAt: interest.createdAt,
-                    updatedAt: interest.updatedAt,
+                    })) as TriggerDTO['conditions'],
+                    createdAt: trigger.createdAt,
+                    updatedAt: trigger.updatedAt,
                 },
             },
         };
@@ -100,20 +100,20 @@ export async function deleteFollow(followId: string): Promise<ActionResult<{ del
             };
         }
 
-        // Find and delete the corresponding simple Interest (one with single condition matching this follow)
-        const interests = await dal.interests.findByUser(user.id);
+        // Find and delete the corresponding simple Trigger (one with single condition matching this follow)
+        const triggers = await dal.triggers.findByUser(user.id);
 
-        for (const interest of interests) {
-            // Check if this is a simple interest with one condition matching the follow
-            if (interest.conditions.length === 1) {
-                const condition = interest.conditions[0];
+        for (const trigger of triggers) {
+            // Check if this is a simple trigger with one condition matching the follow
+            if (trigger.conditions.length === 1) {
+                const condition = trigger.conditions[0];
                 const matchesFollow =
-                    ((follow.type === FollowType.ACTOR && condition.type === InterestType.ACTOR) ||
-                        (follow.type === FollowType.GENRE && condition.type === InterestType.GENRE)) &&
+                    ((follow.type === FollowType.ACTOR && condition.type === TriggerConditionType.ACTOR) ||
+                        (follow.type === FollowType.GENRE && condition.type === TriggerConditionType.GENRE)) &&
                     condition.stringValue === follow.value;
 
                 if (matchesFollow) {
-                    await dal.interests.delete(interest.id);
+                    await dal.triggers.delete(trigger.id);
                     break;
                 }
             }
@@ -124,7 +124,7 @@ export async function deleteFollow(followId: string): Promise<ActionResult<{ del
 
         // Revalidate cache
         revalidateTag(CACHE_TAGS.USER_FOLLOWS);
-        revalidateTag(CACHE_TAGS.USER_INTERESTS);
+        revalidateTag(CACHE_TAGS.USER_TRIGGERS);
 
         return {
             success: true,

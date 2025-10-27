@@ -9,7 +9,7 @@ The server actions have been successfully split into domain-specific files with 
 ```
 src/models/
 ├── follows.model.ts           ✨ NEW - FollowDTO
-├── interests.model.ts         ✨ NEW - InterestDTO, InterestConditionDTO
+├── triggers.model.ts         ✨ NEW - InterestDTO, InterestConditionDTO
 └── user-preferences.model.ts  ✨ NEW - UserPreferencesDTO
 ```
 
@@ -19,7 +19,7 @@ src/models/
 src/app/actions/
 ├── subscriptions.ts           ♻️  UPDATED - Re-exports for backward compatibility
 ├── follows.ts                 ✨ NEW - Follow-related actions
-├── interests.ts               ✨ NEW - Interest-related actions
+├── triggers.ts               ✨ NEW - Interest-related actions
 └── user-preferences.ts        ✨ NEW - User preferences actions
 ```
 
@@ -39,7 +39,7 @@ export type FollowDTO = {
 };
 ```
 
-### **interests.model.ts**
+### **triggers.model.ts**
 
 ```typescript
 export type InterestConditionDTO = {
@@ -78,7 +78,7 @@ Actions for managing user follows (actors/genres):
 - `deleteFollow(followId)` - Remove follow and associated interest
 - `getUserFollows()` - Fetch all user's follows
 
-### **interests.ts**
+### **triggers.ts**
 
 Actions for managing complex interests:
 

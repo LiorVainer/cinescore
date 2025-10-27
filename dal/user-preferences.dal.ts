@@ -1,21 +1,20 @@
 // dal/user-preferences.dal.ts
-import {PrismaClient, NotifyMethod} from "@prisma/client";
+import { PrismaClient, NotifyMethod } from '@prisma/client';
 
 export class UserPreferencesDAL {
-    constructor(private prisma: PrismaClient) {
-    }
+    constructor(private prisma: PrismaClient) {}
 
     async upsert(userId: string, notifyBy: NotifyMethod[]) {
         return this.prisma.userPreferences.upsert({
-            where: {userId},
-            create: {userId, notifyBy},
-            update: {notifyBy}
+            where: { userId },
+            create: { userId, notifyBy },
+            update: { notifyBy },
         });
     }
 
     async findByUserId(userId: string) {
         return this.prisma.userPreferences.findUnique({
-            where: {userId}
+            where: { userId },
         });
     }
 
@@ -25,7 +24,6 @@ export class UserPreferencesDAL {
      */
     async getWithFallback(userId: string): Promise<{ notifyBy: NotifyMethod[] }> {
         const prefs = await this.findByUserId(userId);
-        return prefs || {notifyBy: [NotifyMethod.EMAIL]};
+        return prefs || { notifyBy: [NotifyMethod.EMAIL] };
     }
 }
-

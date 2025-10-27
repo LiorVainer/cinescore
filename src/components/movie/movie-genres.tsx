@@ -18,9 +18,9 @@ export const MovieGenres = ({ genres, idSuffix, layoutIdEnabled = true }: MovieG
     return (
         <motion.div
             layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.GENRES(idSuffix) : undefined}
-            className='flex flex-nowrap items-center overflow-x-auto gap-1 mt-1'
+            className='flex flex-wrap items-center gap-1 mt-1'
         >
-            {genres?.map((g) => (
+            {genres.slice(0, 2)?.map((g) => (
                 <span
                     key={g.id}
                     className='whitespace-nowrap text-xs bg-muted text-accent-foreground px-2 py-1 rounded-full'

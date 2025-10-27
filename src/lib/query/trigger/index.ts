@@ -1,7 +1,7 @@
 /**
- * Interest Query Module
+ * Trigger Query Module
  *
- * Centralized exports for all interest-related query functionality.
+ * Centralized exports for all trigger-related query functionality.
  */
 
 export * from './query-keys';

@@ -98,36 +98,34 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                         {/* Title and metadata */}
                         <div
                             className={cn(
-                                'flex-1 min-w-0 flex flex-col',
-                                spacing === 'compact' ? 'gap-1' : spacing === 'normal' ? 'gap-2' : 'gap-3',
+                                'flex-1 min-w-0 flex flex-col justify-between',
+                                spacing === 'compact' ? 'gap-1' : spacing === 'normal' ? 'gap-0' : 'gap-3',
                             )}
                         >
-                            <div
-                                className={cn(
-                                    'flex-1 min-w-0',
-                                    size === 'sm' ? 'py-1' : size === 'md' ? 'py-2' : 'py-3',
-                                )}
-                            >
+                            <div className={cn('min-w-0', size === 'sm' ? 'py-1' : size === 'md' ? 'py-0' : 'py-3')}>
                                 <MovieCardHeader
                                     title={title}
                                     originalTitle={originalTitle}
                                     originalLangLabel={originalLangLabel}
                                     showOriginal={isLocaleLanguageDiffrentFromOriginal}
                                     idSuffix={idSuffix}
+                                    runtime={movie.runtime}
                                     layoutIdEnabled={false}
                                     className='mb-1'
                                 />
                             </div>
-                            <MovieGenres genres={genres} idSuffix={idSuffix} layoutIdEnabled={false} />
-                            <MovieMeta
-                                title={title}
-                                idSuffix={idSuffix}
-                                releaseDate={releaseDate}
-                                showDate
-                                className='flex flex-col'
-                                layoutIdEnabled={false}
-                            />
-                            <MovieStats rating={rating} votes={votes} size={size === 'lg' ? 'md' : 'sm'} />
+                            <div className='flex flex-col  gap-2'>
+                                <MovieGenres genres={genres} idSuffix={idSuffix} layoutIdEnabled={false} />
+                                <MovieMeta
+                                    title={title}
+                                    idSuffix={idSuffix}
+                                    releaseDate={releaseDate}
+                                    showDate
+                                    className='flex flex-col'
+                                    layoutIdEnabled={false}
+                                />
+                                <MovieStats rating={rating} votes={votes} size={size === 'lg' ? 'md' : 'sm'} />
+                            </div>
                         </div>
 
                         {/* Poster image - portrait 2/3 aspect ratio */}

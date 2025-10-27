@@ -19,6 +19,6 @@ export { getQueryClient } from './query-client';
 
 // Entity Modules
 export * from './follow';
-export * from './interest';
+export * from './trigger';
 export * from './user-preferences';
 export * from './movie';
