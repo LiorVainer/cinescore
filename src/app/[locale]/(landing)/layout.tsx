@@ -20,18 +20,17 @@ export default async function LandingLayout({
         language = undefined;
     }
 
-    const posters = await dal.movies.getBestRatedMoviePosters(20, language);
+    const posters = await dal.movies.getBestRatedMoviePosters(30, language);
 
     return (
         <>
             {/* === Background Layer only for landing === */}
             <div className='fixed inset-0 -z-10 overflow-hidden'>
                 <HeroBackground3D posters={posters} />
-                <div className='absolute inset-0 bg-gradient-static pointer-events-none' />
             </div>
 
             {/* === Actual landing page content === */}
-            <div className='relative h-screen' style={{ paddingTop: '3.25rem' }}>
+            <div className='relative min-h-screen overflow-hidden' style={{ paddingTop: '3.25rem' }}>
                 {children}
             </div>
         </>

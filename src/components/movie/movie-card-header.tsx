@@ -31,7 +31,7 @@ export const MovieCardHeader = ({
         <div className={`flex-1 min-w-0 ${className}`}>
             <motion.h1
                 layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.TITLE(title, idSuffix) : undefined}
-                className='font-bold text-neutral-700 dark:text-neutral-200 lg:text-xl leading-none'
+                className='font-bold text-neutral-700 dark:text-neutral-200 text-lg lg:text-xl leading-none'
                 title={title}
             >
                 {title}
@@ -44,7 +44,7 @@ export const MovieCardHeader = ({
                     {originalTitle} ({originalLangLabel})
                 </motion.p>
             )}
-            {runtime && runtime !== 0 && (
+            {!!runtime && runtime !== 0 && (
                 <motion.p
                     layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.RUNTIME(title, idSuffix) : undefined}
                     className='text-neutral-500 dark:text-neutral-400 text-sm lg:text-base'

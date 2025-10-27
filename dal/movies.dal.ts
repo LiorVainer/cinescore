@@ -218,8 +218,8 @@ export class MoviesDAL {
         if (language) preferredWhere.language = language;
 
         const preferred = await this.prisma.movieTranslation.findMany({
+            select: { movieId: true, posterUrl: true },
             where: preferredWhere,
-            include: { movie: true },
             orderBy: [{ movie: { rating: 'desc' } }, { movie: { votes: 'desc' } }],
             take: limit,
         });
@@ -229,21 +229,21 @@ export class MoviesDAL {
         if (posters.length >= limit) return posters.slice(0, limit);
 
         // Fill remaining slots with translations from other languages, excluding movies already included
-        const excludedMovieIds = preferred.map((p) => p.movieId);
+        // const excludedMovieIds = preferred.map((p) => p.movieId);
+        //
+        // const additional = await this.prisma.movieTranslation.findMany({
+        //     select: { movieId: true, posterUrl: true },
+        //     where: {
+        //         posterUrl: { not: null },
+        //         movie: { id: { notIn: excludedMovieIds.length ? excludedMovieIds : undefined } },
+        //     },
+        //     orderBy: [{ movie: { rating: 'desc' } }, { movie: { votes: 'desc' } }],
+        //     take: limit - posters.length,
+        // });
 
-        const additional = await this.prisma.movieTranslation.findMany({
-            where: {
-                posterUrl: { not: null },
-                movie: { id: { notIn: excludedMovieIds.length ? excludedMovieIds : undefined } },
-            },
-            include: { movie: true },
-            orderBy: [{ movie: { rating: 'desc' } }, { movie: { votes: 'desc' } }],
-            take: limit - posters.length,
-        });
+        // posters.push(...additional.map((a) => a.posterUrl!).filter(Boolean));
 
-        posters.push(...additional.map((a) => a.posterUrl!).filter(Boolean));
-
-        return posters.slice(0, limit);
+        return posters;
     }
 
     /**

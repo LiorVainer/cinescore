@@ -102,7 +102,7 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                                 spacing === 'compact' ? 'gap-1' : spacing === 'normal' ? 'gap-0' : 'gap-3',
                             )}
                         >
-                            <div className={cn('min-w-0', size === 'sm' ? 'py-1' : size === 'md' ? 'py-0' : 'py-3')}>
+                            <div className={cn('min-w-0', size === 'sm' ? 'py-1' : size === 'md' ? 'py-2' : 'py-3')}>
                                 <MovieCardHeader
                                     title={title}
                                     originalTitle={originalTitle}

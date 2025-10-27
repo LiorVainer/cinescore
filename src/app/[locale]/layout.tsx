@@ -50,7 +50,7 @@ export default async function LocaleLayout({
         <html
             lang={locale}
             dir={locale === 'he' ? 'rtl' : 'ltr'}
-            className={`dark ${geistSans.variable} ${geistMono.variable} overflow-hidden`}
+            className={`dark ${geistSans.variable} ${geistMono.variable}`}
         >
             <body className={`dark ${locale === 'he' ? 'font-hebrew' : 'font-sans'}`}>
                 <NextIntlClientProvider locale={locale} messages={messages}>
