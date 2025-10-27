@@ -39,7 +39,7 @@ export function MovieSearchContent() {
     const genres = genresData ?? [];
 
     return (
-        <div className='h-full flex flex-col gap-4 lg:py-8 scrollable'>
+        <div className='h-full flex flex-col gap-4 lg:py-8 scrollable w-full'>
             <div className='w-full'>
                 <SelectedGenreChips genres={genres} selected={selectedGenres} onRemove={toggleGenre} />
             </div>
@@ -80,6 +80,7 @@ export function MovieSearchContent() {
                                     transition: { type: 'spring', stiffness: 100, damping: 18 },
                                 },
                             }}
+                            className='w-full'
                         >
                             <MovieCard ctaText={tMovie('details')} movie={movie} />
                         </motion.div>

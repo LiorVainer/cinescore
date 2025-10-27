@@ -28,7 +28,7 @@ export const MovieCardHeader = ({
 }: MovieCardHeaderProps) => {
     const t = useTranslations('time');
     return (
-        <div className={`flex-1 min-w-0 ${className}`}>
+        <div className={`flex-1 min-w-0 ${className} flex flex-col gap-2`}>
             <motion.h1
                 layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.TITLE(title, idSuffix) : undefined}
                 className='font-bold text-neutral-700 dark:text-neutral-200 text-lg lg:text-xl leading-none'
@@ -36,14 +36,6 @@ export const MovieCardHeader = ({
             >
                 {title}
             </motion.h1>
-            {showOriginal && originalLangLabel && (
-                <motion.p
-                    layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.ORIGINAL(title, idSuffix) : undefined}
-                    className='text-neutral-500 dark:text-neutral-400 text-sm lg:text-base'
-                >
-                    {originalTitle} ({originalLangLabel})
-                </motion.p>
-            )}
             {!!runtime && runtime !== 0 && (
                 <motion.p
                     layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.RUNTIME(title, idSuffix) : undefined}
@@ -52,6 +44,14 @@ export const MovieCardHeader = ({
                     {t('minutes', { count: runtime })}
                 </motion.p>
             )}
+            {/*{showOriginal && originalLangLabel && originalLangLabel !== title && (*/}
+            {/*    <motion.p*/}
+            {/*        layoutId={layoutIdEnabled ? MOVIERCARD_LAYOUT_ID_GENERATORS.ORIGINAL(title, idSuffix) : undefined}*/}
+            {/*        className='text-neutral-500 dark:text-neutral-400 text-xs lg:text-base'*/}
+            {/*    >*/}
+            {/*        {originalTitle} ({originalLangLabel})*/}
+            {/*    </motion.p>*/}
+            {/*)}*/}
         </div>
     );
 };

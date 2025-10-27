@@ -54,7 +54,7 @@ export default function MovieCard({ movie, className }: MovieCardProps) {
     };
 
     return (
-        <div onMouseEnter={handleInteractionStart} onTouchStart={handleInteractionStart}>
+        <div onMouseEnter={handleInteractionStart} onTouchStart={handleInteractionStart} className={'w-full'}>
             {shouldPreload && <link rel='preload' as='image' href={imgSrc} />}
 
             <CollapsedMovieCard

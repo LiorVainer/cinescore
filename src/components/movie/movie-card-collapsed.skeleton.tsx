@@ -15,7 +15,7 @@ export function CollapsedMovieCardSkeleton({ className }: { className?: string }
             <div className='flex w-full items-stretch'>
                 {/* Left image placeholder (2/3 aspect) */}
                 <div className='shrink-0'>
-                    <Skeleton className='w-24 md:w-32 lg:w-40 aspect-[2/3] rounded-r-lg' />
+                    <Skeleton className='w-28 md:w-32 lg:w-40 aspect-[2/3] rounded-r-lg' />
                 </div>
 
                 {/* Right content */}

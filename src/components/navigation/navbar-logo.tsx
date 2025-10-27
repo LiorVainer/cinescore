@@ -10,12 +10,12 @@ export const NavbarLogo = () => {
     const isMobile = useIsMobile();
     const pathname = usePathname();
 
-    const isLandingPage = pathname === '/';
+    const isSearchScreen = pathname === '/now-playing';
 
     return (
         <Link href='/' className='relative z-20 flex flex-row items-center gap-2 text-lg font-bold'>
             <Logo className='text-foreground [--star-color:#FFD700] w-8 h-8' />
-            {!(isMobile && !isLandingPage) && (
+            {!(isMobile && isSearchScreen) && (
                 <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className='whitespace-pre text-base'>
                     {t('title')}
                 </motion.span>

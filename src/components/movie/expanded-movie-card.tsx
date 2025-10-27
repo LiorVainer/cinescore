@@ -102,7 +102,12 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                                 spacing === 'compact' ? 'gap-1' : spacing === 'normal' ? 'gap-0' : 'gap-3',
                             )}
                         >
-                            <div className={cn('min-w-0', size === 'sm' ? 'py-1' : size === 'md' ? 'py-2' : 'py-3')}>
+                            <div
+                                className={cn(
+                                    'min-w-0 gap-2 flex flex-col',
+                                    size === 'sm' ? 'py-1' : size === 'md' ? 'py-2' : 'py-3',
+                                )}
+                            >
                                 <MovieCardHeader
                                     title={title}
                                     originalTitle={originalTitle}
@@ -111,11 +116,10 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                                     idSuffix={idSuffix}
                                     runtime={movie.runtime}
                                     layoutIdEnabled={false}
-                                    className='mb-1'
                                 />
+                                <MovieGenres genres={genres} idSuffix={idSuffix} layoutIdEnabled={false} />
                             </div>
                             <div className='flex flex-col  gap-2'>
-                                <MovieGenres genres={genres} idSuffix={idSuffix} layoutIdEnabled={false} />
                                 <MovieMeta
                                     title={title}
                                     idSuffix={idSuffix}
@@ -124,7 +128,12 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                                     className='flex flex-col'
                                     layoutIdEnabled={false}
                                 />
-                                <MovieStats rating={rating} votes={votes} size={size === 'lg' ? 'md' : 'sm'} />
+                                <MovieStats
+                                    rating={rating}
+                                    votes={votes}
+                                    size={size === 'lg' ? 'md' : 'sm'}
+                                    imdbId={movie.imdbId}
+                                />
                             </div>
                         </div>
 
