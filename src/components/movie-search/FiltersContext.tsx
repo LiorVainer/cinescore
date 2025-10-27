@@ -22,7 +22,7 @@ export function FiltersProvider({ children }: PropsWithChildren) {
     const filters = useFiltersState(language);
     const {
         data: moviesData,
-        isFetching,
+        isPending,
         isError,
     } = useQuery({
         queryKey: [
@@ -47,7 +47,7 @@ export function FiltersProvider({ children }: PropsWithChildren) {
     });
 
     return (
-        <FiltersContext.Provider value={{ ...filters, data: moviesData, isLoading: isFetching, isError }}>
+        <FiltersContext.Provider value={{ ...filters, data: moviesData, isLoading: isPending, isError }}>
             {children}
         </FiltersContext.Provider>
     );
