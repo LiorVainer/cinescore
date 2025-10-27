@@ -1,6 +1,6 @@
 'use client';
 
-import {useCallback, useMemo} from 'react';
+import { useCallback, useMemo } from 'react';
 import {
     debounce,
     parseAsArrayOf,
@@ -10,12 +10,12 @@ import {
     useQueryStates,
     type UseQueryStatesKeysMap,
 } from 'nuqs';
-import {useDebounce} from '@/lib/useDebounce';
-import {SORT_VALUES, SortValue} from '@/constants/sort.const';
-import type {Language} from '@prisma/client';
-import type {MovieFilters} from '@/app/actions/searchMovies';
+import { useDebounce } from '@/lib/useDebounce';
+import { SORT_VALUES, SortValue } from '@/constants/sort.const';
+import type { Language } from '@prisma/client';
+import type { MovieFilters } from '@/app/actions/searchMovies';
 
-const DEFAULT_SORT: SortValue = 'rating:desc' as const ;
+const DEFAULT_SORT: SortValue = 'rating:desc' as const;
 const DEFAULT_PAGE_SIZE = 24;
 const DEFAULT_PAGE = 1;
 
@@ -115,18 +115,15 @@ export function useFiltersState(language: Language): FiltersState {
 
     const toggleGenre = useCallback(
         (id: number) =>
-            setRawFilters(
-                (prev: RawFilters) => {
-                    const exists = prev.genres.includes(id);
-                    const nextGenres = exists ? prev.genres.filter((genreId) => genreId !== id) : [...prev.genres, id];
-                    return {
-                        ...prev,
-                        genres: nextGenres,
-                        page: DEFAULT_PAGE,
-                    };
-                },
-                DEFAULT_SET_OPTIONS,
-            ),
+            setRawFilters((prev: RawFilters) => {
+                const exists = prev.genres.includes(id);
+                const nextGenres = exists ? prev.genres.filter((genreId) => genreId !== id) : [...prev.genres, id];
+                return {
+                    ...prev,
+                    genres: nextGenres,
+                    page: DEFAULT_PAGE,
+                };
+            }, DEFAULT_SET_OPTIONS),
         [setRawFilters],
     );
 
@@ -170,7 +167,7 @@ export function useFiltersState(language: Language): FiltersState {
         [setRawFilters],
     );
 
-    const {search, actor, sort, genres, page} = rawFilters;
+    const { search, actor, sort, genres, page } = rawFilters;
 
     const filters = useMemo<MovieFilters>(
         () => ({

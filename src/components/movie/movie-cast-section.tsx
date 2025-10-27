@@ -1,30 +1,30 @@
 'use client';
 
-import React, {useCallback} from 'react';
-import {Button} from '@/components/ui/button';
-import {useLocale, useTranslations} from 'next-intl';
-import {useIsMobile} from '@/hooks/use-mobile';
-import {motion, Variants} from 'motion/react';
-import type {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {useOverlayState} from '@/hooks/use-overlay-state';
-import {useTmdbActorsDetails} from '@/lib/query/actor/hooks';
-import {ActorImage} from "@/components/actor/actor-image";
+import React, { useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { useLocale, useTranslations } from 'next-intl';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { motion, Variants } from 'motion/react';
+import type { MovieWithLanguageTranslation } from '@/models/movies.model';
+import { useOverlayState } from '@/hooks/use-overlay-state';
+import { useTmdbActorsDetails } from '@/lib/query/actor/hooks';
+import { ActorImage } from '@/components/actor/actor-image';
 
 type MovieCastSectionProps = {
     cast: MovieWithLanguageTranslation['cast'];
 };
 
-export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
+export const MovieCastSection = ({ cast }: MovieCastSectionProps) => {
     const t = useTranslations('movie');
     const isMobile = useIsMobile();
     const locale = useLocale();
     const [showAllCast, setShowAllCast] = React.useState(false);
-    const {openActor} = useOverlayState();
+    const { openActor } = useOverlayState();
 
     // Prepare list of tmdb actor ids for batch load
     const tmdbIds = React.useMemo(() => cast.map((c) => c.actor.tmdbId).filter(Boolean) as number[], [cast]);
 
-    const basicResults = useTmdbActorsDetails(tmdbIds, locale, {enabled: tmdbIds.length > 0});
+    const basicResults = useTmdbActorsDetails(tmdbIds, locale, { enabled: tmdbIds.length > 0 });
 
     // Handle actor click for both mobile and desktop
     const handleActorClick = useCallback(
@@ -107,11 +107,8 @@ export const MovieCastSection = ({cast}: MovieCastSectionProps) => {
                                         alt={nameLabel}
                                         loading={index < itemsPerRow ? 'eager' : 'lazy'}
                                     />
-                                    <div
-                                        className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
-                                        <span className='font-medium text-white text-sm line-clamp-2'>
-                                            {nameLabel}
-                                        </span>
+                                    <div className='absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-2 pt-8'>
+                                        <span className='font-medium text-white text-sm line-clamp-2'>{nameLabel}</span>
                                     </div>
                                 </div>
                             </motion.div>

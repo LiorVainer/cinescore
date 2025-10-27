@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import {motion} from 'motion/react';
-import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
+import { motion } from 'motion/react';
+import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
 
 type MovieCardHeaderProps = {
     title: string;
@@ -43,4 +43,3 @@ export const MovieCardHeader = ({
         </div>
     );
 };
-

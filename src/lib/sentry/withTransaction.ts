@@ -30,10 +30,10 @@ export async function withSentryTransaction<T>(
             try {
                 const result = await fn();
                 scopedLogger.info('Transaction completed successfully');
-                span.setStatus({message: 'ok', code: 0});
+                span.setStatus({ message: 'ok', code: 0 });
                 return result;
             } catch (error) {
-                span.setStatus({message: 'internal_error', code: 2});
+                span.setStatus({ message: 'internal_error', code: 2 });
                 scopedLogger.error('Transaction failed', error as Error);
                 Sentry.captureException(error, {
                     tags: {

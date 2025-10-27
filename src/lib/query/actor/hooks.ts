@@ -7,8 +7,8 @@
 
 'use client';
 
-import {useQueries, useQuery, useSuspenseQuery} from '@tanstack/react-query';
-import {dbActorDetailsOptions, actorFullDetailsOptions, actorBasicDetailsOptions} from './query-options';
+import { useQueries, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { dbActorDetailsOptions, actorFullDetailsOptions, actorBasicDetailsOptions } from './query-options';
 
 /**
  * Hook to fetch a single actor by ID
@@ -56,11 +56,7 @@ export function useActorBasicDetail(tmdbActorId: number, locale: string, options
  * // Get all successfully loaded actor data
  * const actorsData = actorsQueries.map(query => query.data).filter(Boolean);
  */
-export function useTmdbActorsDetails(
-    tmdbActorIds: number[],
-    locale: string,
-    options?: { enabled?: boolean }
-) {
+export function useTmdbActorsDetails(tmdbActorIds: number[], locale: string, options?: { enabled?: boolean }) {
     return useQueries({
         queries: tmdbActorIds.map((tmdbActorId) => ({
             ...actorBasicDetailsOptions(tmdbActorId, locale),
@@ -84,11 +80,7 @@ export function useTmdbActorsDetails(
  * if (isPending) return <Loading />;
  * return <ActorsList actors={actors} />;
  */
-export function useTmdbActorsDetailsCombined(
-    tmdbActorIds: number[],
-    locale: string,
-    options?: { enabled?: boolean }
-) {
+export function useTmdbActorsDetailsCombined(tmdbActorIds: number[], locale: string, options?: { enabled?: boolean }) {
     return useQueries({
         queries: tmdbActorIds.map((tmdbActorId) => ({
             ...actorBasicDetailsOptions(tmdbActorId, locale),

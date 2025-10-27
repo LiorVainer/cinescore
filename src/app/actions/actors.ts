@@ -1,13 +1,13 @@
 'use server';
 
-import {getDal} from '@/lib/server-utils';
-import type {Language} from '@prisma/client';
-import {omdb, tmdb} from "@/lib/clients";
-import {TMDB} from "@/constants/movies/api";
-import {ActorCreditDto, ActorDetailsDto} from "@/models/actors.model";
-import {mapLocalToTmdbLanguage} from "@/constants/languages.const";
+import { getDal } from '@/lib/server-utils';
+import type { Language } from '@prisma/client';
+import { omdb, tmdb } from '@/lib/clients';
+import { TMDB } from '@/constants/movies/api';
+import { ActorCreditDto, ActorDetailsDto } from '@/models/actors.model';
+import { mapLocalToTmdbLanguage } from '@/constants/languages.const';
 
-import {PersonCombinedCredits, PersonDetails, PersonMovieCast, PersonTvShowCast,} from 'tmdb-ts';
+import { PersonCombinedCredits, PersonDetails, PersonMovieCast, PersonTvShowCast } from 'tmdb-ts';
 
 /**
  * Fetches an actor by ID with translations and filmography
@@ -47,7 +47,7 @@ export async function getActorFullDetails(actorId: number, locale: string): Prom
     try {
         const [details, combinedCredits] = await Promise.all([
             tmdb.people.details(actorId, undefined, locale),
-            tmdb.people.combinedCredits(actorId, {language: mapLocalToTmdbLanguage(locale)}),
+            tmdb.people.combinedCredits(actorId, { language: mapLocalToTmdbLanguage(locale) }),
         ]);
 
         const dto = convertPersonDetailsToDto(details as PersonDetails);
@@ -59,7 +59,7 @@ export async function getActorFullDetails(actorId: number, locale: string): Prom
             .slice(0, 5)
             .map((c) => c.title);
 
-        return {...dto, credits, knownFor};
+        return { ...dto, credits, knownFor };
     } catch (error) {
         console.error('❌ Failed to fetch full actor details:', error);
         return null;
@@ -71,7 +71,10 @@ export async function getActorFullDetails(actorId: number, locale: string): Prom
 // Returns a small payload used for lists /previews (no credits, no alsoKnownAs)
 // -----------------------------------------------------------------------------
 
-export async function getActorBasicDetail(actorId: number, locale: string): Promise<{
+export async function getActorBasicDetail(
+    actorId: number,
+    locale: string,
+): Promise<{
     id: number;
     tmdbId: number;
     name: string;
@@ -102,9 +105,7 @@ function convertPersonDetailsToDto(person: PersonDetails): ActorDetailsDto {
         birthday: person.birthday ?? null,
         deathday: person.deathday ?? null,
         placeOfBirth: person.place_of_birth ?? null,
-        profilePath: person.profile_path
-            ? `${TMDB.POSTER_BASE_URL}${person.profile_path}`
-            : null,
+        profilePath: person.profile_path ? `${TMDB.POSTER_BASE_URL}${person.profile_path}` : null,
         popularity: person.popularity ?? null,
         knownForDepartment: person.known_for_department ?? null,
         alsoKnownAs: person.also_known_as ?? [],
@@ -112,13 +113,8 @@ function convertPersonDetailsToDto(person: PersonDetails): ActorDetailsDto {
     };
 }
 
-async function enrichCreditsWithOmdb(
-    combinedCredits: PersonCombinedCredits
-): Promise<ActorCreditDto[]> {
-    const credits = [...(combinedCredits.cast ?? [])] as (
-        | PersonMovieCast
-        | PersonTvShowCast
-        )[];
+async function enrichCreditsWithOmdb(combinedCredits: PersonCombinedCredits): Promise<ActorCreditDto[]> {
+    const credits = [...(combinedCredits.cast ?? [])] as (PersonMovieCast | PersonTvShowCast)[];
 
     // keep only relevant ones
     const filteredCredits = credits.filter((c) => c.popularity > 1);
@@ -128,24 +124,19 @@ async function enrichCreditsWithOmdb(
             const isMovie = Boolean((c as any).title);
             const mediaType: 'movie' | 'tv' = isMovie ? 'movie' : 'tv';
             const title = (c as any).title ?? (c as any).name;
-            const releaseDate =
-                (c as any).release_date ?? (c as any).first_air_date ?? null;
+            const releaseDate = (c as any).release_date ?? (c as any).first_air_date ?? null;
 
             try {
                 const external =
-                    mediaType === 'movie'
-                        ? await tmdb.movies.externalIds(c.id)
-                        : await tmdb.tvShows.externalIds(c.id);
+                    mediaType === 'movie' ? await tmdb.movies.externalIds(c.id) : await tmdb.tvShows.externalIds(c.id);
 
                 let imdbRating: number | null = null;
                 let imdbVotes: number | null = null;
 
                 if (external.imdb_id) {
-                    const imdbData = await omdb.title.getById({i: external.imdb_id});
+                    const imdbData = await omdb.title.getById({ i: external.imdb_id });
                     imdbRating =
-                        imdbData.imdbRating && imdbData.imdbRating !== 'N/A'
-                            ? parseFloat(imdbData.imdbRating)
-                            : null;
+                        imdbData.imdbRating && imdbData.imdbRating !== 'N/A' ? parseFloat(imdbData.imdbRating) : null;
                     imdbVotes =
                         imdbData.imdbVotes && imdbData.imdbVotes !== 'N/A'
                             ? parseInt(imdbData.imdbVotes.replace(/,/g, ''), 10)
@@ -158,9 +149,7 @@ async function enrichCreditsWithOmdb(
                     mediaType,
                     character: c.character ?? null,
                     releaseDate,
-                    poster: c.poster_path
-                        ? `${TMDB.POSTER_BASE_URL}${c.poster_path}`
-                        : null,
+                    poster: c.poster_path ? `${TMDB.POSTER_BASE_URL}${c.poster_path}` : null,
                     imdbId: external.imdb_id ?? null,
                     imdbRating,
                     imdbVotes,
@@ -173,16 +162,14 @@ async function enrichCreditsWithOmdb(
                     mediaType,
                     character: c.character ?? null,
                     releaseDate,
-                    poster: c.poster_path
-                        ? `${TMDB.POSTER_BASE_URL}${c.poster_path}`
-                        : null,
+                    poster: c.poster_path ? `${TMDB.POSTER_BASE_URL}${c.poster_path}` : null,
                     imdbId: null,
                     imdbRating: null,
                     imdbVotes: null,
                     popularity: c.popularity ?? null,
                 } satisfies ActorCreditDto;
             }
-        })
+        }),
     );
 
     // 🧩 Sort by release year (newest first)

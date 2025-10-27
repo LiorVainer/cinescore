@@ -1,7 +1,7 @@
 'use client';
 
-import React, {createContext, useContext, useState} from 'react';
-import type {MovieWithLanguageTranslation} from '@/models/movies.model';
+import React, { createContext, useContext, useState } from 'react';
+import type { MovieWithLanguageTranslation } from '@/models/movies.model';
 
 interface MovieContextState {
     currentMovie: MovieWithLanguageTranslation | null;
@@ -13,11 +13,7 @@ const MovieContext = createContext<MovieContextState | undefined>(undefined);
 export function MovieProvider({ children }: { children: React.ReactNode }) {
     const [currentMovie, setCurrentMovie] = useState<MovieWithLanguageTranslation | null>(null);
 
-    return (
-        <MovieContext.Provider value={{ currentMovie, setCurrentMovie }}>
-            {children}
-        </MovieContext.Provider>
-    );
+    return <MovieContext.Provider value={{ currentMovie, setCurrentMovie }}>{children}</MovieContext.Provider>;
 }
 
 export function useMovieContext(): MovieContextState {
@@ -27,4 +23,3 @@ export function useMovieContext(): MovieContextState {
     }
     return context;
 }
-

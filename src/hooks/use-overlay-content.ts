@@ -1,21 +1,21 @@
-import {useMemo} from 'react';
-import {useQuery} from '@tanstack/react-query';
-import {useLocale} from 'next-intl';
-import {useActorBasicDetail, useTmdbActorsDetails} from '@/lib/query/actor/hooks';
-import {getMovieById} from '@/app/actions/movies';
-import {useOverlayState} from './use-overlay-state';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useLocale } from 'next-intl';
+import { useActorBasicDetail, useTmdbActorsDetails } from '@/lib/query/actor/hooks';
+import { getMovieById } from '@/app/actions/movies';
+import { useOverlayState } from './use-overlay-state';
 
 /**
  * Custom hook that manages all data fetching logic for drawer/modal content
  * Handles movie data, actor data, and prefetching of related actors
  */
 export function useOverlayContent() {
-    const {isOpen, entityType, movieId, actorId, currentMovie} = useOverlayState();
+    const { isOpen, entityType, movieId, actorId, currentMovie } = useOverlayState();
     const locale = useLocale();
 
     // Fetch movie data when movieId is present
     // Use currentMovie from context as initialData for instant display
-    const {data: movieData, isLoading: isLoadingMovie} = useQuery({
+    const { data: movieData, isLoading: isLoadingMovie } = useQuery({
         queryKey: ['movie', movieId, locale],
         queryFn: () => getMovieById(movieId!, locale),
         enabled: !!movieId && entityType === 'movie',
@@ -27,7 +27,7 @@ export function useOverlayContent() {
 
     // Fetch actor data for background image
     const tmdbActorIdNum = actorId ? parseInt(actorId, 10) : null;
-    const {data: actorData} = useActorBasicDetail(tmdbActorIdNum || 0, locale, {
+    const { data: actorData } = useActorBasicDetail(tmdbActorIdNum || 0, locale, {
         enabled: !!tmdbActorIdNum && entityType === 'actor',
     });
 
@@ -35,7 +35,7 @@ export function useOverlayContent() {
     const actorTmdbIds = useMemo(() => {
         if (entityType === 'movie' && movieData?.cast) {
             return movieData.cast
-                .map(castMember => castMember.actor.tmdbId)
+                .map((castMember) => castMember.actor.tmdbId)
                 .filter((tmdbId): tmdbId is number => tmdbId !== null);
         }
         return [];
@@ -53,4 +53,3 @@ export function useOverlayContent() {
         actorProfilePath: actorData?.profilePath,
     };
 }
-

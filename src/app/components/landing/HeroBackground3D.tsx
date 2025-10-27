@@ -66,8 +66,8 @@ export function HeroBackground3D({ posters }: Props) {
                 variants={containerVariants}
                 style={{
                     transform: isMobile
-                        ? "perspective(600px) translateX(6%) translateY(2%) rotateY(-18deg) rotateX(3deg) scale(0.85)"
-                        : "perspective(1800px) translateX(2%) translateY(-2%) rotateY(-25deg) rotateX(2deg) scale(0.75)",
+                        ? 'perspective(600px) translateX(6%) translateY(2%) rotateY(-18deg) rotateX(3deg) scale(0.85)'
+                        : 'perspective(1800px) translateX(2%) translateY(-2%) rotateY(-25deg) rotateX(2deg) scale(0.75)',
                 }}
                 initial='hidden'
                 animate='show'

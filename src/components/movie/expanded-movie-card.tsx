@@ -1,40 +1,37 @@
 'use client';
 
 import React from 'react';
-import type {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {MovieGenres} from '@/components/movie/movie-genres';
-import {MovieMeta} from '@/components/movie/MovieMeta';
-import {mapLocaleToLanguage} from '@/constants/languages.const';
-import {useLanguageLabel} from '@/hooks/use-language-label';
+import type { MovieWithLanguageTranslation } from '@/models/movies.model';
+import { MovieGenres } from '@/components/movie/movie-genres';
+import { MovieMeta } from '@/components/movie/MovieMeta';
+import { mapLocaleToLanguage } from '@/constants/languages.const';
+import { useLanguageLabel } from '@/hooks/use-language-label';
 import Image from 'next/image';
-import {useLocale} from 'next-intl';
-import {MovieCardHeader} from './movie-card-header';
-import {MovieCardContent} from './movie-card-content';
-import {MovieStats} from '@/components/movie/MovieStats';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {cn} from '@/lib/utils';
+import { useLocale } from 'next-intl';
+import { MovieCardHeader } from './movie-card-header';
+import { MovieCardContent } from './movie-card-content';
+import { MovieStats } from '@/components/movie/MovieStats';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
-const expandedMovieCardMobileVariants = cva(
-    'w-full flex flex-col items-stretch rounded-t-xl relative',
-    {
-        variants: {
-            size: {
-                sm: 'text-xs',
-                md: 'text-sm',
-                lg: 'text-base',
-            },
-            spacing: {
-                compact: 'gap-2',
-                normal: 'gap-4',
-                relaxed: 'gap-6',
-            },
+const expandedMovieCardMobileVariants = cva('w-full flex flex-col items-stretch rounded-t-xl relative', {
+    variants: {
+        size: {
+            sm: 'text-xs',
+            md: 'text-sm',
+            lg: 'text-base',
         },
-        defaultVariants: {
-            size: 'md',
-            spacing: 'normal',
+        spacing: {
+            compact: 'gap-2',
+            normal: 'gap-4',
+            relaxed: 'gap-6',
         },
-    }
-);
+    },
+    defaultVariants: {
+        size: 'md',
+        spacing: 'normal',
+    },
+});
 
 const posterVariants = cva('shrink-0', {
     variants: {
@@ -50,9 +47,9 @@ const posterVariants = cva('shrink-0', {
 });
 
 const posterDimensions = {
-    sm: {width: 120, height: 180},
-    md: {width: 160, height: 240},
-    lg: {width: 200, height: 300},
+    sm: { width: 120, height: 180 },
+    md: { width: 160, height: 240 },
+    lg: { width: 200, height: 300 },
 };
 
 const paddingVariants = cva('', {
@@ -76,8 +73,8 @@ export type ExpandedMovieCardMobileProps = {
 } & VariantProps<typeof expandedMovieCardMobileVariants>;
 
 const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
-    ({movie, imgSrc, idSuffix, size = 'md', spacing = 'normal', className}) => {
-        const {title, originalTitle, originalLanguage, releaseDate, genres, rating, votes} = movie;
+    ({ movie, imgSrc, idSuffix, size = 'md', spacing = 'normal', className }) => {
+        const { title, originalTitle, originalLanguage, releaseDate, genres, rating, votes } = movie;
         const locale = useLocale();
         const getLanguageLabel = useLanguageLabel();
 
@@ -88,16 +85,29 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
         const dimensions = posterDimensions[size || 'md'];
 
         return (
-            <div className={cn(expandedMovieCardMobileVariants({size, spacing}), className)}>
+            <div className={cn(expandedMovieCardMobileVariants({ size, spacing }), className)}>
                 <div className='flex flex-col overflow-y-auto relative z-10'>
                     {/* Top section: poster image + title/metadata in row */}
                     <div
-                        className={cn('flex flex-row', paddingVariants({size}), spacing === 'compact' ? 'gap-2' : spacing === 'normal' ? 'gap-4' : 'gap-6')}>
+                        className={cn(
+                            'flex flex-row',
+                            paddingVariants({ size }),
+                            spacing === 'compact' ? 'gap-2' : spacing === 'normal' ? 'gap-4' : 'gap-6',
+                        )}
+                    >
                         {/* Title and metadata */}
                         <div
-                            className={cn('flex-1 min-w-0 flex flex-col', spacing === 'compact' ? 'gap-1' : spacing === 'normal' ? 'gap-2' : 'gap-3')}>
+                            className={cn(
+                                'flex-1 min-w-0 flex flex-col',
+                                spacing === 'compact' ? 'gap-1' : spacing === 'normal' ? 'gap-2' : 'gap-3',
+                            )}
+                        >
                             <div
-                                className={cn('flex-1 min-w-0', size === 'sm' ? 'py-1' : size === 'md' ? 'py-2' : 'py-3')}>
+                                className={cn(
+                                    'flex-1 min-w-0',
+                                    size === 'sm' ? 'py-1' : size === 'md' ? 'py-2' : 'py-3',
+                                )}
+                            >
                                 <MovieCardHeader
                                     title={title}
                                     originalTitle={originalTitle}
@@ -108,7 +118,7 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                                     className='mb-1'
                                 />
                             </div>
-                            <MovieGenres genres={genres} idSuffix={idSuffix} layoutIdEnabled={false}/>
+                            <MovieGenres genres={genres} idSuffix={idSuffix} layoutIdEnabled={false} />
                             <MovieMeta
                                 title={title}
                                 idSuffix={idSuffix}
@@ -117,11 +127,11 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                                 className='flex flex-col'
                                 layoutIdEnabled={false}
                             />
-                            <MovieStats rating={rating} votes={votes} size={size === 'lg' ? 'md' : 'sm'}/>
+                            <MovieStats rating={rating} votes={votes} size={size === 'lg' ? 'md' : 'sm'} />
                         </div>
 
                         {/* Poster image - portrait 2/3 aspect ratio */}
-                        <div className={posterVariants({size})}>
+                        <div className={posterVariants({ size })}>
                             <Image
                                 height={dimensions.height}
                                 width={dimensions.width}
@@ -135,7 +145,12 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
 
                     {/* Bottom section: description, cast, trailers */}
                     <div
-                        className={cn('flex flex-col', paddingVariants({size}), spacing === 'compact' ? 'gap-2 pb-2' : spacing === 'normal' ? 'gap-4 pb-4' : 'gap-6 pb-6')}>
+                        className={cn(
+                            'flex flex-col',
+                            paddingVariants({ size }),
+                            spacing === 'compact' ? 'gap-2 pb-2' : spacing === 'normal' ? 'gap-4 pb-4' : 'gap-6 pb-6',
+                        )}
+                    >
                         <MovieCardContent
                             movie={movie}
                             idSuffix={idSuffix}
@@ -146,7 +161,7 @@ const ExpandedMovieCard = React.memo<ExpandedMovieCardMobileProps>(
                 </div>
             </div>
         );
-    }
+    },
 );
 
 ExpandedMovieCard.displayName = 'ExpandedMovieCardMobile';

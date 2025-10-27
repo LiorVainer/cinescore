@@ -81,19 +81,11 @@ export async function processMovieData(movie: MovieProcessInput, dal: DAL): Prom
                 }
 
                 const [ext, detailsEn, detailsHe, videos, credits] = await Bluebird.all([
-                    tmdb.movies.externalIds(movie.id) as Promise<ExternalIds>,
-                    tmdb.movies.details(
-                        movie.id,
-                        undefined,
-                        SEED_CONFIG.DEFAULT_LANGUAGES.SECONDARY,
-                    ) as Promise<MovieDetails>,
-                    tmdb.movies.details(
-                        movie.id,
-                        undefined,
-                        SEED_CONFIG.DEFAULT_LANGUAGES.PRIMARY,
-                    ) as Promise<MovieDetails>,
-                    tmdb.movies.videos(movie.id) as Promise<TmdbVideosResponse>,
-                    tmdb.movies.credits(movie.id) as Promise<TmdbCreditsResponse>,
+                    tmdb.movies.externalIds(movie.id),
+                    tmdb.movies.details(movie.id, undefined, SEED_CONFIG.DEFAULT_LANGUAGES.SECONDARY),
+                    tmdb.movies.details(movie.id, undefined, SEED_CONFIG.DEFAULT_LANGUAGES.PRIMARY),
+                    tmdb.movies.videos(movie.id),
+                    tmdb.movies.credits(movie.id),
                 ]);
 
                 const imdbId = ext.imdb_id ?? `tmdb-${movie.id}`;
@@ -299,4 +291,3 @@ export async function processMovieTrailers(movieData: MovieData, dal: DAL): Prom
         },
     );
 }
-

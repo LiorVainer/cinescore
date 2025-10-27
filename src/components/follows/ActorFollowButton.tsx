@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import {useCreateFollow, useDeleteFollow, useUserFollows} from '@/lib/query/follow';
-import {useRouter} from '@/i18n/navigation';
-import {FollowType} from '@prisma/client';
-import {toast} from 'sonner';
-import {Button} from '@/components/ui/button';
-import {UserCheck, UserPlus} from 'lucide-react';
-import {useTranslations} from 'next-intl';
-import {authClient} from '@/lib/auth-client';
+import { useCreateFollow, useDeleteFollow, useUserFollows } from '@/lib/query/follow';
+import { useRouter } from '@/i18n/navigation';
+import { FollowType } from '@prisma/client';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { UserCheck, UserPlus } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { authClient } from '@/lib/auth-client';
 import {
     Dialog,
     DialogClose,
@@ -17,7 +17,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger
+    DialogTrigger,
 } from '@/components/ui/dialog';
 
 interface ActorFollowButtonProps {
@@ -39,9 +39,8 @@ export function ActorFollowButton({
     const t = useTranslations('actor');
     const tGeneral = useTranslations('general');
 
-
     const { data: session } = authClient.useSession();
-    const userId = session?.user.id
+    const userId = session?.user.id;
     const { mutate: createFollow, isPending: isCreating } = useCreateFollow(userId);
     const { mutate: deleteFollow, isPending: isDeleting } = useDeleteFollow(userId);
     const { data: follows } = useUserFollows(userId);
@@ -109,7 +108,9 @@ export function ActorFollowButton({
         <Dialog>
             <DialogTrigger asChild>
                 <Button
-                    onClick={() => { /* DialogTrigger will open dialog */ }}
+                    onClick={() => {
+                        /* DialogTrigger will open dialog */
+                    }}
                     disabled={isPending}
                     variant={variant}
                     size={size}
@@ -121,8 +122,8 @@ export function ActorFollowButton({
 
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>{t('signInToFollow.title', {actorName: value})}</DialogTitle>
-                    <DialogDescription>{t('signInToFollow.description', {actorName: value})}</DialogDescription>
+                    <DialogTitle>{t('signInToFollow.title', { actorName: value })}</DialogTitle>
+                    <DialogDescription>{t('signInToFollow.description', { actorName: value })}</DialogDescription>
                 </DialogHeader>
 
                 <DialogFooter>

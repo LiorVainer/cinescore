@@ -1,14 +1,14 @@
 'use client';
 
-import {Input} from '@/components/ui/input';
-import {useTranslations} from 'next-intl';
+import { Input } from '@/components/ui/input';
+import { useTranslations } from 'next-intl';
 
 interface ActorSearchInputProps {
     value: string;
     onChange: (next: string) => void;
 }
 
-export function ActorSearchInput({value, onChange}: ActorSearchInputProps) {
+export function ActorSearchInput({ value, onChange }: ActorSearchInputProps) {
     const t = useTranslations('search');
 
     return (

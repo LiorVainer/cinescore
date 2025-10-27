@@ -5,9 +5,9 @@
  * These options can be prefetched on the server and reused on the client.
  */
 
-import {queryOptions} from '@tanstack/react-query';
-import {getActorByIdFromDB, getActorFullDetails, getActorBasicDetail} from '@/app/actions/actors';
-import {actorKeys} from './query-keys';
+import { queryOptions } from '@tanstack/react-query';
+import { getActorByIdFromDB, getActorFullDetails, getActorBasicDetail } from '@/app/actions/actors';
+import { actorKeys } from './query-keys';
 
 /**
  * Query options for fetching a single actor by ID

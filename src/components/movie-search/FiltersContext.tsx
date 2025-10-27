@@ -8,7 +8,11 @@ import { useFiltersState, type FiltersState } from './useFilters';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { searchMoviesFiltered } from '@/app/actions/searchMovies';
 
-type QueryState = { isLoading: boolean; data: Awaited<ReturnType<typeof searchMoviesFiltered>> | undefined; isError: boolean };
+type QueryState = {
+    isLoading: boolean;
+    data: Awaited<ReturnType<typeof searchMoviesFiltered>> | undefined;
+    isError: boolean;
+};
 
 const FiltersContext = createContext<(FiltersState & QueryState) | null>(null);
 

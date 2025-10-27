@@ -17,4 +17,3 @@ export function useSortOptions(): { value: SortValue; label: string }[] {
         { value: 'releaseDate:asc', label: t('releaseDateAsc') },
     ];
 }
-

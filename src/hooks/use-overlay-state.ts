@@ -1,9 +1,9 @@
 'use client';
 
-import {parseAsString, parseAsStringEnum, useQueryStates} from 'nuqs';
-import {useCallback} from 'react';
-import {useMovieContext} from '@/contexts/movie-context';
-import type {MovieWithLanguageTranslation} from '@/models/movies.model';
+import { parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
+import { useCallback } from 'react';
+import { useMovieContext } from '@/contexts/movie-context';
+import type { MovieWithLanguageTranslation } from '@/models/movies.model';
 
 type OverlayContentType = 'movie' | 'actor';
 
@@ -34,7 +34,7 @@ export function useOverlayState(): UseOverlayStateReturn {
         history: 'replace',
         shallow: true,
     });
-    const {currentMovie, setCurrentMovie} = useMovieContext();
+    const { currentMovie, setCurrentMovie } = useMovieContext();
 
     const isOpen = state.entityType !== null;
 
