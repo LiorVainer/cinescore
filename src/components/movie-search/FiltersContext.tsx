@@ -43,7 +43,6 @@ export function FiltersProvider({ children }: PropsWithChildren) {
                 search: filters.searchDebounced,
                 actorName: filters.actorDebounced,
             }),
-        placeholderData: keepPreviousData,
     });
 
     return (
