@@ -1,21 +1,20 @@
 'use client';
-import {Suspense} from 'react';
-import {LanguageToggle} from '@/components/navigation/language-toggle';
-import {SignedIn, SignedOut} from '@daveyplate/better-auth-ui';
-import {MobileNav, MobileNavHeader, Navbar, NavBody} from '@/components/ui/resizable-navbar';
-import {useIsMobile} from '@/hooks/use-mobile';
-import {Button} from '@/components/ui/button';
-import {useTranslations} from 'next-intl';
-import {Link, usePathname} from '@/i18n/navigation';
-import {NavbarLogo} from './navbar-logo';
-import {User} from 'lucide-react';
-import {UserButton} from '@/components/auth/user-button';
-import {SearchLauncher} from '@/components/movie-search/SearchLauncher';
+import { Suspense } from 'react';
+import { LanguageToggle } from '@/components/navigation/language-toggle';
+import { SignedIn, SignedOut } from '@daveyplate/better-auth-ui';
+import { MobileNav, MobileNavHeader, Navbar, NavBody } from '@/components/ui/resizable-navbar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
+import { NavbarLogo } from './navbar-logo';
+import { User } from 'lucide-react';
+import { UserButton } from '@/components/auth/user-button';
+import { SearchLauncher } from '@/components/movie-search/SearchLauncher';
 
 export const AppNavbar = () => {
     const isMobile = useIsMobile();
     const pathname = usePathname();
-
 
     return (
         <Navbar position='fixed' className={pathname === '/' ? 'backdrop-blur-none' : ''}>

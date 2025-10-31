@@ -1,16 +1,15 @@
-import {Language, Prisma, PrismaClient,} from "@prisma/client";
-import {FullyPopulatedMovie, MovieWithLanguageTranslation} from "@/models/movies.model";
+import { Language, Prisma, PrismaClient } from '@prisma/client';
+import { FullyPopulatedMovie, MovieWithLanguageTranslation } from '@/models/movies.model';
 
 /**
  * Movies Data Access Layer (DAL)
  * Encapsulates all Prisma operations related to Movie, MovieTranslation, Genre, and Trailer.
  */
 export class MoviesDAL {
-    constructor(private prisma: PrismaClient) {
-    }
+    constructor(private prisma: PrismaClient) {}
 
     async findByTmdbId(tmdbId: number) {
-        return this.prisma.movie.findUnique({where: {tmdbId}});
+        return this.prisma.movie.findUnique({ where: { tmdbId } });
     }
 
     /**
@@ -18,7 +17,7 @@ export class MoviesDAL {
      */
     async findByIdWithTranslations(movieId: string): Promise<FullyPopulatedMovie | null> {
         return this.prisma.movie.findUnique({
-            where: {id: movieId},
+            where: { id: movieId },
             include: {
                 genres: {
                     include: {
@@ -48,7 +47,7 @@ export class MoviesDAL {
      */
     async findByIdWithLanguageTranslation(
         movieId: string,
-        language: Language
+        language: Language,
     ): Promise<MovieWithLanguageTranslation | null> {
         const movie = await this.findByIdWithTranslations(movieId);
 
@@ -57,26 +56,56 @@ export class MoviesDAL {
         return this.transformToLanguageSpecific(movie, language);
     }
 
-    async upsertBase(data: Omit<Prisma.MovieCreateInput, "translations" | "genres" | "cast" | "trailers" | 'imdbId'> & {
-        imdbId: string
-    }) {
+    async upsertBase(
+        data: Pick<
+            Prisma.MovieCreateInput,
+            'id' | 'imdbId' | 'tmdbId' | 'rating' | 'votes' | 'status' | 'runtime' | 'releaseDate' | 'originalLanguage'
+        >,
+    ) {
         return this.prisma.movie.upsert({
-            where: {imdbId: data.imdbId},
-            create: data,
-            update: data,
+            where: { imdbId: data.imdbId },
+            create: {
+                id: data.id,
+                imdbId: data.imdbId,
+                tmdbId: data.tmdbId,
+                rating: data.rating ?? null,
+                votes: data.votes ?? null,
+                status: data.status ?? 'NOW_PLAYING',
+                runtime: data.runtime ?? 0,
+                releaseDate: data.releaseDate ?? null,
+                originalLanguage: data.originalLanguage ?? null,
+            },
+            update: {
+                rating: data.rating ?? null,
+                votes: data.votes ?? null,
+                status: data.status ?? 'NOW_PLAYING',
+                runtime: data.runtime ?? 0,
+                releaseDate: data.releaseDate ?? null,
+                originalLanguage: data.originalLanguage ?? null,
+            },
+        });
+    }
+
+    async updateRating(imdbId: string, data: Pick<Prisma.MovieUpdateInput, 'rating' | 'votes'>) {
+        return this.prisma.movie.update({
+            where: { imdbId },
+            data: {
+                rating: data.rating ?? null,
+                votes: data.votes ?? null,
+            },
         });
     }
 
     async upsertTranslation(
         movieId: string,
         language: Language,
-        data: Omit<Prisma.MovieTranslationCreateInput, "movie" | "language">
+        data: Omit<Prisma.MovieTranslationCreateInput, 'movie' | 'language'>,
     ) {
         return this.prisma.movieTranslation.upsert({
-            where: {movieId_language: {movieId, language}},
+            where: { movieId_language: { movieId, language } },
             create: {
                 ...data,
-                movie: {connect: {id: movieId}},
+                movie: { connect: { id: movieId } },
                 language,
             },
             update: data,
@@ -89,16 +118,16 @@ export class MoviesDAL {
         // First, find all genre records by their TMDB IDs
         const genres = await this.prisma.genre.findMany({
             where: {
-                tmdbId: {in: tmdbGenreIds},
+                tmdbId: { in: tmdbGenreIds },
             },
         });
 
         // Connect the movie to the found genres using their Prisma IDs
         await this.prisma.movie.update({
-            where: {id: movieId},
+            where: { id: movieId },
             data: {
                 genres: {
-                    set: genres.map((genre) => ({id: genre.id})),
+                    set: genres.map((genre) => ({ id: genre.id })),
                 },
             },
         });
@@ -108,9 +137,9 @@ export class MoviesDAL {
         for (const t of trailers) {
             const url = `https://www.youtube.com/watch?v=${t.key}`;
             await this.prisma.trailer.upsert({
-                where: {movieId_url: {movieId, url}},
+                where: { movieId_url: { movieId, url } },
                 create: {
-                    movie: {connect: {id: movieId}},
+                    movie: { connect: { id: movieId } },
                     language: t.language,
                     youtubeId: t.key,
                     title: t.title,
@@ -172,11 +201,11 @@ export class MoviesDAL {
             orderBy?: Prisma.MovieOrderByWithRelationInput[];
             skip?: number;
             take?: number;
-        }
+        },
     ): Promise<MovieWithLanguageTranslation[]> {
         const movies = await this.getFullyPopulatedMovies(options);
 
-        return movies.map(movie => this.transformToLanguageSpecific(movie, language));
+        return movies.map((movie) => this.transformToLanguageSpecific(movie, language));
     }
 
     /**
@@ -189,50 +218,40 @@ export class MoviesDAL {
         if (language) preferredWhere.language = language;
 
         const preferred = await this.prisma.movieTranslation.findMany({
+            select: { movieId: true, posterUrl: true },
             where: preferredWhere,
-            include: { movie: true },
-            orderBy: [
-                { movie: { rating: 'desc' } },
-                { movie: { votes: 'desc' } },
-            ],
+            orderBy: [{ movie: { rating: 'desc' } }, { movie: { votes: 'desc' } }],
             take: limit,
         });
 
-        const posters: string[] = preferred.map(p => p.posterUrl!).filter(Boolean);
+        const posters: string[] = preferred.map((p) => p.posterUrl!).filter(Boolean);
 
         if (posters.length >= limit) return posters.slice(0, limit);
 
         // Fill remaining slots with translations from other languages, excluding movies already included
-        const excludedMovieIds = preferred.map(p => p.movieId);
+        // const excludedMovieIds = preferred.map((p) => p.movieId);
+        //
+        // const additional = await this.prisma.movieTranslation.findMany({
+        //     select: { movieId: true, posterUrl: true },
+        //     where: {
+        //         posterUrl: { not: null },
+        //         movie: { id: { notIn: excludedMovieIds.length ? excludedMovieIds : undefined } },
+        //     },
+        //     orderBy: [{ movie: { rating: 'desc' } }, { movie: { votes: 'desc' } }],
+        //     take: limit - posters.length,
+        // });
 
-        const additional = await this.prisma.movieTranslation.findMany({
-            where: {
-                posterUrl: { not: null },
-                movie: { id: { notIn: excludedMovieIds.length ? excludedMovieIds : undefined } },
-            },
-            include: { movie: true },
-            orderBy: [
-                { movie: { rating: 'desc' } },
-                { movie: { votes: 'desc' } },
-            ],
-            take: limit - posters.length,
-        });
+        // posters.push(...additional.map((a) => a.posterUrl!).filter(Boolean));
 
-        posters.push(...additional.map(a => a.posterUrl!).filter(Boolean));
-
-        return posters.slice(0, limit);
+        return posters;
     }
 
     /**
      * Transforms a fully populated movie to language-specific format
      */
-    private transformToLanguageSpecific(
-        movie: FullyPopulatedMovie,
-        language: Language
-    ): MovieWithLanguageTranslation {
+    private transformToLanguageSpecific(movie: FullyPopulatedMovie, language: Language): MovieWithLanguageTranslation {
         // Find translation for the requested language, fallback to any available translation
-        const translation = movie.translations.find(t => t.language === language) ||
-            movie.translations[0];
+        const translation = movie.translations.find((t) => t.language === language) || movie.translations[0];
 
         return {
             id: movie.id,
@@ -250,10 +269,10 @@ export class MoviesDAL {
             originalTitle: translation?.originalTitle || null,
             posterUrl: translation?.posterUrl || null,
             // Transform genres with language-specific names
-            genres: movie.genres.map(genre => {
+            genres: movie.genres.map((genre) => {
                 // Find genre translation for the requested language
-                const genreTranslation = genre.translations.find(t => t.language === language) ||
-                    genre.translations[0];
+                const genreTranslation =
+                    genre.translations.find((t) => t.language === language) || genre.translations[0];
 
                 return {
                     id: genre.id,
@@ -261,10 +280,12 @@ export class MoviesDAL {
                     tmdbId: genre.tmdbId,
                 };
             }),
+            runtime: movie.runtime,
             trailers: movie.trailers,
-            cast: movie.cast.map(castMember => {
+            cast: movie.cast.map((castMember) => {
                 // Find actor translation for the requested language
-                const actorTranslation = castMember.actor.translations.find(t => t.language === language) ||
+                const actorTranslation =
+                    castMember.actor.translations.find((t) => t.language === language) ||
                     castMember.actor.translations[0];
 
                 return {
@@ -292,6 +313,6 @@ export class MoviesDAL {
      * Counts movies matching the given criteria
      */
     async countMovies(where?: Prisma.MovieWhereInput): Promise<number> {
-        return this.prisma.movie.count({where});
+        return this.prisma.movie.count({ where });
     }
 }

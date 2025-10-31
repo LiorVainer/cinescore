@@ -35,7 +35,7 @@ export default function CollapsedMovieCard({
             key={`card-${title}-${idSuffix}`}
             onClick={onClickAction}
             className={[
-                'flex justify-between items-stretch hover:bg-muted rounded-xl cursor-pointer shadow-md overflow-hidden relative',
+                'flex justify-between items-stretch hover:bg-muted rounded-xl cursor-pointer shadow-md overflow-hidden relative w-full',
                 className,
             ]
                 .filter(Boolean)
@@ -46,7 +46,7 @@ export default function CollapsedMovieCard({
                 {imgSrc && (
                     <motion.div
                         key={`bg-${idSuffix}`}
-                        className={`absolute inset-0 z-0 overflow-hidden rounded-xl ${containerClassName}`}
+                        className={`absolute inset-0 z-0 overflow-hidden rounded-xl self-stretch ${containerClassName}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -67,26 +67,26 @@ export default function CollapsedMovieCard({
             </AnimatePresence>
 
             {/* Content layer */}
-            <div className='flex w-full items-stretch relative z-10'>
+            <div className='flex w-full items-stretch relative z-10 w-full items-stretch'>
                 <motion.div layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.IMAGE(title, idSuffix)} className='shrink-0'>
                     <Image
                         height={200}
                         width={300}
                         src={imgSrc}
                         alt={title}
-                        className='w-24 md:w-32 lg:w-40 rounded-r-lg object-cover object-top'
+                        className='w-28 md:w-32 lg:w-36 rounded-r-lg object-cover object-top aspect-[2/3]'
                         loading='eager'
                         sizes='(max-width: 768px) 96px, (max-width: 1024px) 128px, 160px'
                         quality={75}
                     />
                 </motion.div>
 
-                <div className='flex-1 min-w-0 p-4 box-border flex flex-col justify-between h-full'>
+                <div className='flex-1 min-w-0 p-4 box-border flex flex-col justify-between h-full justify-between gap-4'>
                     <div className='flex flex-col gap-2'>
                         <div className='flex justify-between items-center'>
                             <motion.h3
                                 layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.TITLE(title, idSuffix)}
-                                className={`font-bold text-sm md:text-lg text-neutral-700 dark:text-neutral-200 truncate leading-none`}
+                                className={`font-bold text-sm md:text-lg text-neutral-700 dark:text-neutral-200 leading-none`}
                                 title={title}
                             >
                                 {title}
@@ -97,7 +97,7 @@ export default function CollapsedMovieCard({
                     </div>
 
                     <motion.div layoutId={MOVIERCARD_LAYOUT_ID_GENERATORS.DESCRIPTION(idSuffix)}>
-                        <MovieStats rating={rating} votes={votes} size='sm' />
+                        <MovieStats rating={rating} votes={votes} size='sm' imdbId={movie.imdbId} />
                     </motion.div>
                 </div>
             </div>

@@ -36,10 +36,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   `}
                 />
 
-
-
-
-
                 {children}
             </div>
             {/* Render modals once at app level */}

@@ -28,4 +28,3 @@ export interface ActorDetailsDto {
     knownFor?: string[];
     credits?: ActorCreditDto[];
 }
-

@@ -3,11 +3,15 @@
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import React from 'react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function HeroActions() {
     const t = useTranslations('landing');
+    const locale = useLocale();
+    const isRTL = locale === 'he';
 
     return (
         <motion.div
@@ -22,6 +26,7 @@ export function HeroActions() {
                     className='bg-primary text-primary-foreground font-semibold px-8 py-3 hover:brightness-110 transition-all shadow-lg'
                 >
                     {t('cta_now_playing')}
+                    <ArrowRight className={cn('w-6 h-6', isRTL ? 'rotate-180' : '')} /> {/* ← left arrow icon */}
                 </Button>
             </Link>
 

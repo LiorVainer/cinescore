@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import {motion} from 'motion/react';
-import type {MovieWithLanguageTranslation} from '@/models/movies.model';
-import {MovieCastSection} from '@/components/movie/movie-cast-section';
-import {MovieTrailersSection} from '@/components/movie/movie-trailers-section';
-import {MOVIERCARD_LAYOUT_ID_GENERATORS} from '@/constants/movie-layout-id-generators.const';
+import { motion } from 'motion/react';
+import type { MovieWithLanguageTranslation } from '@/models/movies.model';
+import { MovieCastSection } from '@/components/movie/movie-cast-section';
+import { MovieTrailersSection } from '@/components/movie/movie-trailers-section';
+import { MOVIERCARD_LAYOUT_ID_GENERATORS } from '@/constants/movie-layout-id-generators.const';
 
 type MovieCardContentProps = {
     movie: MovieWithLanguageTranslation;
@@ -32,4 +32,3 @@ export const MovieCardContent = ({ movie, idSuffix, layoutIdEnabled, size = 'sm'
         </div>
     );
 };
-

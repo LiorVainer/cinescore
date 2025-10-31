@@ -1,9 +1,9 @@
 /*
   Warnings:
 
-  - You are about to drop the column `durationMax` on the `interest` table. All the data in the column will be lost.
-  - You are about to drop the column `durationMin` on the `interest` table. All the data in the column will be lost.
-  - You are about to drop the column `threshold` on the `interest` table. All the data in the column will be lost.
+  - You are about to drop the column `durationMax` on the `trigger` table. All the data in the column will be lost.
+  - You are about to drop the column `durationMin` on the `trigger` table. All the data in the column will be lost.
+  - You are about to drop the column `threshold` on the `trigger` table. All the data in the column will be lost.
   - You are about to drop the column `value` on the `interest_condition` table. All the data in the column will be lost.
 
 */

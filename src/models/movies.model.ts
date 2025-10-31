@@ -42,6 +42,7 @@ export type MovieWithLanguageTranslation = {
     title: string;
     description: string | null;
     originalTitle: string | null;
+    runtime: number | null;
     posterUrl: string | null; // Now comes from translations
     // Related data with language-specific names
     genres: Array<{

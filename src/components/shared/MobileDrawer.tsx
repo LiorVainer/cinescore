@@ -1,20 +1,20 @@
 'use client';
 
-import React, {useEffect, useRef} from 'react';
-import {Drawer, DrawerContent, DrawerTitle} from '@/components/ui/drawer';
-import {useIsMobile} from '@/hooks/use-mobile';
-import {VisuallyHidden} from '@/components/ui/visually-hidden';
-import {useOverlayState} from '@/hooks/use-overlay-state';
-import {AnimatedContentContainer} from './AnimatedContentContainer';
-import {useOverlayContent} from '@/hooks/use-overlay-content';
+import React, { useEffect, useRef } from 'react';
+import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { VisuallyHidden } from '@/components/ui/visually-hidden';
+import { useOverlayState } from '@/hooks/use-overlay-state';
+import { AnimatedContentContainer } from './AnimatedContentContainer';
+import { useOverlayContent } from '@/hooks/use-overlay-content';
 
 export function MobileDrawer() {
-    const {isOpen, entityType, movieId, actorId, close} = useOverlayState();
+    const { isOpen, entityType, movieId, actorId, close } = useOverlayState();
     const isMobile = useIsMobile();
     const isFirstRender = useRef(true);
 
     // Use the custom hook to handle all data fetching logic
-    const {movieData, isLoadingMovie, actorProfilePath} = useOverlayContent();
+    const { movieData, isLoadingMovie, actorProfilePath } = useOverlayContent();
 
     // Manage first render state only
     useEffect(() => {
@@ -35,14 +35,14 @@ export function MobileDrawer() {
 
     return (
         <Drawer open={isOpen} onOpenChange={(open) => !open && close()}>
-            <DrawerContent className="p-0 max-h-[80vh]">
+            <DrawerContent className='p-0 max-h-[80vh]'>
                 <VisuallyHidden asChild>
                     <DrawerTitle>
                         {entityType === 'movie'
                             ? movieData?.title
                             : entityType === 'actor'
-                                ? 'Actor Details'
-                                : 'Content'}
+                              ? 'Actor Details'
+                              : 'Content'}
                     </DrawerTitle>
                 </VisuallyHidden>
 
@@ -54,10 +54,9 @@ export function MobileDrawer() {
                     actorProfilePath={actorProfilePath}
                     isLoadingMovie={isLoadingMovie}
                     onClose={close}
-                    variant="drawer"
+                    variant='drawer'
                 />
             </DrawerContent>
-
         </Drawer>
     );
 }

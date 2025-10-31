@@ -48,7 +48,7 @@ revalidateTag(CACHE_TAGS.USER_INTERESTS);
 
 ## ✅ 2. Record-Based Label Generation
 
-### **Created: `src/constants/interest-labels.const.ts`**
+### **Created: `src/constants/trigger-labels.const.ts`**
 
 **Before:** Multiple if-else statements for name generation
 
@@ -97,7 +97,7 @@ const parts: string[] = data.conditions
 
 ## ✅ 3. Discriminated Union Types for Conditions
 
-### **Created: `src/types/interests.d.ts`**
+### **Created: `src/types/trigger.d.ts`**
 
 **Problem:** Prisma generates types with nullable fields that don't enforce the business logic:
 
@@ -178,19 +178,19 @@ export type InterestConditionInput =
 
 ### **Models:**
 
-- ✅ `src/models/interests.model.ts` - Now uses discriminated union types
+- ✅ `src/models/triggers.model.ts` - Now uses discriminated union types
 
 ### **Actions:**
 
-- ✅ `src/app/actions/interests.ts` - Uses CACHE_TAGS and INTEREST_TYPE_LABELS
+- ✅ `src/app/actions/triggers.ts` - Uses CACHE_TAGS and INTEREST_TYPE_LABELS
 - ✅ `src/app/actions/follows.ts` - Uses CACHE_TAGS
 - ✅ `src/app/actions/user-preferences.ts` - Uses CACHE_TAGS
 
 ### **New Files:**
 
 - ✨ `src/constants/cache-tags.const.ts`
-- ✨ `src/constants/interest-labels.const.ts`
-- ✨ `src/types/interests.d.ts`
+- ✨ `src/constants/trigger-labels.const.ts`
+- ✨ `src/types/trigger.d.ts`
 
 ---
 

@@ -7,17 +7,17 @@
 
 'use client';
 
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {createFollow, deleteFollow} from '@/app/actions/follows';
-import {userFollowsByTypeOptions, userFollowsOptions} from './query-options';
-import {followKeys} from './query-keys';
-import type {FollowType} from '@prisma/client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { createFollow, deleteFollow } from '@/app/actions/follows';
+import { userFollowsByTypeOptions, userFollowsOptions } from './query-options';
+import { followKeys } from './query-keys';
+import type { FollowType } from '@prisma/client';
 
 /**
  * Hook to fetch all follows for a user
  */
 export function useUserFollows(userId?: string) {
-    return useQuery({...userFollowsOptions(userId!), enabled: !!userId});
+    return useQuery({ ...userFollowsOptions(userId!), enabled: !!userId });
 }
 
 /**
@@ -88,7 +88,7 @@ export function useDeleteFollow(userId?: string) {
         },
         onError: (err, variables, context) => {
             // Rollback on error
-            if (userId  && context?.previousFollows) {
+            if (userId && context?.previousFollows) {
                 queryClient.setQueryData(followKeys.byUser(userId), context.previousFollows);
             }
         },

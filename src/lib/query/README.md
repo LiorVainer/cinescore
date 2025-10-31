@@ -188,7 +188,7 @@ Prefetch multiple queries simultaneously:
 // app/[locale]/interests/page.tsx
 import { getQueryClient } from '@/lib/query';
 import { userFollowsOptions } from '@/lib/query/follow';
-import { userInterestsOptions } from '@/lib/query/interest';
+import { userInterestsOptions } from '@/lib/query/trigger';
 import { userPreferencesOptions } from '@/lib/query/user-preferences';
 
 export default async function InterestsPage() {
@@ -250,10 +250,10 @@ import {
 import { 
   useUserInterests,         // Get all interests
   useUserInterestsByConditionType,  // Filter by condition type
-  useCreateInterest,        // Create new interest
-  useUpdateInterest,        // Update existing interest
-  useDeleteInterest,        // Delete interest (with optimistic update)
-} from '@/lib/query/interest';
+  useCreateInterest,        // Create new trigger
+  useUpdateInterest,        // Update existing trigger
+  useDeleteInterest,        // Delete trigger (with optimistic update)
+} from '@/lib/query/trigger';
 ```
 
 ### User Preferences Entity

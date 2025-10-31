@@ -1,4 +1,4 @@
-import {$Enums, Language} from '@prisma/client';
+import { $Enums, Language } from '@prisma/client';
 
 /**
  * @deprecated Use useLanguageLabel() hook from '@/hooks/use-language-label' for translated language labels
@@ -40,7 +40,7 @@ export const mapLocalToTmdbLanguage = (locale: string) => {
         default:
             return 'he-IL';
     }
-}
+};
 
 // Helper function to map database Language enum to URL locale
 export const mapLanguageToLocale = (language: Language) => {

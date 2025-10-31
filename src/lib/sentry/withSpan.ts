@@ -41,12 +41,12 @@ export async function withSentrySpan<T>(
 
             try {
                 const result = await fn();
-                span.setStatus({ code: 0, message: "ok" });
+                span.setStatus({ code: 0, message: 'ok' });
                 const durationMs = Date.now() - startedAt;
                 scopedLogger.info(`Span succeeded: ${description}`, { durationMs });
                 return result;
             } catch (error) {
-                span.setStatus({ code: 2, message: "internal_error" });
+                span.setStatus({ code: 2, message: 'internal_error' });
                 scopedLogger.error(`Span failed: ${description}`, error as Error);
                 Sentry.captureException(error, { tags: { op, description } });
                 throw error;
@@ -55,7 +55,7 @@ export async function withSentrySpan<T>(
                 Sentry.addBreadcrumb({
                     category: `span:${op}`,
                     message: `${description} took ${durationMs}ms`,
-                    level: "info",
+                    level: 'info',
                 });
             }
         },

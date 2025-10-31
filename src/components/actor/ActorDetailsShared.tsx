@@ -1,14 +1,14 @@
 'use client';
 
-import {Badge} from '@/components/ui/badge';
-import {ActorImage} from '@/components/actor/actor-image';
-import {Separator} from '@/components/ui/separator';
-import {ActorFollowButton} from '@/components/follows/ActorFollowButton';
-import {FollowType} from '@prisma/client';
-import {CalendarDays, Film, MapPin} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ActorImage } from '@/components/actor/actor-image';
+import { Separator } from '@/components/ui/separator';
+import { ActorFollowButton } from '@/components/follows/ActorFollowButton';
+import { FollowType } from '@prisma/client';
+import { CalendarDays, Film, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import {ActorDetailsDto} from "@/models/actors.model";
-import {Skeleton} from '@/components/ui/skeleton';
+import { ActorDetailsDto } from '@/models/actors.model';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Movie {
     id: string;
@@ -23,26 +23,29 @@ interface ActorProfileProps {
     actor: Partial<ActorDetailsDto>;
 }
 
-export function ActorProfile({actor}: ActorProfileProps) {
+export function ActorProfile({ actor }: ActorProfileProps) {
     return (
         <div className='flex flex-col items-center mb-6'>
             <div className='flex flex-col gap-4 items-center'>
-                <ActorImage src={actor.profilePath ?? '/window.svg'} alt={actor.name ?? 'Actor'}
-                            className='w-30 rounded-lg'/>
+                <ActorImage
+                    src={actor.profilePath ?? '/window.svg'}
+                    alt={actor.name ?? 'Actor'}
+                    className='w-30 rounded-lg'
+                />
 
                 <h2 className='text-2xl font-bold text-center mb-2'>{actor.name}</h2>
             </div>
 
-                <div className='mb-4 w-full'>
-                    <ActorFollowButton type={FollowType.ACTOR} value={actor.name ?? ''}/>
-                </div>
+            <div className='mb-4 w-full'>
+                <ActorFollowButton type={FollowType.ACTOR} value={actor.name ?? ''} />
+            </div>
 
-            <Separator className='my-4 w-full'/>
+            <Separator className='my-4 w-full' />
 
             <div className='space-y-3 w-full'>
                 {actor.birthday && (
                     <div className='flex items-center gap-2 text-sm'>
-                        <CalendarDays className='h-4 w-4 text-muted-foreground'/>
+                        <CalendarDays className='h-4 w-4 text-muted-foreground' />
                         <span>
                             {new Date(actor.birthday).toLocaleDateString('en-US', {
                                 year: 'numeric',
@@ -55,7 +58,7 @@ export function ActorProfile({actor}: ActorProfileProps) {
 
                 {actor.placeOfBirth && (
                     <div className='flex items-center gap-2 text-sm'>
-                        <MapPin className='h-4 w-4 text-muted-foreground'/>
+                        <MapPin className='h-4 w-4 text-muted-foreground' />
                         <span>{actor.placeOfBirth}</span>
                     </div>
                 )}
@@ -70,7 +73,7 @@ interface ActorBiographyProps {
     biography: string;
 }
 
-export function ActorBiography({biography}: ActorBiographyProps) {
+export function ActorBiography({ biography }: ActorBiographyProps) {
     return (
         <div className='mb-6'>
             <h3 className='text-lg font-semibold mb-2'>Biography</h3>
@@ -83,7 +86,7 @@ interface ActorFilmographyProps {
     movies: Movie[];
 }
 
-export function ActorFilmography({movies}: ActorFilmographyProps) {
+export function ActorFilmography({ movies }: ActorFilmographyProps) {
     return (
         <div>
             <h3 className='text-lg font-semibold mb-3'>
@@ -108,7 +111,7 @@ export function ActorFilmography({movies}: ActorFilmographyProps) {
                                     />
                                 ) : (
                                     <div className='h-20 w-14 bg-muted rounded flex items-center justify-center'>
-                                        <Film className='h-6 w-6 text-muted-foreground'/>
+                                        <Film className='h-6 w-6 text-muted-foreground' />
                                     </div>
                                 )}
                             </div>
@@ -131,7 +134,7 @@ export function ActorFilmography({movies}: ActorFilmographyProps) {
                 </div>
             ) : (
                 <div className='text-center py-8 text-muted-foreground'>
-                    <Film className='h-10 w-10 mx-auto mb-3 opacity-50'/>
+                    <Film className='h-10 w-10 mx-auto mb-3 opacity-50' />
                     <p className='text-sm'>No movies found for this actor.</p>
                 </div>
             )}
@@ -140,19 +143,30 @@ export function ActorFilmography({movies}: ActorFilmographyProps) {
 }
 
 // Basic content component that uses only lightweight actor data
-export function ActorBasicContent({basicActor, userId}:{
-    basicActor: { id:number; tmdbId:number; name:string; profilePath:string|null; biography:string|null } | null;
+export function ActorBasicContent({
+    basicActor,
+    userId,
+}: {
+    basicActor: {
+        id: number;
+        tmdbId: number;
+        name: string;
+        profilePath: string | null;
+        biography: string | null;
+    } | null;
     userId?: string | undefined;
-}){
-    if(!basicActor) return null;
+}) {
+    if (!basicActor) return null;
 
     return (
         <div className='space-y-6'>
-            <ActorProfile actor={{
-                name: basicActor.name,
-                profilePath: basicActor.profilePath ?? undefined,
-                biography: basicActor.biography ?? undefined,
-            }}/>
+            <ActorProfile
+                actor={{
+                    name: basicActor.name,
+                    profilePath: basicActor.profilePath ?? undefined,
+                    biography: basicActor.biography ?? undefined,
+                }}
+            />
 
             {basicActor.biography && (
                 <div className='mb-4'>
@@ -177,7 +191,7 @@ export function ActorProfileSkeleton() {
                 <Skeleton className='h-8 w-24 rounded-md' />
             </div>
 
-            <Separator className='my-4 w-full'/>
+            <Separator className='my-4 w-full' />
 
             <div className='space-y-3 w-full'>
                 <div className='flex items-center gap-2 text-sm'>

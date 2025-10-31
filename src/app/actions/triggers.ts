@@ -2,19 +2,19 @@
 
 import { revalidateTag } from 'next/cache';
 import { ActionResult, getDal, getUserSession } from '@/lib/server-utils';
-import { InterestDTO } from '@/models/interests.model';
+import { TriggerDTO } from '@/models/triggers.model';
 import { CACHE_TAGS } from '@/constants/cache-tags.const';
-import { formatConditionInputLabel } from '@/constants/interest-labels.const';
-import type { InterestConditionInput } from '@/types/interests';
+import { formatConditionInputLabel } from '@/constants/trigger-labels.const';
+import type { TriggerConditionInput } from '@/types/trigger';
 
 // ============================================================================
 // INTEREST ACTIONS
 // ============================================================================
 
-export async function createInterest(data: {
+export async function createTrigger(data: {
     name?: string;
-    conditions: InterestConditionInput[];
-}): Promise<ActionResult<InterestDTO>> {
+    conditions: TriggerConditionInput[];
+}): Promise<ActionResult<TriggerDTO>> {
     try {
         const user = await getUserSession();
         const dal = getDal();
@@ -34,62 +34,62 @@ export async function createInterest(data: {
                 .map((condition) => formatConditionInputLabel(condition))
                 .filter((part): part is string => part !== null);
 
-            name = parts.length > 0 ? parts.join(' + ') : 'Custom Interest';
+            name = parts.length > 0 ? parts.join(' + ') : 'Custom Trigger';
         }
 
-        const interest = await dal.interests.create({
+        const trigger = await dal.triggers.create({
             userId: user.id,
             name,
             conditions: data.conditions,
         });
 
         // Revalidate cache
-        revalidateTag(CACHE_TAGS.USER_INTERESTS);
+        revalidateTag(CACHE_TAGS.USER_TRIGGERS);
 
         return {
             success: true,
             data: {
-                id: interest.id,
-                name: interest.name,
-                conditions: interest.conditions.map((c) => ({
+                id: trigger.id,
+                name: trigger.name,
+                conditions: trigger.conditions.map((c) => ({
                     id: c.id,
-                    interestId: c.interestId,
+                    triggerId: c.triggerId,
                     type: c.type,
                     stringValue: c.stringValue,
                     numericValue: c.numericValue,
-                })) as InterestDTO['conditions'],
-                createdAt: interest.createdAt,
-                updatedAt: interest.updatedAt,
+                })) as TriggerDTO['conditions'],
+                createdAt: trigger.createdAt,
+                updatedAt: trigger.updatedAt,
             },
         };
     } catch (error) {
-        console.error('createInterest error:', error);
+        console.error('createTrigger error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to create interest',
+            error: error instanceof Error ? error.message : 'Failed to create trigger',
         };
     }
 }
 
-export async function updateInterest(
-    interestId: string,
+export async function updateTrigger(
+    triggerId: string,
     data: {
         name?: string;
-        conditions?: InterestConditionInput[];
+        conditions?: TriggerConditionInput[];
     },
-): Promise<ActionResult<InterestDTO>> {
+): Promise<ActionResult<TriggerDTO>> {
     try {
         const user = await getUserSession();
         const dal = getDal();
 
         // Verify ownership
-        const interests = await dal.interests.findByUser(user.id);
-        const interest = interests.find((i) => i.id === interestId);
+        const triggers = await dal.triggers.findByUser(user.id);
+        const trigger = triggers.find((i) => i.id === triggerId);
 
-        if (!interest) {
+        if (!trigger) {
             return {
                 success: false,
-                error: 'Interest not found or you do not have permission to update it',
+                error: 'Trigger not found or you do not have permission to update it',
             };
         }
 
@@ -101,97 +101,97 @@ export async function updateInterest(
             };
         }
 
-        const updatedInterest = await dal.interests.update(interestId, data);
+        const updatedTrigger = await dal.triggers.update(triggerId, data);
 
         // Revalidate cache
-        revalidateTag(CACHE_TAGS.USER_INTERESTS);
+        revalidateTag(CACHE_TAGS.USER_TRIGGERS);
 
         return {
             success: true,
             data: {
-                id: updatedInterest.id,
-                name: updatedInterest.name,
-                conditions: updatedInterest.conditions.map((c) => ({
+                id: updatedTrigger.id,
+                name: updatedTrigger.name,
+                conditions: updatedTrigger.conditions.map((c) => ({
                     id: c.id,
-                    interestId: c.interestId,
+                    triggerId: c.triggerId,
                     type: c.type,
                     stringValue: c.stringValue,
                     numericValue: c.numericValue,
-                })) as InterestDTO['conditions'],
-                createdAt: updatedInterest.createdAt,
-                updatedAt: updatedInterest.updatedAt,
+                })) as TriggerDTO['conditions'],
+                createdAt: updatedTrigger.createdAt,
+                updatedAt: updatedTrigger.updatedAt,
             },
         };
     } catch (error) {
-        console.error('updateInterest error:', error);
+        console.error('updateTrigger error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to update interest',
+            error: error instanceof Error ? error.message : 'Failed to update trigger',
         };
     }
 }
 
-export async function deleteInterest(interestId: string): Promise<ActionResult<{ deletedInterestId: string }>> {
+export async function deleteTrigger(triggerId: string): Promise<ActionResult<{ deletedTriggerId: string }>> {
     try {
         const user = await getUserSession();
         const dal = getDal();
 
         // Verify ownership
-        const interests = await dal.interests.findByUser(user.id);
-        const interest = interests.find((i) => i.id === interestId);
+        const triggers = await dal.triggers.findByUser(user.id);
+        const trigger = triggers.find((i) => i.id === triggerId);
 
-        if (!interest) {
+        if (!trigger) {
             return {
                 success: false,
-                error: 'Interest not found or you do not have permission to delete it',
+                error: 'Trigger not found or you do not have permission to delete it',
             };
         }
 
-        await dal.interests.delete(interestId);
+        await dal.triggers.delete(triggerId);
 
         // Revalidate cache
-        revalidateTag(CACHE_TAGS.USER_INTERESTS);
+        revalidateTag(CACHE_TAGS.USER_TRIGGERS);
 
         return {
             success: true,
-            data: { deletedInterestId: interestId },
+            data: { deletedTriggerId: triggerId },
         };
     } catch (error) {
-        console.error('deleteInterest error:', error);
+        console.error('deleteTrigger error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to delete interest',
+            error: error instanceof Error ? error.message : 'Failed to delete trigger',
         };
     }
 }
 
-export async function getUserInterests(): Promise<ActionResult<InterestDTO[]>> {
+export async function getUserTriggers(): Promise<ActionResult<TriggerDTO[]>> {
     try {
         const user = await getUserSession();
         const dal = getDal();
-        const interests = await dal.interests.findByUser(user.id);
+        const triggers = await dal.triggers.findByUser(user.id);
 
         return {
             success: true,
-            data: interests.map((i) => ({
+            data: triggers.map((i) => ({
                 id: i.id,
                 name: i.name,
                 conditions: i.conditions.map((c) => ({
                     id: c.id,
-                    interestId: c.interestId,
+                    triggerId: c.triggerId,
                     type: c.type,
                     stringValue: c.stringValue,
                     numericValue: c.numericValue,
-                })) as InterestDTO['conditions'],
+                })) as TriggerDTO['conditions'],
                 createdAt: i.createdAt,
                 updatedAt: i.updatedAt,
             })),
         };
     } catch (error) {
-        console.error('getUserInterests error:', error);
+        console.error('getUserTriggers error:', error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : 'Failed to fetch interests',
+            error: error instanceof Error ? error.message : 'Failed to fetch triggers',
         };
     }
 }

@@ -73,7 +73,7 @@ declare const messages: {
   },
   "landing": {
     "title": "Discover movies worth your time",
-    "subtitle": "See what’s playing, track IMDb ratings, and get alerts for new releases you’ll love.",
+    "subtitle": "See what’s playing in the cinemas, track IMDb ratings, and get alerts for new movies releases you’ll love.",
     "cta_now_playing": "See Now Playing",
     "cta_subscribe": "Register for updates",
     "top_rated_title": "Top Rated"
@@ -112,6 +112,10 @@ declare const messages: {
     "inWeeks": "{count, plural, one {in # week} other {in # weeks}}",
     "inMonths": "{count, plural, one {in # month} other {in # months}}",
     "inYears": "{count, plural, one {in # year} other {in # years}}"
+  },
+  "time": {
+      "hours": "{count, plural, one {# hr} other {# hrs}}",
+      "minutes": "{count, plural, one {# min} other {# mins}}"
   }
 };
 export default messages;

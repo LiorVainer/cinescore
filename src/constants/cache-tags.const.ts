@@ -5,7 +5,7 @@
  */
 export const CACHE_TAGS = {
     USER_FOLLOWS: 'user-follows',
-    USER_INTERESTS: 'user-interests',
+    USER_TRIGGERS: 'user-triggers',
     USER_PREFERENCES: 'user-preferences',
 } as const;
 

@@ -1,4 +1,4 @@
-import {Metadata} from 'next';
+import { Metadata } from 'next';
 
 const VERSION = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 8) ?? Date.now().toString();
 
