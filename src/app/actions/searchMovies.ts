@@ -137,6 +137,11 @@ export const searchMoviesFiltered = async (filters: MovieFilters) => {
     // Build where
     const where: Prisma.MovieWhereInput = {};
 
+    where.releaseDate = {
+        lte: new Date(),
+        gte: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
+    };
+
     if (q.length > 0) {
         where.translations = {
             some: {
