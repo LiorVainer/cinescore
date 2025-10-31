@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export const GET = verifySignatureAppRouter(async (request: Request) => {
     const cronLogger = logger.scope('api:cron:catalog-refresh');
-
+  
     try {
         return await withSentryTransaction(
             'cron:catalog-refresh',
