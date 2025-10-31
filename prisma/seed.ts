@@ -19,6 +19,7 @@ import {
 import { cacheGenreTranslations, processMovieGenres } from './seeders/genre-processor';
 import { batchProcessActors } from './seeders/actor-processor';
 import { SEED_CONFIG } from './seeders/seed-config';
+import { sendCatalogRefreshEmail } from '@/lib/email/sendCatalogRefreshEmail';
 
 type ScopedLogger = ReturnType<typeof logger.scope>;
 type CatalogRefreshOptions = {
@@ -220,6 +221,11 @@ export async function refreshNowPlayingCatalog(options: CatalogRefreshOptions = 
                 `Catalog refresh complete. Processed ${validMovieData.length} movies successfully.`,
                 { processedCount: validMovieData.length },
             );
+            await sendCatalogRefreshEmail({
+                success: true,
+                processedCount: validMovieData.length,
+                durationMs: totalDuration,
+            });
             transactionLogger.info(`Finished at: ${new Date().toISOString()}`);
             transactionLogger.info(`Total catalog refresh time: ${formatDuration(totalDuration)}`, {
                 durationMs: totalDuration,
@@ -228,6 +234,10 @@ export async function refreshNowPlayingCatalog(options: CatalogRefreshOptions = 
                 durationMs: totalDuration / validMovieData.length,
             });
         } catch (error) {
+            await sendCatalogRefreshEmail({
+                success: false,
+                errorMessage: error instanceof Error ? error.message : String(error),
+            });
             const totalDuration = Date.now() - totalStartTime;
             transactionLogger.error('Catalog refresh failed', error as Error);
             transactionLogger.info(`Failed after: ${formatDuration(totalDuration)}`, {
