@@ -17,7 +17,9 @@
     "prisma:seed": "prisma db seed",
     "db:push": "prisma db push --accept-data-loss",
     "generate:imdbapi-client": "npx swagger-typescript-api generate -p swagger/imdbapi.yaml -o lib -n imdbapi.ts --axios --extract-request-params --extract-request-body --extract-response-body --responses --unwrap-response-data --api-class-name ImdbApi",
-    "generate:omdbapi-client": "npx swagger-typescript-api generate -p swagger/omdbapi.yaml -o lib -n omdbapi.ts --axios --extract-request-params --extract-request-body --extract-response-body --responses --unwrap-response-data --api-class-name OmdbApi"
+    "generate:omdbapi-client": "npx swagger-typescript-api generate -p swagger/omdbapi.yaml -o lib -n omdbapi.ts --axios --extract-request-params --extract-request-body --extract-response-body --responses --unwrap-response-data --api-class-name OmdbApi",
+    "vercel:get-prod-env": "vercel env pull .env.prod --environment=production",
+    "vercel:get-preview-env": "vercel env pull .env.preview --environment=preview"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",
@@ -47,6 +49,7 @@
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-query": "^5.90.2",
     "@tanstack/react-table": "^8.21.2",
+    "@upstash/qstash": "^2.8.4",
     "axios": "1.12.0",
     "better-auth": "^1.2.4",
     "bluebird": "^3.7.2",
